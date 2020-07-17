@@ -10,11 +10,7 @@
 #define TFT_DC        10
 #define SerialDebugging true
 
-static const int RXPin = 7, TXPin = 6;
-static const uint32_t GPSBaud = 9600;
-
 TinyGPSPlus gps;
-SoftwareSerial ss (RXPin, TXPin);
 File file;
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
@@ -45,8 +41,8 @@ float distance0 = 0;
 static void smartDelay(unsigned long ms) {
   unsigned long start = millis();
   do {
-    while (ss.available()) 
-      gps.encode(ss.read());
+    while (Serial2.available()) 
+      gps.encode(Serial2.read());
   } while (millis() - start < ms);
 }
 
@@ -101,7 +97,7 @@ class PrintingClass {
 
 void setup() {
   Serial.begin(115200);
-  ss.begin(GPSBaud);
+  Serial2.begin(9600);
   SD.begin(4);
   Serial.println("\n\n\n");
   pinMode(2, INPUT);
@@ -271,7 +267,7 @@ void saveToSD() {
 
 
 void next(){
-  if (digitalRead(2) == HIGH) {
+  if (analogRead(A0) >= 600) {
     buttonValue++;
     if (buttonValue > 1) buttonValue = 0;
     tft.fillScreen(ST7735_BLACK);
