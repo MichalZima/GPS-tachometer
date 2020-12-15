@@ -25,6 +25,7 @@ void setup() {
 
 
 void loop() {
+  pushed.confirm();
   myGPS.smartDelay(200);
   
   switch(pushed.menuState){
@@ -131,9 +132,8 @@ void passTime(){
 }
 
 void clearScreen(int MAX){
-  if(pushed.confirm() == true) tft.fillScreen(ST7735_BLACK);
   if(pushed.menuState == 0){
-    if(pushed.nextPrevious() == true) tft.fillScreen(ST7735_BLACK);
+    if(pushed.nextPrevious() == true || pushed.confirm() == true) tft.fillScreen(ST7735_BLACK);
     pushed.maxState = MAX;
   }
   else{
