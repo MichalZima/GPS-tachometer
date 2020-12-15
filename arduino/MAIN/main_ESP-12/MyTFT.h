@@ -40,4 +40,34 @@ class MyTFT {
 //    const uint16_t  whiteColor        = ST7735_WHITE;
       tft.setTextColor(TEXTCOLOR, ST7735_BLACK);
     }
+
+    void showMenu(){
+      myTFT.Settings(1, 20, 10);
+      tft.print("session");
+
+      myTFT.Settings(1, 20, 25);
+      tft.print("zobrazenie");
+
+      myTFT.Settings(1, 20, 40);
+      tft.print("ukladanie");
+
+      myTFT.Settings(1, 20, 55);
+      tft.print("statistiky");
+
+      myTFT.Settings(1, 20, 70);
+      tft.print("wifi");
+
+      myTFT.Settings(1, 20, 85);
+      tft.print("casove pasmo");
+
+      myTFT.Settings(1, 20, 100);
+      tft.print("pamat");
+
+      myTFT.Settings(1, 20, 115);
+      tft.print("reset");
+
+      myTFT.Settings(1, 20, 130);
+      tft.print("exit");
+    } 
+
 };
