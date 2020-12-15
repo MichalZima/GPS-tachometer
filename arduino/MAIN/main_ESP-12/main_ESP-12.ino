@@ -26,62 +26,55 @@ void setup() {
 
 void loop() {
   myGPS.smartDelay(200);
+  clearScreen();
   
-  switch(pushed.menuState){
-   
-    case 0:
-      clearScreen(4);
-      Hdop = gps.hdop.hdop();
-      myTFT.Settings(1, 40, 40);
-      myTFT.Print(Hdop, 4, 1);
-      switch (pushed.state) {
-        case 1:
-          //if (Speed < 3 || Hdop > 12) Speed = 0; 
+  if(pushed.menuState == 0){
+    Hdop = gps.hdop.hdop();
+    myTFT.Settings(1, 40, 40);
+    myTFT.Print(Hdop, 4, 1);
+    switch (pushed.state) {
+      case 1:
+        //if (Speed < 3 || Hdop > 12) Speed = 0; 
+        myTFT.Settings(2, 10, 10);
+        myTFT.Print(myGPS.Speed, 4, 1);
+        tft.setTextSize(1);
+        tft.print(" km/h");
+        break;
+      case 2:
+        if (myGPS.totalDistance < 1000) {
           myTFT.Settings(2, 10, 10);
-          myTFT.Print(myGPS.Speed, 4, 1);
+          myTFT.Print(myGPS.totalDistance, 3, 0);
           tft.setTextSize(1);
-          tft.print(" km/h");
-          break;
-        case 2:
-          if (myGPS.totalDistance < 1000) {
-            myTFT.Settings(2, 10, 10);
-            myTFT.Print(myGPS.totalDistance, 3, 0);
-            tft.setTextSize(1);
-            tft.print(" m");  
-          }
-          else if (myGPS.totalDistance >= 1000) {
-            myTFT.Settings(2, 10, 10);
-            myTFT.Print(myGPS.totalDistance, 7, 2);
-            tft.setTextSize(1);
-            tft.print(" km");
-          }
-          break;
-        case 3:
-          myTFT.Settings(3, 10, 10);
-          tft.print("screen 3");
-          break;
-        case 4:
-          myTFT.Settings(3, 0, 80);
-          tft.print("screen 4");
-          break;
-        default:
-          clearScreen(4);
-          myTFT.Settings(3, 10, 10);
-          tft.print("default");
-          break;
-      }
-      break;
+          tft.print(" m");  
+        }
+        else if (myGPS.totalDistance >= 1000) {
+          myTFT.Settings(2, 10, 10);
+          myTFT.Print(myGPS.totalDistance, 7, 2);
+          tft.setTextSize(1);
+          tft.print(" km");
+        }
+        break;
+      case 3:
+        myTFT.Settings(3, 10, 10);
+        tft.print("screen 3");
+        break;
+      case 4:
+        myTFT.Settings(3, 0, 80);
+        tft.print("screen 4");
+        break;
+      default:
+        myTFT.Settings(3, 10, 10);
+        tft.print("default");
+        break;
+    }
+  }
 
 
-    case 1:
-      clearScreen(9);
-      menu.showMenu();
-      pushed.nextPrevious();
-      menu.Cursor();  
-      break;
-
-    default:
-      break;
+  else if(pushed.menuState == 1){
+    pushed.maxState = 9;
+    menu.showMenu();
+    pushed.nextPrevious();
+    menu.Cursor();  
   }
   
   
@@ -130,17 +123,12 @@ void passTime(){
   else timePassed = false; 
 }
 
-void clearScreen(int MAX){
-  if(pushed.confirm() == true) tft.fillScreen(ST7735_BLACK);
-  if(pushed.menuState == 0){
-    if(pushed.nextPrevious() == true) tft.fillScreen(ST7735_BLACK);
-    pushed.maxState = MAX;
+void clearScreen(){
+  if(pushed.menuState == 0 && pushed.nextPrevious() == true){
+    tft.fillScreen(ST7735_BLACK);
   }
-  else{
-    if (pushed.confirm() == true){
-      tft.fillScreen(ST7735_BLACK);
-      pushed.maxState = MAX;
-      pushed.state = 1;
-    }
+  else if(pushed.confirm() == true){
+    tft.fillScreen(ST7735_BLACK);
+    pushed.state = 1;
   }
 }
