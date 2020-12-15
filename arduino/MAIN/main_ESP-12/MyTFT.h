@@ -1,21 +1,18 @@
 #include <SPI.h>
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
-#include "Buttons.h"
 
 #define TFT_CS        D1
 #define TFT_RST       D0 // Or set to -1 and connect to Arduino RESET pin
 #define TFT_DC        D2
 
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
-Pushed pushed;
+
 
 class MyTFT {
   
   private:
     char convertString[10];
-    byte x0 = 1;
-    byte x = 1;
     
   public:  
     void tftSetup() {
@@ -43,35 +40,4 @@ class MyTFT {
 //    const uint16_t  whiteColor        = ST7735_WHITE;
       tft.setTextColor(TEXTCOLOR, ST7735_BLACK);
     }
-
-    void showMenu(){
-      Settings(1, 20, 10);
-      tft.print("session");
-
-      Settings(1, 20, 25);
-      tft.print("zobrazenie");
-
-      Settings(1, 20, 40);
-      tft.print("ukladanie");
-
-      Settings(1, 20, 55);
-      tft.print("statistiky");
-
-      Settings(1, 20, 70);
-      tft.print("wifi");
-
-      Settings(1, 20, 85);
-      tft.print("casove pasmo");
-
-      Settings(1, 20, 100);
-      tft.print("pamat");
-
-      Settings(1, 20, 115);
-      tft.print("reset");
-
-      Settings(1, 20, 130);
-      tft.print("exit");
-    }
-     
-
 };
