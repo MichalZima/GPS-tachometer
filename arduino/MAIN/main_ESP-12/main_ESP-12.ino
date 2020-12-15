@@ -106,9 +106,8 @@ void loop() {
     tft.print("       ");
   }
 
-  myGPS.smartDelay(100);
+  myGPS.smartDelay(200);
   clearScreen();
-  myGPS.smartDelay(100);
 }
 
 
