@@ -32,6 +32,7 @@ void loop() {
     Hdop = gps.hdop.hdop();
     myTFT.Settings(1, 40, 40);
     myTFT.Print(Hdop, 4, 1);
+    pushed.maxState = 4;
     switch (pushed.state) {
       case 1:
         //if (Speed < 3 || Hdop > 12) Speed = 0; 
@@ -72,9 +73,9 @@ void loop() {
 
   else if(pushed.menuState == 1){
     pushed.maxState = 9;
-    menu.showMenu();
+    myTFT.showMenu();
     pushed.nextPrevious();
-    menu.Cursor();  
+    myTFT.Cursor();  
   }
   
   
