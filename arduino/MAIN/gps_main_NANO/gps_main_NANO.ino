@@ -5,12 +5,11 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 
-#define TFT_CS         9
-#define TFT_RST        8 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC        10
-#define SerialDebugging true
+#define TFT_CS        D1
+#define TFT_RST       D0 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC        D2
 
-static const int RXPin = 7, TXPin = 6;
+static const int RXPin = D4, TXPin = D3;
 static const uint32_t GPSBaud = 9600;
 
 TinyGPSPlus gps;
@@ -100,12 +99,12 @@ class PrintingClass {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(74880);
   ss.begin(GPSBaud);
-  SD.begin(4);
+  SD.begin(D8);
   Serial.println("\n\n\n");
-  pinMode(2, INPUT);
-  pinMode(A4, INPUT);
+//  pinMode(2, INPUT);
+//  pinMode(A4, INPUT);
   
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST7735_BLACK);
@@ -121,7 +120,7 @@ PrintingClass Print;
 DistanceClass Distance;
 
 void loop() { 
-  if(!SD.begin(4)) {
+  if(!SD.begin(D8)) {
       Print.Settings(1, 10, 90);
       tft.print("sd fail");
     }
@@ -244,7 +243,7 @@ void signalStrength(){
 
 void saveToSD() {
   if (distance0 >= 30) {
-    if(!SD.begin(4)) {
+    if(!SD.begin(D8)) {
       Print.Settings(1, 10, 90);
       tft.print("       ");
       tft.print("sd fail");
