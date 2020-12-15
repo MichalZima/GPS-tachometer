@@ -5,10 +5,9 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 
-#define TFT_CS         9
-#define TFT_RST        8 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_DC        10
-#define SerialDebugging true
+#define TFT_CS        26
+#define TFT_RST       30 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_DC        28
 
 TinyGPSPlus gps;
 File file;
@@ -98,10 +97,16 @@ class PrintingClass {
 void setup() {
   Serial.begin(115200);
   Serial2.begin(9600);
-  SD.begin(7);
+
+  for(int i=0; i<10; i++){
+    Serial.println("miko je boss");
+  };
+  
+  SD.begin(46);
   Serial.println("\n\n\n");
   pinMode(2, INPUT);
-  pinMode(22, INPUT);
+  
+  //pinMode(11, INPUT)
   
   tft.initR(INITR_BLACKTAB);
   tft.fillScreen(ST7735_BLACK);
@@ -121,7 +126,9 @@ PrintingClass Print;
 DistanceClass Distance;
 
 void loop() { 
-  if(!SD.begin(4)) {
+  Serial.println("miko");
+  Serial.println("miko je boss");
+  if(!SD.begin(46)) {
       Print.Settings(1, 10, 90);
       tft.print("sd fail");
     }
@@ -244,7 +251,7 @@ void signalStrength(){
 
 void saveToSD() {
   if (distance0 >= 30) {
-    if(!SD.begin(4)) {
+    if(!SD.begin(46)) {
       Print.Settings(1, 10, 90);
       tft.print("       ");
       tft.print("sd fail");
@@ -271,7 +278,7 @@ void saveToSD() {
 
 
 void next(){
-  if (digitalRead(22) == HIGH) {
+  if (digitalRead(2) == HIGH) {
     buttonValue++;
     if (buttonValue > 1) buttonValue = 0;
     tft.fillScreen(ST7735_BLACK);
