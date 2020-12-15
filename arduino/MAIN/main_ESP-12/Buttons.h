@@ -36,11 +36,14 @@ class Pushed {
 
     byte confirm(){
       if (digitalRead(buttonConfirmPin) == HIGH) {
-        if (menuState == 0) menuState = 1;
-        else if (menuState == 1 && state == maxState) {
-          menuState = 0;
+        if (menuState == 0){
+          menuState = 1;
           state = 1;
         }
+        else if (menuState == 1) {
+          menuState = 2;
+        }
+        else if (menuState = 1) menuState = 1;
         return true;
       }
       else return false;

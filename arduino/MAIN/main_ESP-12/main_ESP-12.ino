@@ -24,15 +24,12 @@ void setup() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void loop() {
-  myGPS.smartDelay(200);
-  clearScreen();
-  
+void loop() { 
   if(pushed.menuState == 0){
+    pushed.maxState = 4;
     Hdop = gps.hdop.hdop();
     myTFT.Settings(1, 40, 40);
     myTFT.Print(Hdop, 4, 1);
-    pushed.maxState = 4;
     switch (pushed.state) {
       case 1:
         //if (Speed < 3 || Hdop > 12) Speed = 0; 
@@ -70,12 +67,14 @@ void loop() {
     }
   }
 
-
   else if(pushed.menuState == 1){
-    pushed.maxState = 9;
-    myTFT.showMenu();
-    pushed.nextPrevious();
-    myTFT.Cursor();  
+    pushed.maxState = 8;
+    menu.Cursor();
+    menu.showMenu();
+  }
+
+  else if(pushed.menuState == 2){
+    menu.select();
   }
   
   
@@ -106,6 +105,10 @@ void loop() {
     myTFT.Settings(1, 10, 90);
     tft.print("       ");
   }
+
+  myGPS.smartDelay(100);
+  clearScreen();
+  myGPS.smartDelay(100);
 }
 
 
@@ -130,6 +133,5 @@ void clearScreen(){
   }
   else if(pushed.confirm() == true){
     tft.fillScreen(ST7735_BLACK);
-    pushed.state = 1;
   }
 }
