@@ -10,8 +10,8 @@ class MyGPS {
   private:
     bool distanceCalculated = false;
     bool changedToKM = false;
-    float distance; 
-    float distance0 = 0;
+    float distance = 0; 
+    float distance0;
       
   public:
     float totalDistance = 0;
@@ -44,19 +44,19 @@ class MyGPS {
     
     void distanceCalculating(){
       smartDelay(0);
-      distance = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
+      distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
       position0Saved = false;
       distanceCalculated = true;
-      distance0 += distance; 
-      if (totalDistance < 1000) totalDistance += distance;
+      distance += distance0; 
+      if (totalDistance < 1000) totalDistance += distance0;
       
       else if (totalDistance >= 1000) {
         if (changedToKM == false) {
           totalDistance = totalDistance / 1000;
           changedToKM == true;
         }
-        distance = distance / 1000.0;
-        totalDistance += distance; 
+        distance0 = distance0 / 1000.0;
+        totalDistance += distance0; 
       }
     } 
 };
