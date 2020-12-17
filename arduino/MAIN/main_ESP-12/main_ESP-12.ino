@@ -4,7 +4,11 @@
 unsigned long Millis0 = 0;
 bool timePassed = true;
 float Hdop = 0;
-float speeds [11];
+float speeds[11];
+float averageSpeed = 0;
+float hdops[11];
+float averageHdop = 0;
+byte arrayPosition = 0;
 
 MySD mySD;
 Menu menu;
@@ -96,8 +100,10 @@ void loop() {
       if (myGPS.Speed > 50)                          Millis0 = millis() + 500;
       else if (myGPS.Speed > 25 && myGPS.Speed < 50) Millis0 = millis() + 1000;          
       else if (myGPS.Speed > 10 && myGPS.Speed < 25) Millis0 = millis() + 1500;    
-      else if (myGPS.Speed > 3 && myGPS.Speed < 10)  Millis0 = millis() + 2000;          
-      
+      else if (myGPS.Speed > 3 && myGPS.Speed < 10)  Millis0 = millis() + 2000; 
+
+      saveToArray();
+                  
       if(myGPS.distanceMeasurements >= 10 || course0 + 30 >= gps.course.deg() || course0 - 30 =< gps.course.deg()){
         mySD.savePosition();
         myGPS.distanceMeasurements = 0;
@@ -148,4 +154,9 @@ void clearScreen(){
   else if(pushed.confirm() == true){
     tft.fillScreen(ST7735_BLACK);
   }
+}
+
+
+void saveToArray(){
+  speeds[arrayPosition] = gps.
 }
