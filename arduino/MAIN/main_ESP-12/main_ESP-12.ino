@@ -1,12 +1,12 @@
 #include "mySD.h"
 #include "Menu.h"
 
-byte loops =0;
+byte Loops =0;
 unsigned long Millis0 = 0;
 bool timePassed = true;
 float Hdop = 0;
-float speeds[11] = {0,0,0,0,0,0,0,0,0,0,0};
-float hdops[11] = {0,0,0,0,0,0,0,0,0,0,0};
+float speeds = {0,0,0,0,0,0,0,0,0,0,0};
+float hdops = {0,0,0,0,0,0,0,0,0,0,0};
 float averageSpeed = 0;
 float averageHdop = 0;
 byte arrayPosition = 0;
@@ -102,7 +102,7 @@ void loop() {
     menu.select();
   }
 
-  if (loops >= 5){
+  if (Loops >= 5){
     
     if (Hdop < 50){                                               //saving data
       passTime();
@@ -112,9 +112,9 @@ void loop() {
         myGPS.savePosition0();
         myGPS.distanceMeasurements++;
   
-        if (myGPS.Speed > 6 && myGPS.Speed < 50) Millis0 = millis() + 1000;              
+        if (myGPS.Speed > 6) {Millis0 = millis() + 1000;}              
         
-        else if (myGPS.Speed > 2 && myGPS.Speed < 6)  Millis0 = millis() + 2000; 
+        else if (myGPS.Speed > 2 && myGPS.Speed < 6)  {Millis0 = millis() + 2000;}
   
         saveToArray();
         arrayPosition++;
@@ -127,8 +127,8 @@ void loop() {
           myGPS.course0 = gps.course.deg();
           myGPS.distance = 0;
           arrayPosition = 0;
-          floatspeeds[11];
-          float hdops[11];
+          speeds = {0,0,0,0,0,0,0,0,0,0,0};
+          hdops = {0,0,0,0,0,0,0,0,0,0,0};
         }
       }
     }
@@ -146,7 +146,7 @@ void loop() {
 
   myGPS.smartDelay(200);
   clearScreen();
-  loops++;
+  Loops++;
 }
 
 
@@ -179,16 +179,10 @@ void clearScreen(){
   }
 }
 
-
-void saveToArray(){
-  speeds[arrayPosition] = gps.speed.kmph();
-  hdops[arrayPosition] = gps.hdop.hdop();
-}
-
-void calculateAverage(){
+byte calculateAverage() {
   float speedsTogether = 0;
   float hdopsTogether = 0;
-  for(int i = 0; i > 11; i++){
+  for(int i = 0; i < 11; i++){
     if(speeds[i] != 0 && hdops[i] != 0){
       speedsTogether = speedsTogether + speeds[i];
       hdopsTogether = hdopsTogether + hdops[i];
@@ -197,4 +191,11 @@ void calculateAverage(){
   }
   averageSpeed = speedsTogether / myGPS.distanceMeasurements;
   hdopsSpeed = hdopsTogether / myGPS.distanceMeasurements;
-  }
+  return 1;
+}
+
+
+void saveToArray(){
+  speeds[arrayPosition] = gps.speed.kmph();
+  hdops[arrayPosition] = gps.hdop.hdop();
+}
