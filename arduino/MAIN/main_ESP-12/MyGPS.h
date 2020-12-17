@@ -16,24 +16,34 @@ class MyGPS {
   public:
     float totalDistance = 0;
     bool position0Saved = false;
-    float Lat0;
-    float Long0;
+    float distanceLat0;
+    float distanceLong0;
     float Speed = gps.speed.kmph();
+    byte distanceMeasurements = 0;
     
     void gpsSetup(){
       ss.begin(9600);
     }
+
+    void smartDelay(unsigned long ms) {
+      unsigned long start = millis();
+      do {
+        while (ss.available()) 
+          gps.encode(ss.read());
+      } while (millis() - start < ms);
+      Speed = gps.speed.kmph();
+    }
            
     void savePosition0(){
       smartDelay(0);
-      Lat0 = gps.location.lat();
-      Long0 = gps.location.lng();
+      distanceLat0 = gps.location.lat();
+      distanceLong0 = gps.location.lng();
       position0Saved = true;
     }
     
     void distanceCalculating(){
       smartDelay(0);
-      distance = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), Lat0, Long0);
+      distance = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
       position0Saved = false;
       distanceCalculated = true;
       distance0 += distance; 
@@ -48,13 +58,4 @@ class MyGPS {
         totalDistance += distance; 
       }
     } 
-
-    void smartDelay(unsigned long ms) {
-      unsigned long start = millis();
-      do {
-        while (ss.available()) 
-          gps.encode(ss.read());
-      } while (millis() - start < ms);
-      Speed = gps.speed.kmph();
-    }
 };

@@ -8,8 +8,10 @@ float Hdop = 0;
 MySD mySD;
 Menu menu;
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 void setup() {
@@ -21,11 +23,15 @@ void setup() {
 }
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+
+
 void loop() { 
-  if(pushed.menuState == 0){
+  
+  if(pushed.menuState == 0){                                    //switch to main screen
     pushed.maxState = 4;
     Hdop = gps.hdop.hdop();
     myTFT.Settings(1, 40, 40);
@@ -67,35 +73,37 @@ void loop() {
     }
   }
 
-  else if(pushed.menuState == 1){
+
+  else if(pushed.menuState == 1){                               //switching to menu
     pushed.maxState = 8;
     menu.Cursor();
     menu.showMenu();
   }
 
-  else if(pushed.menuState == 2){
+  else if(pushed.menuState == 2){                               //select between options in menu
     menu.select();
   }
+
   
-  
-  if (Hdop < 12){  
+  if (Hdop < 50){                                               //saving data
     passTime();
     if (myGPS.position0Saved == false && timePassed == true){
       Serial.print("     saved");
       myGPS.savePosition0();
-      mySD.save(myGPS.Lat0, myGPS.Long0);
-      if (myGPS.Speed > 40 );
-      else if (myGPS.Speed > 25 && myGPS.Speed < 40) {
-       Millis0 = millis() + 1000;          
-      }
-      else if (myGPS.Speed > 10 && myGPS.Speed < 25) {
-       Millis0 = millis() + 1500;          
-      }
-      else if (myGPS.Speed > 4 && myGPS.Speed < 10) {
-       Millis0 = millis() + 2000;          
+      myGPS.distanceMeasurements++;
+
+      if (myGPS.Speed > 50)                          Millis0 = millis() + 500;
+      else if (myGPS.Speed > 25 && myGPS.Speed < 50) Millis0 = millis() + 1000;          
+      else if (myGPS.Speed > 10 && myGPS.Speed < 25) Millis0 = millis() + 1500;    
+      else if (myGPS.Speed > 3 && myGPS.Speed < 10)  Millis0 = millis() + 2000;          
+      
+      if(myGPS.distanceMeasurements >= 10){
+        mySD.savePosition();
+        myGPS.distanceMeasurements = 0;
       }
     }
   }
+
 
   if(!SD.begin(D8)) {
       myTFT.Settings(1, 10, 90);
@@ -112,8 +120,11 @@ void loop() {
 
 
 
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 void passTime(){
@@ -125,6 +136,8 @@ void passTime(){
   }
   else timePassed = false; 
 }
+
+
 
 void clearScreen(){
   if(pushed.menuState == 0 && pushed.nextPrevious() == true){
