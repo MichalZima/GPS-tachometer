@@ -20,6 +20,7 @@ class MyGPS {
     float distanceLong0;
     float Speed = gps.speed.kmph();
     byte distanceMeasurements = 0;
+    int course0 = gps.course.deg();
     
     void gpsSetup(){
       ss.begin(9600);
