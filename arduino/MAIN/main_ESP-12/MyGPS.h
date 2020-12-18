@@ -10,7 +10,6 @@ class MyGPS {
   private:
     bool distanceCalculated = false;
     bool changedToKM = false;
-    float distance = 0; 
     float distance0;
       
   public:
@@ -21,6 +20,7 @@ class MyGPS {
     float Speed = gps.speed.kmph();
     byte distanceMeasurements = 0;
     int course0 = gps.course.deg();
+    float distance = 0; 
     
     void gpsSetup(){
       ss.begin(9600);
