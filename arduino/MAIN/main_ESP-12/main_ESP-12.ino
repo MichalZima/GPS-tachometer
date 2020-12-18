@@ -5,8 +5,8 @@ byte Loops = 0;
 unsigned long Millis0 = 0;
 bool timePassed = true;
 float Hdop = 0;
-float speeds[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-float hdops[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+float speeds[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+float hdops[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 float averageSpeed = 0;
 float averageHdop = 0;
 byte arrayPosition = 0;
@@ -131,8 +131,7 @@ void loop() {
           myGPS.course0 = gps.course.deg();
           myGPS.distance = 0;
           arrayPosition = 0;
-          speeds = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-          hdops = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+          resetArray();
         }
       }
     }
@@ -194,11 +193,18 @@ void calculateAverage() {
     else i = 15;
   }
   averageSpeed = speedsTogether / myGPS.distanceMeasurements;
-  hdopsSpeed = hdopsTogether / myGPS.distanceMeasurements;
+  averageHdop = hdopsTogether / myGPS.distanceMeasurements;
 }
 
 
 void saveToArray() {
   speeds[arrayPosition] = gps.speed.kmph();
   hdops[arrayPosition] = gps.hdop.hdop();
+}
+
+void resetArray(){
+  for(int i = 0; i < 11; i++){
+    speeds[i] = 0.0;
+    hdops[i] = 0.0;
+  }
 }
