@@ -104,7 +104,7 @@ void loop() {
 
   if (Loops >= 5) {
 
-    if (Hdop < 50) {                                              //saving data
+    if (Hdop < 30) {                                              //saving data
       passTime();
 
       if (myGPS.position0Saved == false && timePassed == true) {
@@ -116,7 +116,7 @@ void loop() {
           Millis0 = millis() + 1000;
         }
 
-        else if (myGPS.Speed > 2 && myGPS.Speed < 6)  {
+        else if (myGPS.Speed > 3 && myGPS.Speed < 6)  {
           Millis0 = millis() + 2000;
         }
 
@@ -148,6 +148,7 @@ void loop() {
   }
 
   myGPS.smartDelay(200);
+  Hdop = gps.hdop.hdop();
   clearScreen();
   Loops++;
 }
