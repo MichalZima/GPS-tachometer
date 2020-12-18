@@ -11,7 +11,7 @@ class Menu {
     byte x = 1;
 
   public:
-    void showMenu(){
+    void showMenu() {
       myTFT.Settings(1, 20, 10);
       tft.print("session");
 
@@ -36,21 +36,21 @@ class Menu {
       myTFT.Settings(1, 20, 115);
       tft.print("exit");
 
-    } 
+    }
 
-    void Cursor(){
-      if(pushed.nextPrevious()){
+    void Cursor() {
+      if (pushed.nextPrevious()) {
         x0 = x;
       }
       myTFT.Settings(1, 10, x0);
       tft.print(" ");
-      x = pushed.state*15-5;
+      x = pushed.state * 15 - 5;
       myTFT.Settings(1, 10, x);
       tft.print(">");
     }
-    
-    void select(){
-      switch(pushed.state){
+
+    void select() {
+      switch (pushed.state) {
         case 1:
           session();
           break;
@@ -80,43 +80,43 @@ class Menu {
       }
     }
 
-    void session(){
+    void session() {
       myTFT.Settings(2, 10, 15);
       tft.print("session");
-    } 
+    }
 
-    void screens(){
+    void screens() {
       myTFT.Settings(2, 10, 15);
       tft.print("screens");
     }
 
-    void saving(){
+    void saving() {
       myTFT.Settings(2, 10, 15);
       tft.print("saving");
     }
 
-    void Stats(){
+    void Stats() {
       myTFT.Settings(2, 10, 15);
       tft.print("stats");
     }
 
-    void wifi(){
+    void wifi() {
       myTFT.Settings(2, 10, 15);
       tft.print("wifi");
     }
 
-    void timeZone(){
+    void timeZone() {
       myTFT.Settings(2, 10, 15);
       tft.print("time zone");
     }
 
-    void memory(){
+    void memory() {
       myTFT.Settings(2, 10, 15);
       tft.print("memory");
     }
 
-    void Exit(){
+    void Exit() {
       pushed.menuState = 0;
-      pushed.state = 1; 
+      pushed.state = 1;
     }
 };
