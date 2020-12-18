@@ -1,7 +1,6 @@
 #include <Adafruit_GFX.h>
 
 
-
 class Pushed {
 
   private:
