@@ -2,7 +2,6 @@
 #include <SD.h>
 #include "MyGPS.h"
 
-File file;
 MyGPS myGPS;
 
 class MySD {
@@ -13,41 +12,44 @@ class MySD {
   public:
 
     void savePosition() {
+      File coordinatesFile;
       char fileName[32];
       sprintf(fileName, "coordinates/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
-      file = SD.open(fileName, FILE_WRITE);
-      if (file) {
+      coordinatesFile = SD.open(fileName, FILE_WRITE);
+      if (coordinatesFile) {
         dtostrf(gps.location.lat(), 9, 6, latString);
         dtostrf(gps.location.lng(), 9, 6, longString);
-        file.print("[");
-        file.print(longString);
-        file.print(", ");
-        file.print(latString);
-        file.println("], ");
-        file.close();
+        coordinatesFile.print("[");
+        coordinatesFile.print(longString);
+        coordinatesFile.print(", ");
+        coordinatesFile.print(latString);
+        coordinatesFile.println("], ");
+        coordinatesFile.close();
       }
     }
 
     void saveData(float avSpeed, float avHdop) {
+      File dataFile;
       char fileName[32];
+      char timeArray[10];
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
-      file = SD.open(fileName, FILE_WRITE);
-      if (file) {
-        file.print(gps.time.value());
-        file.print("\t");
-        file.print(myGPS.distance);
-        file.print("\t");
-        file.print(myGPS.totalDistance);
-        file.print("\t");
-        file.print(gps.speed.kmph());
-        file.print("\t");
-        file.print(avSpeed);
-        file.print("\t");
-        file.print(gps.hdop.hdop());
-        file.print("\t");
-        file.print(avHdop);
-        file.close();
+      sprintf(timeArray, "%02d:%02d%:02d", gps.time.hour() + 1, gps.time.minute(), gps.time.second());
+      dataFile = SD.open(fileName, FILE_WRITE);
+      if (dataFile) {
+        dataFile.print(timeArray);
+        dataFile.print("\t");
+        dataFile.print(myGPS.distance);
+        dataFile.print("\t");
+        dataFile.print(myGPS.totalDistance);
+        dataFile.print("\t");
+        dataFile.print(gps.speed.kmph());
+        dataFile.print("\t");
+        dataFile.print(avSpeed);
+        dataFile.print("\t");
+        dataFile.print(gps.hdop.hdop());
+        dataFile.print("\t");
+        dataFile.println(avHdop);
+        dataFile.close();
       }
     }
-
-};
+}; 
