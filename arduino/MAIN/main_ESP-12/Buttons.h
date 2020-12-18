@@ -1,26 +1,26 @@
-#include <Adafruit_GFX.h> 
+#include <Adafruit_GFX.h>
 
 
 
 class Pushed {
-  
-  private:  
+
+  private:
     byte buttonNextPin = A0;
     byte buttonPreviousPin = 9;
     byte buttonConfirmPin = 10;
-  
+
   public:
     byte menuState = 0;
     byte maxState = 4;
     byte state = 1;
-  
-    void buttonsSetup(){
-       pinMode(buttonNextPin, INPUT);
-       pinMode(buttonPreviousPin, INPUT);
-       pinMode(buttonConfirmPin, INPUT);
+
+    void buttonsSetup() {
+      pinMode(buttonNextPin, INPUT);
+      pinMode(buttonPreviousPin, INPUT);
+      pinMode(buttonConfirmPin, INPUT);
     }
-    
-    bool nextPrevious(){
+
+    bool nextPrevious() {
       if (analogRead(buttonNextPin) >= 500) {
         state++;
         if (state > maxState) state = 1;
@@ -32,11 +32,11 @@ class Pushed {
         return true;
       }
       else return false;
-    }    
+    }
 
-    byte confirm(){
+    byte confirm() {
       if (digitalRead(buttonConfirmPin) == HIGH) {
-        if (menuState == 0){
+        if (menuState == 0) {
           menuState = 1;
           state = 1;
         }
