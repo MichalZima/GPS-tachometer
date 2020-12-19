@@ -83,8 +83,8 @@ void loop() {
 
       case 4:
 
-        myTFT.Settings(3, 0, 80);
-        tft.print("screen 4");
+        myTFT.Settings(2, 0, 80);
+        tft.print(myGPS.realTime());
         break;
 
       default:
@@ -93,6 +93,7 @@ void loop() {
         tft.print("default");
         break;
     }
+    clearScreen();
   }
 
 
@@ -100,6 +101,7 @@ void loop() {
     pushed.maxState = 8;
     menu.Cursor();
     menu.showMenu();
+    clearScreen();
   }
 
   else if (pushed.menuState == 2) {                             //select between options in menu
@@ -154,7 +156,7 @@ void loop() {
   myGPS.smartDelay(200);
   Hdop = gps.hdop.hdop();
   Loops++;
-  clearScreen()
+  
 }
 
 
@@ -179,7 +181,7 @@ void passTime() {
 
 
 void clearScreen() {
-  else if (pushed.confirm() == true) {
+  if (pushed.confirm() == true) {
     tft.fillScreen(ST7735_BLACK);
   }
 }
