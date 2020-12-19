@@ -63,6 +63,6 @@ class MyGPS {
 
     char realTime(){
       char timePlusZone[10];
-      return sprintf(timePlusZone, "%02d:%02d:%02", gps.time.hour(), gps.time.minute(), gps.time.second());
+      return sprintf(timePlusZone, "%02d:%02d:%02", gps.time.hour()+timeZoneValue, gps.time.minute(), gps.time.second());
     }
 };
