@@ -7,6 +7,7 @@ class Pushed {
     byte buttonNextPin = A0;
     byte buttonPreviousPin = 9;
     byte buttonConfirmPin = 10;
+    int valueOfSetting = 0;
 
   public:
     byte menuState = 0;
@@ -42,9 +43,20 @@ class Pushed {
         else if (menuState == 1) {
           menuState = 2;
         }
-        else if (menuState = 1) menuState = 1;
         return true;
       }
       else return false;
+    }
+
+    int changeSettingValue(int MIN, int MAX){
+      if (analogRead(buttonNextPin) >= 500) {
+        valueOfSetting++;
+        if (valueOfSetting > MAX) valueOfSetting = MIN;
+      }
+      else if (digitalRead(buttonPreviousPin) == HIGH) {
+        valueOfSetting--;
+        if (valueOfSetting < MIN) valueOfSetting = MAX;
+      }
+      return valueOfSetting;
     }
 };
