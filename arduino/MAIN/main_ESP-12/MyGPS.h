@@ -20,7 +20,9 @@ class MyGPS {
     float Speed = gps.speed.kmph();
     byte distanceMeasurements = 0;
     int course0 = gps.course.deg();
-    float distance = 0; 
+    float distance = 0;
+    char realTime[10];
+    int timeZone = 1; 
     
     void gpsSetup(){
       ss.begin(9600);
