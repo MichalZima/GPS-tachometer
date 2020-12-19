@@ -31,12 +31,10 @@ class MySD {
     void saveData(float avSpeed, float avHdop) {
       File dataFile;
       char fileName[32];
-      char timeArray[10];
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
-      sprintf(timeArray, "%02d:%02d%:02d", gps.time.hour() + 1, gps.time.minute(), gps.time.second());
       dataFile = SD.open(fileName, FILE_WRITE);
       if (dataFile) {
-        dataFile.print(timeArray);
+        dataFile.print(myGPS.realTime());
         dataFile.print("\t");
         dataFile.print(myGPS.distance);
         dataFile.print("\t");
