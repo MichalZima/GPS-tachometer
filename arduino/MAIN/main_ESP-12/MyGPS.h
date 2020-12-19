@@ -21,7 +21,6 @@ class MyGPS {
     byte distanceMeasurements = 0;
     int course0 = gps.course.deg();
     float distance = 0;
-    char realTime[10];
     int timeZoneValue = 1; 
     
     void gpsSetup(){
@@ -61,4 +60,9 @@ class MyGPS {
         totalDistance += distance0; 
       }
     } 
+
+    char realTime(){
+      char timePlusZone[10];
+      return sprintf(timePlusZone, "%02d:%02d:%02", gps.time.hour(), gps.time.minute(), gps.time.second());
+    }
 };
