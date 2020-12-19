@@ -39,6 +39,10 @@ void loop() {
 
   if (pushed.menuState == 0) {                                  //switch to main screen
 
+    if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
+      tft.fillScreen(ST7735_BLACK);
+    } 
+    
     pushed.maxState = 4;
     myTFT.Settings(1, 40, 40);
     myTFT.Print(Hdop, 4, 1);
@@ -149,8 +153,8 @@ void loop() {
 
   myGPS.smartDelay(200);
   Hdop = gps.hdop.hdop();
-  clearScreen();
   Loops++;
+  clearScreen()
 }
 
 
@@ -175,9 +179,6 @@ void passTime() {
 
 
 void clearScreen() {
-  if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
-    tft.fillScreen(ST7735_BLACK);
-  }
   else if (pushed.confirm() == true) {
     tft.fillScreen(ST7735_BLACK);
   }

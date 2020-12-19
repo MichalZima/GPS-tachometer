@@ -108,8 +108,12 @@ class Menu {
     void timeZone() {
       myTFT.Settings(1, 10, 15);
       tft.print("time zone    ");
-      myGPS.timeZone = pushed.changeSettingValue(-12, 12);
-      tft.print(myGPS.timeZone);      
+      myGPS.timeZoneValue = pushed.changeSettingValue(-12, 12);
+      tft.print(myGPS.timeZoneValue);  
+      if (pushed.confirm() == true) {
+        tft.fillScreen(ST7735_BLACK);
+        pushed.menuState = 1;
+      }    
     }
 
     void memory() {

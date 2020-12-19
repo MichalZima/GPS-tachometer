@@ -22,7 +22,7 @@ class MyGPS {
     int course0 = gps.course.deg();
     float distance = 0;
     char realTime[10];
-    int timeZone = 1; 
+    int timeZoneValue = 1; 
     
     void gpsSetup(){
       ss.begin(9600);
