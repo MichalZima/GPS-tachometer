@@ -22,6 +22,7 @@ class MyGPS {
     int course0 = gps.course.deg();
     float distance = 0;
     int timeZoneValue = 1; 
+    char timePlusZone[10];
     
     void gpsSetup(){
       ss.begin(9600);
@@ -61,8 +62,8 @@ class MyGPS {
       }
     } 
 
-    char realTime(){
-      char timePlusZone[10];
-      return sprintf(timePlusZone, "%02d:%02d:%02", gps.time.hour()+timeZoneValue, gps.time.minute(), gps.time.second());
+    char* realTime(){
+      sprintf(timePlusZone, "%02d:%02d:%02d", gps.time.hour()+timeZoneValue, gps.time.minute(), gps.time.second());
+      return timePlusZone;
     }
 };
