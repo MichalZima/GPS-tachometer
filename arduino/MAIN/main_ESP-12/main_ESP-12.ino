@@ -83,7 +83,7 @@ void loop() {
 
       case 4:
 
-        myTFT.Settings(2, 0, 80);
+        myTFT.Settings(2, 10, 10);
         tft.print(myGPS.realTime());
         break;
 
