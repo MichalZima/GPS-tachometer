@@ -3,16 +3,16 @@
 #include "MyGPS.h"
 
 MyGPS myGPS;
+File coordinatesFile;
 
 class MySD {
   private:
-    char latString[9];
-    char longString[9];
+    char latString[11];
+    char longString[11];
 
   public:
 
     void savePosition() {
-      File coordinatesFile;
       char fileName[32];
       sprintf(fileName, "coordinates/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
       coordinatesFile = SD.open(fileName, FILE_WRITE);
