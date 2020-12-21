@@ -105,13 +105,13 @@ class Menu {
       tft.print("wifi");
     }
 
-    char setTimeZone() {
+    void setTimeZone() {
       char Array[3];
       myTFT.Settings(1, 10, 15);
       tft.print("time zone    ");
       myGPS.timeZoneValue = pushed.changeSettingValue(-12, 12);
       dtostrf(myGPS.timeZoneValue, 3, 0, Array);
-      tft.print(Array);  
+      tft.print(myGPS.timeZoneValue);  
       if (pushed.confirm() == true) {
         tft.fillScreen(ST7735_BLACK);
         pushed.menuState = 1;
