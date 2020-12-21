@@ -7,7 +7,6 @@ class Pushed {
     byte buttonNextPin = A0;
     byte buttonPreviousPin = 9;
     byte buttonConfirmPin = 10;
-    int valueOfSetting = 0;
 
   public:
     byte menuState = 0;
@@ -48,7 +47,8 @@ class Pushed {
       else return false;
     }
 
-    int changeSettingValue(int MIN, int MAX){
+    int changeSettingValue(int MIN, int MAX, int NOW){
+      int valueOfSetting = NOW;
       if (analogRead(buttonNextPin) >= 500) {
         valueOfSetting++;
         if (valueOfSetting > MAX) valueOfSetting = MIN;
