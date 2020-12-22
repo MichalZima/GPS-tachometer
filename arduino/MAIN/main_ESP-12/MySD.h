@@ -48,14 +48,18 @@ class MySD {
         dataFile.print("km/h\t");
         dataFile.print(gps.hdop.hdop());
         dataFile.print("\t");
-        dataFile.println(avHdop);
+        dataFile.print(avHdop);
         dataFile.print("\t");
-        dataFile.println(gps.satellites.value());
+        dataFile.print(gps.satellites.value());
         dataFile.print(" sats\t");
-        dataFile.println(gps.altitude.meters());
+        dataFile.print(gps.altitude.meters());
         dataFile.print(" m.n.m.\t");
-        dataFile.println(gps.course.deg());
-        dataFile.print("° degrees");
+        dataFile.print(gps.course.deg());
+        dataFile.print("° degrees\t");
+        dataFile.print(gps.sentencesWithFix());
+        dataFile.print(" fix\t");
+        dataFile.print(gps.failedChecksum());
+        dataFile.println(" fails");
         dataFile.close();
       }
     }

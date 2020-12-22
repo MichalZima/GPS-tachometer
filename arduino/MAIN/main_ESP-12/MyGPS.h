@@ -18,7 +18,7 @@ class MyGPS {
     float distanceLat0;
     float distanceLong0;
     byte distanceMeasurements = 0;
-    int courseChange = 0;
+    int course0 = gps.course.deg();
     float distance = 0;
     int timeZoneValue = 1; 
     char timePlusZone[10];
