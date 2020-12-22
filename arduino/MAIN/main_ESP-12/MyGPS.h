@@ -9,10 +9,10 @@ class MyGPS {
  
   private:
     bool distanceCalculated = false;
-    bool changedToKM = false;
-    float distance0;
       
   public:
+    float distance0;
+    bool changedToKM = false; 
     float totalDistance = 0;
     bool position0Saved = false;
     float distanceLat0;
@@ -50,16 +50,18 @@ class MyGPS {
       position0Saved = false;
       distanceCalculated = true;
       distance += distance0; 
-      if (totalDistance < 1000) totalDistance += distance0;
       
-      else if (totalDistance >= 1000) {
-        if (changedToKM == false) {
+      if (changedToKM == false) totalDistance += distance0;
+      
+      else if (totalDistance >= 1000 && changedToKM == false) {
           totalDistance = totalDistance / 1000;
-          changedToKM == true;
-        }
-        distance0 = distance0 / 1000.0;
-        totalDistance += distance0; 
+          changedToKM = true;
       }
+      
+      if(changedToKM == true) {
+        distance0 = distance0 / 1000.0;
+        totalDistance += distance0;
+      } 
     } 
 
     char* realTime(){
