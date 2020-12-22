@@ -12,6 +12,7 @@ float averageHdop = 0;
 byte arrayPosition = 0;
 String savedToSD;
 
+
 MySD mySD;
 Menu menu;
 
@@ -37,7 +38,6 @@ void setup() {
 
 
 void loop() {
-  Hdop = gps.hdop.hdop();
 
   if (pushed.menuState == 0) {                                  //switch to main screen
 
@@ -118,13 +118,13 @@ void loop() {
 
   if (Loops >= 5) {
 
-    if (Hdop < 30 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
+    if (gps.hdop.hdop() < 15 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
       passTime();
-      savedToSD = "count";
 
       if (myGPS.position0Saved == false && timePassed == true) {
         myGPS.savePosition0();
         myGPS.distanceMeasurements++;
+        savedToSD = "count";
 
         if (myGPS.Speed > 6) {
           Millis0 = millis() + 1000;
@@ -137,7 +137,7 @@ void loop() {
         saveToArray();
         arrayPosition++;
 
-        if (myGPS.distanceMeasurements >= 10 || myGPS.course0 + 30 >= gps.course.deg() || myGPS.course0 - 30 <= gps.course.deg()) {
+        if (myGPS.distanceMeasurements > 10 || myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
           calculateAverage();
           mySD.savePosition();
           mySD.saveData(averageSpeed, averageHdop);
@@ -212,11 +212,12 @@ void resetArray(){
 }
 
 void printValuesForObservation(){
+  myGPS.smartDelay(10);
   myTFT.Settings(1, 10, 40);
   myTFT.Print(gps.satellites.value(), 2, 0);
   tft.print(" sats");
   myTFT.Settings(1, 10, 50);
-  myTFT.Print(Hdop, 4, 1);
+  myTFT.Print(gps.hdop.hdop(), 4, 1);
   tft.print("hdop");
   myTFT.Settings(1, 10, 60);
   myTFT.Print(myGPS.distance0, 6, 2);
@@ -231,7 +232,7 @@ void printValuesForObservation(){
   myTFT.Print(gps.course.deg(), 3, 0);
   tft.print("deg");
   myTFT.Settings(1, 10, 100);
-  myTFT.Print(myGPS.distanceMeasurements, 4, 1);
+  myTFT.Print(myGPS.distanceMeasurements, 2, 0);
   myTFT.Settings(1, 10, 110);
   tft.print(savedToSD);
 }

@@ -17,9 +17,8 @@ class MyGPS {
     bool position0Saved = false;
     float distanceLat0;
     float distanceLong0;
-    float Speed = gps.speed.kmph();
     byte distanceMeasurements = 0;
-    int course0 = gps.course.deg();
+    int courseChange = 0;
     float distance = 0;
     int timeZoneValue = 1; 
     char timePlusZone[10];
@@ -34,7 +33,6 @@ class MyGPS {
         while (ss.available()) 
           gps.encode(ss.read());
       } while (millis() - start < ms);
-      Speed = gps.speed.kmph();
     }
            
     void savePosition0(){
