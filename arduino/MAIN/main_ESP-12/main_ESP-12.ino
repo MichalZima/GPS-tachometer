@@ -10,6 +10,7 @@ float hdops[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 float averageSpeed = 0;
 float averageHdop = 0;
 byte arrayPosition = 0;
+String savedToSD;
 
 MySD mySD;
 Menu menu;
@@ -36,16 +37,23 @@ void setup() {
 
 
 void loop() {
+  Hdop = gps.hdop.hdop();
 
   if (pushed.menuState == 0) {                                  //switch to main screen
+
+    
+    if (!SD.begin(D8)) {
+      myTFT.Settings(1, 80, 150);
+      tft.print("sd fail");
+    }
 
     if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
       tft.fillScreen(ST7735_BLACK);
     } 
-    
+
     pushed.maxState = 4;
-    myTFT.Settings(1, 40, 40);
-    myTFT.Print(Hdop, 4, 1);
+
+    printValuesForObservation();
 
     switch (pushed.state) {
 
@@ -110,11 +118,11 @@ void loop() {
 
   if (Loops >= 5) {
 
-    if (Hdop < 30) {                                              //saving data
+    if (Hdop < 30 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
       passTime();
+      savedToSD = "count";
 
       if (myGPS.position0Saved == false && timePassed == true) {
-        Serial.print("     saved");
         myGPS.savePosition0();
         myGPS.distanceMeasurements++;
 
@@ -138,19 +146,14 @@ void loop() {
           myGPS.distance = 0;
           arrayPosition = 0;
           resetArray();
+          savedToSD = "saved";
         }
       }
     }
   }
 
 
-  if (!SD.begin(D8)) {
-    myTFT.Settings(1, 10, 90);
-    tft.print("sd fail");
-  }
-
   myGPS.smartDelay(200);
-  Hdop = gps.hdop.hdop();
   Loops++;
   
 }
@@ -207,4 +210,29 @@ void resetArray(){
     speeds[i] = 0.0;
     hdops[i] = 0.0;
   }
+}
+
+void printValuesForObservation(){
+  myTFT.Settings(1, 10, 40);
+  myTFT.Print(gps.satellites.value(), 2, 0);
+  tft.print(" sats");
+  myTFT.Settings(1, 10, 50);
+  myTFT.Print(Hdop, 4, 1);
+  tft.print("hdop");
+  myTFT.Settings(1, 10, 60);
+  myTFT.Print(myGPS.distance0, 6, 2);
+  tft.print("m");
+  myTFT.Settings(1, 10, 70);
+  myTFT.Print(myGPS.totalDistance, 7, 2);
+  tft.print("m/km");
+  myTFT.Settings(1, 10, 80);
+  myTFT.Print(gps.altitude.meters(), 6, 1);
+  tft.print("m.n.m.");
+  myTFT.Settings(1, 10, 90);
+  myTFT.Print(gps.course.deg(), 3, 0);
+  tft.print("deg");
+  myTFT.Settings(1, 10, 100);
+  myTFT.Print(myGPS.distanceMeasurements, 4, 1);
+  myTFT.Settings(1, 10, 110);
+  tft.print(savedToSD);
 }
