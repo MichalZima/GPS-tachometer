@@ -37,16 +37,25 @@ class MySD {
         dataFile.print(myGPS.realTime());
         dataFile.print("\t");
         dataFile.print(myGPS.distance);
-        dataFile.print("\t");
+        if(myGPS.changedToKM == false) dataFile.print("m\t");
+        if(myGPS.changedToKM == true) dataFile.print("km\t");
         dataFile.print(myGPS.totalDistance);
-        dataFile.print("\t");
+        if(myGPS.changedToKM == false) dataFile.print("m\t");
+        if(myGPS.changedToKM == true) dataFile.print("km\t");
         dataFile.print(gps.speed.kmph());
-        dataFile.print("\t");
+        dataFile.print("km/h\t");
         dataFile.print(avSpeed);
-        dataFile.print("\t");
+        dataFile.print("km/h\t");
         dataFile.print(gps.hdop.hdop());
         dataFile.print("\t");
         dataFile.println(avHdop);
+        dataFile.print("\t");
+        dataFile.println(gps.satellites.value());
+        dataFile.print(" sats\t");
+        dataFile.println(gps.altitude.meters());
+        dataFile.print(" m.n.m.\t");
+        dataFile.println(gps.course.deg());
+        dataFile.print("° degrees");
         dataFile.close();
       }
     }
