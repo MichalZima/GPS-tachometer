@@ -152,7 +152,6 @@ void loop() {
     }
   }
 
-
   myGPS.smartDelay(200);
   Loops++;
   
