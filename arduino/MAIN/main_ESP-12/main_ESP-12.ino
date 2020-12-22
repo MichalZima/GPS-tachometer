@@ -148,10 +148,6 @@ void loop() {
     myTFT.Settings(1, 10, 90);
     tft.print("sd fail");
   }
-  else {
-    myTFT.Settings(1, 10, 90);
-    tft.print("       ");
-  }
 
   myGPS.smartDelay(200);
   Hdop = gps.hdop.hdop();
