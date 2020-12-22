@@ -40,4 +40,5 @@ class MyTFT {
       //    const uint16_t  whiteColor        = ST7735_WHITE;
       tft.setTextColor(TEXTCOLOR, ST7735_BLACK);
     }
+
 };
