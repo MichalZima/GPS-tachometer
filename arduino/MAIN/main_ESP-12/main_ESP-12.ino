@@ -118,7 +118,7 @@ void loop() {
   }
 
   if (Loops >= 5) {
-
+    myGPS.smartDelay(10);
     if (gps.hdop.hdop() < 15 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
       passTime();
 
@@ -217,26 +217,26 @@ void printValuesForObservation(){
   myTFT.Settings(1, 10, 40);
   myTFT.Print(gps.satellites.value(), 2, 0);
   tft.print(" sats ");
-  myTFT.Print(gps.satellites.age(), 4, 0);
+  myTFT.Print(gps.satellites.age(), 6, 0);
   myTFT.Settings(1, 10, 50);
   myTFT.Print(gps.hdop.hdop(), 4, 1);
   tft.print("hdop ");
-  myTFT.Print(gps.hdop.age(), 4, 0);
+  myTFT.Print(gps.hdop.age(), 6, 0);
   myTFT.Settings(1, 10, 60);
   myTFT.Print(myGPS.distance0, 6, 2);
   tft.print("m ");
-  myTFT.Print(gps.location.age(), 4, 0);
+  myTFT.Print(gps.location.age(), 6, 0);
   myTFT.Settings(1, 10, 70);
-  myTFT.Print(myGPS.totalDistance, 7, 2);
+  myTFT.Print(myGPS.totalDistance, 4, 1);
   tft.print("m/km");
   myTFT.Settings(1, 10, 80);
-  myTFT.Print(gps.altitude.meters(), 6, 1);
+  myTFT.Print(gps.altitude.meters(), 3, 0);
   tft.print("m.n.m. ");
-  myTFT.Print(gps.altitude.age(), 4, 0);
+  myTFT.Print(gps.altitude.age(), 6, 0);
   myTFT.Settings(1, 10, 90);
   myTFT.Print(gps.course.deg(), 3, 0);
   tft.print("deg ");
-  myTFT.Print(gps.course.age(), 4, 0);
+  myTFT.Print(gps.course.age(), 6, 0);
   myTFT.Settings(1, 10, 100);
   myTFT.Print(myGPS.distanceMeasurements, 2, 0);
   myTFT.Settings(1, 10, 110);
