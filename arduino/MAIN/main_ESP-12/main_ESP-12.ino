@@ -231,14 +231,20 @@ void printValuesForObservation(){
   tft.print("m/km");
   myTFT.Settings(1, 10, 80);
   myTFT.Print(gps.altitude.meters(), 3, 0);
-  tft.print("m.n.m. ");
+  tft.print("mnm ");
   myTFT.Print(gps.altitude.age(), 6, 0);
   myTFT.Settings(1, 10, 90);
   myTFT.Print(gps.course.deg(), 3, 0);
   tft.print("deg ");
   myTFT.Print(gps.course.age(), 6, 0);
   myTFT.Settings(1, 10, 100);
-  myTFT.Print(myGPS.distanceMeasurements, 2, 0);
+  myTFT.Print(gps.sentencesWithFix(), 5, 0);
+  tft.print(" fixed");
   myTFT.Settings(1, 10, 110);
+  myTFT.Print(gps.failedChecksum(), 5, 0);
+  tft.print(" failed");
+  myTFT.Settings(1, 10, 120);
+  myTFT.Print(myGPS.distanceMeasurements, 2, 0);
+  myTFT.Settings(1, 10, 130);
   tft.print(savedToSD);
 }
