@@ -138,7 +138,7 @@ void loop() {
         saveToArray();
         arrayPosition++;
 
-        if (myGPS.distanceMeasurements > 10 || myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
+        if ( myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
           calculateAverage();
           mySD.savePosition();
           mySD.saveData(averageSpeed, averageHdop);
