@@ -118,8 +118,7 @@ void loop() {
   }
 
   if (Loops >= 5) {
-    myGPS.smartDelay(10);
-    if (gps.hdop.hdop() < 50 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
+    if (gps.hdop.hdop() < 50 && gps.speed.kmph() > 3) {                                              //saving data
       passTime();
 
       if (myGPS.position0Saved == false && timePassed == true) {
@@ -151,6 +150,7 @@ void loop() {
         }
       }
     }
+    Loops = 0;
   }
 
   myGPS.smartDelay(200);
