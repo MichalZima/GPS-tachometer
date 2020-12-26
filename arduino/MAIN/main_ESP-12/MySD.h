@@ -34,11 +34,13 @@ class MySD {
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
       dataFile = SD.open(fileName, FILE_WRITE);
       if (dataFile) {
+        dtostrf(gps.location.lat(), 11, 8, latString);
+        dtostrf(gps.location.lng(), 11, 8, longString);
         dataFile.print("[");
-        dataFile.print(gps.location.lng());
+        dataFile.print(longString);
         dataFile.print(", ");
-        dataFile.print(gps.location.lat());
-        dataFile.println("]_");
+        dataFile.print(latString);
+        dataFile.print("]_");
         dataFile.print(gps.location.age());
         dataFile.print("\t");
         dataFile.print(myGPS.realTime());
@@ -74,7 +76,7 @@ class MySD {
         dataFile.print(gps.sentencesWithFix());
         dataFile.print(" fix\t");
         dataFile.print(gps.failedChecksum());
-        dataFile.println(" fails");
+        dataFile.println(" fails \n");
         dataFile.close();
       }
     }
