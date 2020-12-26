@@ -119,7 +119,7 @@ void loop() {
 
   if (Loops >= 5) {
     myGPS.smartDelay(10);
-    if (gps.hdop.hdop() < 15 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
+    if (gps.hdop.hdop() < 50 && gps.speed.kmph() > 3 && gps.location.lat() != 0.0000000 && gps.location.lng() != 0.000000) {                                              //saving data
       passTime();
 
       if (myGPS.position0Saved == false && timePassed == true) {
@@ -127,18 +127,18 @@ void loop() {
         myGPS.distanceMeasurements++;
         savedToSD = "count";
 
-        if (gps.speed.kmph() > 6) {
-          Millis0 = millis() + 2000;
-        }
-
-        else if (gps.speed.kmph() > 3 && gps.speed.kmph() < 6)  {
-          Millis0 = millis() + 4000;
-        }
+//        if (gps.speed.kmph() > 6) {
+//          Millis0 = millis() + 2000;
+//        }
+//
+//        else if (gps.speed.kmph() > 3 && gps.speed.kmph() < 6)  {
+//          Millis0 = millis() + 4000;
+//        }
 
         saveToArray();
         arrayPosition++;
 
-        if ( myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
+        if (myGPS.distanceMeasurements >= 1 || myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
           calculateAverage();
           mySD.savePosition();
           mySD.saveData(averageSpeed, averageHdop);
