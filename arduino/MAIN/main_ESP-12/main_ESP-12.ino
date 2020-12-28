@@ -154,7 +154,7 @@ void loop() {
     }
   }
 
-  //myGPS.smartDelay(200);
+  //myGPS.smartDelay(495);
 }
 
 
