@@ -90,7 +90,9 @@ class MySD {
         dataFile.print(gps.sentencesWithFix());
         dataFile.print(" fix\t");
         dataFile.print(gps.failedChecksum());
-        dataFile.println(" fails \n");
+        dataFile.print(" fails\t");
+        dataFile.print(gps.passedChecksum());
+        dataFile.println(" passed \n");
         dataFile.close();
       }
     }
