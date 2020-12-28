@@ -7,8 +7,8 @@ File coordinatesFile;
 
 class MySD {
   private:
-    char latString[11];
-    char longString[11];
+    char latString[13];
+    char longString[13];
 
   public:
 
@@ -34,8 +34,8 @@ class MySD {
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
       dataFile = SD.open(fileName, FILE_WRITE);
       if (dataFile) {
-        dtostrf(gps.location.lat(), 11, 8, latString);
-        dtostrf(gps.location.lng(), 11, 8, longString);
+        dtostrf(gps.location.lat(), 12, 9, latString);
+        dtostrf(gps.location.lng(), 12, 9, longString);
         dataFile.print("[");
         dataFile.print(longString);
         dataFile.print(", ");
