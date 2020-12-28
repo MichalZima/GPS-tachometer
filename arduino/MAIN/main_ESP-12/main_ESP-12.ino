@@ -38,7 +38,9 @@ void setup() {
 
 
 void loop() {
-
+  while (ss.available() > 0)
+    gps.encode(ss.read());
+  
   if (pushed.menuState == 0) {                                  //switch to main screen
 
     
@@ -117,7 +119,7 @@ void loop() {
     menu.select();
   }
 
-  if (Loops >= 5) {
+  if (gps.time.isUpdated()) {
     if (gps.hdop.hdop() < 50 && gps.speed.kmph() > 3) {                                              //saving data
       passTime();
 
@@ -150,12 +152,9 @@ void loop() {
         }
       }
     }
-    Loops = 0;
   }
 
-  myGPS.smartDelay(200);
-  Loops++;
-  
+  //myGPS.smartDelay(200);
 }
 
 
