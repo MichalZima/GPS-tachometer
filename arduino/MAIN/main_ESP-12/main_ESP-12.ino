@@ -95,7 +95,7 @@ void loop() {
 
   if (gps.speed.isUpdated() && previousFails == gps.failedChecksum()) {                     //saving data
 
-      if (myGPS.position0Saved == false && timePassed == true) {
+      if (myGPS.position0Saved == false && passCalculating() == true) {
         myGPS.savePosition0();
         myGPS.distanceMeasurements++;
         screens.savedToSD = "count";
@@ -120,7 +120,6 @@ void loop() {
     previousFails = gps.failedChecksum();
   }
 
-  //myGPS.smartDelay(495);
 }
 
 
@@ -132,40 +131,26 @@ void loop() {
 
 
 
-void passCalculating() {
-  if (gps.speed.kmph <= 3()) return false;
-  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 5) {
-    passXTimes = 3;
-    calculatingPassed++;
-    if (calculatingPassed == passXTimes) {
-      if (myGPS.position0Saved == true) {
-        myGPS.distanceCalculating();
-        calculatingPassed = 0;
-        return = true;
-      }
-    }
-  }
-  else if (5 <= gps.speed.kmph() && gps.speed.kmph() <= 10) {
-    passXTimes = 2;
-    calculatingPassed++;
-    if (calculatingPassed == passXTimes) {
-      if (myGPS.position0Saved == true) {
-        myGPS.distanceCalculating();
-        calculatingPassed = 0;
-        return = true;
-      }
-    }
-  }
+bool passCalculating() {
+  if (gps.speed.kmph() <= 3) return false;
+  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 5) passXTimes = 3;
+  else if (5 <= gps.speed.kmph() && gps.speed.kmph() <= 10) passXTimes = 2;
   else if (gps.speed.kmph() > 10) {
     if (myGPS.position0Saved == true) {
       myGPS.distanceCalculating();
       calculatingPassed = 0;
-      return = true;
+      return true;
+    }
+  }
+  calculatingPassed++;
+  if (calculatingPassed == passXTimes) {
+    if (myGPS.position0Saved == true) {
+      myGPS.distanceCalculating();
+      calculatingPassed = 0;
+      return true;
     }
   }
 }
-
-
 
 void clearScreen() {
   if (pushed.confirm() == true) {
