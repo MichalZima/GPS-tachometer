@@ -37,11 +37,39 @@ void setup() {
 void loop() {
   while (ss.available() > 0)
     gps.encode(ss.read());
+
   
   if (pushed.menuState == 0) {                                  //switch to main screen
+    
+    if (!SD.begin(D8)) {
+      myTFT.Settings(1, 80, 150);
+      tft.print("sd fail");
+    }
 
-    
-    
+    if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
+      tft.fillScreen(ST7735_BLACK);
+    } 
+
+    pushed.maxState = 4;
+
+    switch (pushed.state) {
+      case 1:
+        screens.First();
+        break;
+      case 2:
+        screens.Second();
+        break;
+      case 3:
+        screens.Third();
+        break;
+      case 4:
+        screens.Fourth();
+        break;
+      default:
+        myTFT.Settings(3, 10, 10);
+        tft.print("default");
+        break;
+    }
     clearScreen();
   }
 
