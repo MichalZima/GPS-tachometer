@@ -11,6 +11,8 @@ Menu menu;
 class Screens {
   
   public:
+    String savedToSD;
+  
     void First() {
       myTFT.Settings(2, 10, 10);
       myTFT.Print(gps.speed.kmph(), 4, 1);
