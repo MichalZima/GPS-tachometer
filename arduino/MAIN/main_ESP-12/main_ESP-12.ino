@@ -4,11 +4,6 @@ byte Loops = 0;
 unsigned long Millis0 = 0;
 bool timePassed = true;
 float Hdop = 0;
-float speeds[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-float hdops[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-float averageSpeed = 0;
-float averageHdop = 0;
-byte arrayPosition = 0;
 byte passXTimes;
 byte calculatingPassed = 0;
 
@@ -34,7 +29,7 @@ void setup() {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -93,31 +88,35 @@ void loop() {
 
 
 
-  if (gps.speed.isUpdated() && previousFails == gps.failedChecksum()) {                     //saving data
+  if (gps.speed.isUpdated()) {                     //saving data
+    myTFT.Settings(1, 10, 150);
+    tft.print("updated");
+      
+    if (myGPS.position0Saved == false && passCalculating() == true) {
+      myGPS.savePosition0();
+      myGPS.distanceMeasurements++;
+      screens.savedToSD = "count";
 
-      if (myGPS.position0Saved == false && passCalculating() == true) {
-        myGPS.savePosition0();
-        myGPS.distanceMeasurements++;
-        screens.savedToSD = "count";
+      myGPS.saveToArray();
+      myGPS.arrayPosition++;
 
-        saveToArray();
-        arrayPosition++;
-
-        if (myGPS.distanceMeasurements >= 1 || myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
-          calculateAverage();
-          mySD.savePosition();
-          mySD.saveData(averageSpeed, averageHdop);
-          myGPS.distanceMeasurements = 0;
-          myGPS.course0 = gps.course.deg();
-          myGPS.distance = 0;
-          arrayPosition = 0;
-          resetArray();
-          screens.savedToSD = "saved";
-        }
-      }  
+      if (myGPS.distanceMeasurements >= 1 || myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
+        myGPS.calculateAverage();
+        mySD.savePosition();
+        mySD.saveData(myGPS.averageSpeed, myGPS.averageHdop, calculatingPassed);
+        myGPS.distanceMeasurements = 0;
+        myGPS.course0 = gps.course.deg();
+        myGPS.distance = 0;
+        myGPS.arrayPosition = 0;
+        myGPS.resetArray();
+        screens.savedToSD = "saved";
+      }
+    }  
   }
   else {
     previousFails = gps.failedChecksum();
+    myTFT.Settings(1, 10, 150);
+    tft.print("old     ");
   }
 
 }
@@ -152,35 +151,10 @@ bool passCalculating() {
   }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+
 void clearScreen() {
   if (pushed.confirm() == true) {
     tft.fillScreen(ST7735_BLACK);
-  }
-}
-
-void calculateAverage() {
-  float speedsTogether = 0;
-  float hdopsTogether = 0;
-  for (int i = 0; i < 11; i++) {
-    if (speeds[i] != 0 && hdops[i] != 0) {
-      speedsTogether = speedsTogether + speeds[i];
-      hdopsTogether = hdopsTogether + hdops[i];
-    }
-    else i = 15;
-  }
-  averageSpeed = speedsTogether / myGPS.distanceMeasurements;
-  averageHdop = hdopsTogether / myGPS.distanceMeasurements;
-}
-
-
-void saveToArray() {
-  speeds[arrayPosition] = gps.speed.kmph();
-  hdops[arrayPosition] = gps.hdop.hdop();
-}
-
-void resetArray(){
-  for(int i = 0; i < 11; i++){
-    speeds[i] = 0.0;
-    hdops[i] = 0.0;
   }
 }
