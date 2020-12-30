@@ -28,7 +28,7 @@ class MySD {
       }
     }
 
-    void saveData(float avSpeed, float avHdop) {
+    void saveData(float avSpeed, float avHdop, byte CALPASSED) {
       File dataFile;
       char fileName[20];
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
@@ -92,7 +92,9 @@ class MySD {
         dataFile.print(gps.failedChecksum());
         dataFile.print(" fails\t");
         dataFile.print(gps.passedChecksum());
-        dataFile.println(" passed \n");
+        dataFile.print(" passed \t");
+        dataFile.println(CALPASSED);
+        dataFile.println(" calculationsPassed\n");
         dataFile.close();
       }
     }
