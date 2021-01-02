@@ -88,11 +88,11 @@ void loop() {
 
 
 
-  if (gps.speed.isUpdated()) {                     //saving data
+  if (gps.time.isUpdated() && gps.location.isValid()) {                     //saving data
     myTFT.Settings(1, 10, 150);
     tft.print("updated");
       
-    if (myGPS.position0Saved == false && passCalculating() == true) {
+    if (passCalculating() == true && myGPS.position0Saved == false) {
       myGPS.savePosition0();
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
