@@ -19,7 +19,7 @@ class Menu {
       tft.print("zobrazenie");
 
       myTFT.Settings(1, 20, 40);
-      tft.print("ukladanie");
+      tft.print("mody");
 
       myTFT.Settings(1, 20, 55);
       tft.print("statistiky");
@@ -90,9 +90,9 @@ class Menu {
       tft.print("screens");
     }
 
-    void saving() {
+    void modes() {
       myTFT.Settings(2, 10, 15);
-      tft.print("saving");
+      tft.print("modes");
     }
 
     void Stats() {
