@@ -28,7 +28,7 @@ class MySD {
       }
     }
 
-    void saveData(float avSpeed, float avHdop, byte CALPASSED) {
+    void saveData() {
       File dataFile;
       char fileName[20];
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
@@ -43,13 +43,13 @@ class MySD {
         dataFile.print("]_");
         dataFile.print(gps.location.age());
         dataFile.print("_");
-        dataFile.print(gps.location.isUpdated());
+        dataFile.print(gps.location.isValid());
         dataFile.print("\t");
         dataFile.print(myGPS.realTime());
         dataFile.print("_");
         dataFile.print(gps.time.age());
         dataFile.print("_");
-        dataFile.print(gps.time.isUpdated());
+        dataFile.print(gps.time.isValid());
         dataFile.print("\t");
         dataFile.print(myGPS.distance0);
         if(myGPS.changedToKM == false) dataFile.print("m ");
@@ -61,40 +61,38 @@ class MySD {
         dataFile.print("kmph_");
         dataFile.print(gps.speed.age());
         dataFile.print("_");
-        dataFile.print(gps.speed.isUpdated());
+        dataFile.print(gps.speed.isValid());
         dataFile.print("\t");
         dataFile.print(gps.hdop.hdop());
         dataFile.print("_");
         dataFile.print(gps.hdop.age());
         dataFile.print("_");
-        dataFile.print(gps.hdop.isUpdated());
+        dataFile.print(gps.hdop.isValid());
         dataFile.print("\t");
         dataFile.print(gps.satellites.value());
         dataFile.print("sats_");
         dataFile.print(gps.satellites.age());
         dataFile.print("_");
-        dataFile.print(gps.satellites.isUpdated());
+        dataFile.print(gps.satellites.isValid());
         dataFile.print("\t");
         dataFile.print(gps.altitude.meters());
         dataFile.print("mnm_");
         dataFile.print(gps.altitude.age());
         dataFile.print("_");
-        dataFile.print(gps.altitude.isUpdated());
+        dataFile.print(gps.altitude.isValid());
         dataFile.print("\t");
         dataFile.print(gps.course.deg());
         dataFile.print("°_");
         dataFile.print(gps.course.age());
         dataFile.print("_");
-        dataFile.print(gps.course.isUpdated());
+        dataFile.print(gps.course.isValid());
         dataFile.print("\t");
         dataFile.print(gps.sentencesWithFix());
         dataFile.print(" fix\t");
         dataFile.print(gps.failedChecksum());
         dataFile.print(" fails\t");
         dataFile.print(gps.passedChecksum());
-        dataFile.print(" passed \t");
-        dataFile.println(CALPASSED);
-        dataFile.println(" calculationsPassed\n");
+        dataFile.println(" passed \n");
         dataFile.close();
       }
     }
