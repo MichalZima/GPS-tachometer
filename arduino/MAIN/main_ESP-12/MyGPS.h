@@ -96,7 +96,7 @@ class MyGPS {
          aftermath += "sats, ";
         }
         if (gps.date.isUpdated()){
-         sprintf(tempSavedDate, "%02d:%02d:%04d", gps.date.day(), gps.date.month(), gps.date.year());
+         sprintf(tempSavedDate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
          tempSavedLocationAge = gps.date.age();
          aftermath += "date, ";
         }
