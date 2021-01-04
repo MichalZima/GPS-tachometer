@@ -58,7 +58,7 @@ class Menu {
           screens();
           break;
         case 3:
-          saving();
+          modes();
           break;
         case 4:
           Stats();
