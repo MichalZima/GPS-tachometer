@@ -11,22 +11,40 @@ class MyGPS {
     bool distanceCalculated = false;
     float speeds[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     float hdops[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    char timePlusZone[10];
       
   public:
+    float tempSavedLat;
+    float tempSavedLong;
+    float tempSavedSpeed;
+    float tempSavedHdop;
+    int tempSavedSats;
+    int tempSavedDate[11];
+    int tempSavedTime[11];
+    int tempSavedAlt;
+    int tempSavedCourse;
+
+    int tempSavedLocationAge;
+    int tempSavedSpeedAge;
+    int tempSavedHdopAge;
+    int tempSavedSatsAge;
+    int tempSavedDateAge;
+    int tempSavedTimeAge;
+    int tempSavedAltAge;
+    int tempSavedCourseAge;    
+  
     float distance0;
     bool changedToKM = false; 
     float totalDistance = 0;
     bool position0Saved = false;
-    float distanceLat0;
-    float distanceLong0;
     byte distanceMeasurements = 0;
-    int course0 = gps.course.deg();
     float distance = 0;
     int timeZoneValue = 1; 
-    char timePlusZone[10];
     float averageSpeed = 0;
     float averageHdop = 0;  
     byte arrayPosition = 0;
+    float distanceLat0 = gps.location.lat();
+    float distanceLong0 = gps.location.lng();
 
 //////////////////////////////////////////////////////////////////////////////////////
     
@@ -42,6 +60,60 @@ class MyGPS {
         while (ss.available()) 
           gps.encode(ss.read());
       } while (millis() - start < ms);
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+    void saveDataTemporarily() {
+      while (ss.available()){ 
+        gps.encode(ss.read());
+
+        if (gps.location.isUpdated()){
+         tempSavedLong = gps.location.lng();
+         tempSavedLat = gps.location.lat(); 
+         tempSavedLocationAge = gps.location.age();
+        }
+        if (gps.speed.isUpdated()){
+         tempSavedSpeed = gps.speed.kmph();
+         tempSavedLocationAge = gps.speed.age();
+        }
+        if (gps.hdop.isUpdated()){
+         tempSavedHdop = gps.hdop.hdop(); 
+         tempSavedLocationAge = gps.hdop.age();
+        }
+        if (gps.satellites.isUpdated()){
+         tempSavedSats = gps.satellites.value(); 
+         tempSavedLocationAge = gps.satellites.age();
+        }
+        if (gps.date.isUpdated()){
+         sprintf(tempSavedDate, "%02d:%02d:%04d", gps.date.day(), gps.date.month(), gps.date.year());
+         tempSavedLocationAge = gps.date.age();
+        }
+        if (gps.time.isUpdated()){
+         tempSavedTime = realTime(); 
+         tempSavedLocationAge = gps.time.age();
+        }
+        if (gps.altitude.isUpdated()){
+         tempSavedAlt = gps.altitude.meters(); 
+         tempSavedLocationAge = gps.location.age();
+        }
+        if (gps.location.isUpdated()){
+         tempSavedLong = gps.location.lng();
+         tempSavedLat = gps.location.lat(); 
+         tempSavedLocationAge = gps.location.age();
+        }
+     
+        int 
+        int tempSavedCourse;
+ 
+        float tempSavedSpeedAge;
+        float tempSavedHdopAge;
+        int tempSavedSatsAge;
+        int tempSavedDateAge;
+        int tempSavedTimeAge;
+        int tempSavedAltAge;
+        int tempSavedCourseAge;
+      }
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
