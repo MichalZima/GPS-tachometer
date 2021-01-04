@@ -82,9 +82,7 @@ void loop() {
 
   
 
-  if (gps.location.isUpdated() and locationUpdatedXtimes >= 2) {                     //saving data
-    myTFT.Settings(1, 10, 150);
-    tft.print(locationUpdatedXtimes);
+  if (myGPS.saveDataTemporarily()) {                     //saving data
     locationUpdatedXtimes = 0;
       
     if (passCalculating() == true and myGPS.position0Saved == false) {
@@ -95,19 +93,16 @@ void loop() {
       myGPS.saveToArray();
       myGPS.arrayPosition++;
 
-      if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
+      if (myGPS.distanceMeasurements >= 1 or course0 + 30 < myGPS.tempSavedCourse or course0 - 30 > myGPS.tempSavedCourse) {
         mySD.savePosition();
         mySD.saveData();
         myGPS.distanceMeasurements = 0;
-        course0 = gps.course.deg();
+        course0 = myGPS.tempSavedCourse;
         screens.savedToSD = " save";
       }
     }  
   }
   else {
-    myTFT.Settings(1, 10, 150);
-    tft.print(locationUpdatedXtimes);
-    locationUpdatedXtimes++;
     screens.savedToSD = " pass";
   }
 
@@ -123,6 +118,8 @@ void loop() {
 
 
 bool passCalculating() {
+  myTFT.Settings(1, 10, 150);
+  tft.print(calculatingPassed);
   if (gps.speed.kmph() <= 3) return false;
   else if (3 < gps.speed.kmph() && gps.speed.kmph() < 5) passXTimes = 3;
   else if (5 <= gps.speed.kmph() && gps.speed.kmph() <= 10) passXTimes = 2;
