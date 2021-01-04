@@ -19,8 +19,8 @@ class MyGPS {
     float tempSavedSpeed;
     float tempSavedHdop;
     int tempSavedSats;
-    int tempSavedDate[11];
-    int tempSavedTime[11];
+    char tempSavedDate[11];
+    String tempSavedTime;
     int tempSavedAlt;
     int tempSavedCourse;
 
@@ -32,6 +32,10 @@ class MyGPS {
     int tempSavedTimeAge;
     int tempSavedAltAge;
     int tempSavedCourseAge;    
+
+    int tempSavedPassedChecksum;
+    int tempSavedFailedChecksum;
+    int tempSavedFixSentences;
   
     float distance0;
     bool changedToKM = false; 
@@ -64,7 +68,8 @@ class MyGPS {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    void saveDataTemporarily() {
+    String saveDataTemporarily() {
+      String aftermath;
       while (ss.available()){ 
         gps.encode(ss.read());
 
@@ -72,47 +77,44 @@ class MyGPS {
          tempSavedLong = gps.location.lng();
          tempSavedLat = gps.location.lat(); 
          tempSavedLocationAge = gps.location.age();
+         aftermath += "loc, ";
         }
         if (gps.speed.isUpdated()){
          tempSavedSpeed = gps.speed.kmph();
          tempSavedLocationAge = gps.speed.age();
+         aftermath += "speed, ";
         }
         if (gps.hdop.isUpdated()){
          tempSavedHdop = gps.hdop.hdop(); 
          tempSavedLocationAge = gps.hdop.age();
+         aftermath += "hdop, ";
         }
         if (gps.satellites.isUpdated()){
          tempSavedSats = gps.satellites.value(); 
          tempSavedLocationAge = gps.satellites.age();
+         aftermath += "sats, ";
         }
         if (gps.date.isUpdated()){
          sprintf(tempSavedDate, "%02d:%02d:%04d", gps.date.day(), gps.date.month(), gps.date.year());
          tempSavedLocationAge = gps.date.age();
+         aftermath += "date, ";
         }
         if (gps.time.isUpdated()){
          tempSavedTime = realTime(); 
          tempSavedLocationAge = gps.time.age();
+         aftermath += "time, ";
         }
         if (gps.altitude.isUpdated()){
          tempSavedAlt = gps.altitude.meters(); 
-         tempSavedLocationAge = gps.location.age();
+         tempSavedLocationAge = gps.altitude.age();
+         aftermath += "alt, ";
         }
-        if (gps.location.isUpdated()){
-         tempSavedLong = gps.location.lng();
-         tempSavedLat = gps.location.lat(); 
-         tempSavedLocationAge = gps.location.age();
+        if (gps.course.isUpdated()){
+         tempSavedCourse = gps.course.deg();
+         tempSavedLocationAge = gps.course.age();
+         aftermath += "course, ";
         }
-     
-        int 
-        int tempSavedCourse;
- 
-        float tempSavedSpeedAge;
-        float tempSavedHdopAge;
-        int tempSavedSatsAge;
-        int tempSavedDateAge;
-        int tempSavedTimeAge;
-        int tempSavedAltAge;
-        int tempSavedCourseAge;
+        return aftermath;
       }
     }
 
