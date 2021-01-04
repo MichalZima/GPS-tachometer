@@ -36,6 +36,8 @@ class MyGPS {
     int tempSavedPassedChecksum;
     int tempSavedFailedChecksum;
     int tempSavedFixSentences;
+
+    String aftermath = " ";
   
     float distance0;
     bool changedToKM = false; 
@@ -68,8 +70,7 @@ class MyGPS {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    String saveDataTemporarily() {
-      String aftermath;
+    bool saveDataTemporarily() {
       while (ss.available()){ 
         gps.encode(ss.read());
 
@@ -114,7 +115,11 @@ class MyGPS {
          tempSavedLocationAge = gps.course.age();
          aftermath += "course, ";
         }
-        return aftermath;
+        
+        if (aftermath == " ") {
+          return false;          
+        }
+        else return true;
       }
     }
 
