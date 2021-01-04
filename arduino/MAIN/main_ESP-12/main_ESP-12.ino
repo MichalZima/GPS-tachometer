@@ -2,13 +2,10 @@
 
 byte Loops = 0;
 unsigned long Millis0 = 0;
-bool timePassed = true;
-float Hdop = 0;
 byte passXTimes;
 byte calculatingPassed = 0;
-
-int previousPassedChecksum = 0;
-int previousFails = 0;
+int locationUpdatedXtimes = 0;
+int course0 = gps.course.deg();
 
 Screens screens;
 
@@ -33,10 +30,8 @@ void setup() {
 
 
 
-void loop() {
-  while (ss.available() > 0)
-    gps.encode(ss.read());
-
+void loop() {  
+  myGPS.saveDataTemporarily();
   
   if (pushed.menuState == 0) {                                  //switch to main screen
     
@@ -85,14 +80,14 @@ void loop() {
     menu.select();
   }
 
+  
 
-
-
-  if (gps.time.isUpdated() && gps.location.isValid()) {                     //saving data
+  if (gps.location.isUpdated() and locationUpdatedXtimes >= 2) {                     //saving data
     myTFT.Settings(1, 10, 150);
-    tft.print("updated");
+    tft.print(locationUpdatedXtimes);
+    locationUpdatedXtimes = 0;
       
-    if (passCalculating() == true && myGPS.position0Saved == false) {
+    if (passCalculating() == true and myGPS.position0Saved == false) {
       myGPS.savePosition0();
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
@@ -100,23 +95,20 @@ void loop() {
       myGPS.saveToArray();
       myGPS.arrayPosition++;
 
-      if (myGPS.distanceMeasurements >= 1 || myGPS.course0 + 30 < gps.course.deg() || myGPS.course0 - 30 > gps.course.deg()) {
-        myGPS.calculateAverage();
+      if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
         mySD.savePosition();
-        mySD.saveData(myGPS.averageSpeed, myGPS.averageHdop, calculatingPassed);
+        mySD.saveData();
         myGPS.distanceMeasurements = 0;
-        myGPS.course0 = gps.course.deg();
-        myGPS.distance = 0;
-        myGPS.arrayPosition = 0;
-        myGPS.resetArray();
-        screens.savedToSD = "saved";
+        course0 = gps.course.deg();
+        screens.savedToSD = " save";
       }
     }  
   }
   else {
-    previousFails = gps.failedChecksum();
     myTFT.Settings(1, 10, 150);
-    tft.print("old     ");
+    tft.print(locationUpdatedXtimes);
+    locationUpdatedXtimes++;
+    screens.savedToSD = " pass";
   }
 
 }
