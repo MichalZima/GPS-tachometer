@@ -126,7 +126,7 @@ bool passCalculating() {
   if (Loops >= passLoops) {
     if (myGPS.position0Saved == true) {
       myGPS.distanceCalculating();
-      calculatingPassed = 0;
+      Loops = 0;
       return true;
     }
   }
