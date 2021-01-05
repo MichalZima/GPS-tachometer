@@ -98,7 +98,8 @@ class Screens {
     void printTempValuesForObservation(){
       myTFT.Settings(1, 10, 30);
       myTFT.Print(myGPS.tempSavedSpeed, 4, 1);
-      tft.print(" kmph");
+      tft.print(" kmph ");
+      myTFT.Print(myGPS.tempSavedSpeedAge, 6, 0);
       myTFT.Settings(1, 10, 40);
       myTFT.Print(myGPS.tempSavedSats, 2, 0);
       tft.print(" sats ");

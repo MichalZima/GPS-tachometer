@@ -33,6 +33,8 @@ void setup() {
 void loop() {  
   myGPS.saveDataTemporarily();
   
+  while (ss.available()) gps.encode(ss.read());
+  
   if (pushed.menuState == 0) {                                  //switch to main screen
     
     if (!SD.begin(D8)) {
