@@ -83,7 +83,8 @@ class MyGPS {
 //////////////////////////////////////////////////////////////////////////////////////
 
     char* realDate(){
-      sprintf(char convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
+      char convertedGPSdate
+      sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
       return convertedGPSdate;
     }
 
