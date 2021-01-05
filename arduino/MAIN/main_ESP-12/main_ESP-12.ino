@@ -1,6 +1,7 @@
 #include "Screens.h"
 
 byte Loops = 0;
+byte passLoops = 5;
 unsigned long Millis0 = 0;
 byte passXTimes;
 byte calculatingPassed = 0;
@@ -31,23 +32,16 @@ void setup() {
 
 
 void loop() {  
-  myGPS.saveDataTemporarily();
-  
-  while (ss.available()) gps.encode(ss.read());
   
   if (pushed.menuState == 0) {                                  //switch to main screen
-    
     if (!SD.begin(D8)) {
       myTFT.Settings(1, 80, 150);
       tft.print("sd fail");
     }
-
     if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
       tft.fillScreen(ST7735_BLACK);
     } 
-
     pushed.maxState = 4;
-
     switch (pushed.state) {
       case 1:
         screens.First();
@@ -69,7 +63,6 @@ void loop() {
     clearScreen();
   }
 
-
   else if (pushed.menuState == 1) {                             //switching to menu
     pushed.maxState = 8;
     menu.Cursor();
@@ -77,17 +70,14 @@ void loop() {
     clearScreen();
   }
 
-
   else if (pushed.menuState == 2) {                             //select between options in menu
     menu.select();
   }
 
   
 
-  if (myGPS.saveDataTemporarily()) {                     //saving data
-    locationUpdatedXtimes = 0;
-      
-    if (passCalculating() == true and myGPS.position0Saved == false) {
+  if (passCalculating()) {                     //saving data
+    if (myGPS.position0Saved == false) {
       myGPS.savePosition0();
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
@@ -107,7 +97,7 @@ void loop() {
   else {
     screens.savedToSD = " pass";
   }
-
+myGPS.smartDelay(200);
 }
 
 
@@ -121,19 +111,19 @@ void loop() {
 
 bool passCalculating() {
   myTFT.Settings(1, 10, 150);
-  tft.print(calculatingPassed);
+  tft.print(Loops);
   if (gps.speed.kmph() <= 3) return false;
-  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 5) passXTimes = 3;
-  else if (5 <= gps.speed.kmph() && gps.speed.kmph() <= 10) passXTimes = 2;
-  else if (gps.speed.kmph() > 10) {
+  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 5) passLoops = 10;
+  else if (5 <= gps.speed.kmph() && gps.speed.kmph() <= 30) passLoops = 5;
+  else if (gps.speed.kmph() > 30) {
     if (myGPS.position0Saved == true) {
       myGPS.distanceCalculating();
       calculatingPassed = 0;
       return true;
     }
   }
-  calculatingPassed++;
-  if (calculatingPassed == passXTimes) {
+  Loops++;
+  if (Loops >= passLoops) {
     if (myGPS.position0Saved == true) {
       myGPS.distanceCalculating();
       calculatingPassed = 0;
