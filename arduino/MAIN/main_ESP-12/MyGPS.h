@@ -65,16 +65,8 @@ class MyGPS {
       do {
         while (ss.available()) 
           gps.encode(ss.read());
-      } while (millis() - start < ms);
-    }
 
-//////////////////////////////////////////////////////////////////////////////////////
-
-    bool saveDataTemporarily() {
-      while (ss.available()){ 
-        gps.encode(ss.read());
-
-        if (gps.location.isUpdated()){
+           if (gps.location.isUpdated()){
          tempSavedLong = gps.location.lng();
          tempSavedLat = gps.location.lat(); 
          tempSavedLocationAge = gps.location.age();
@@ -116,10 +108,16 @@ class MyGPS {
          aftermath += "course, ";
         }
         
-        if (aftermath == " ") {
-          return false;          
-        }
-        else return true;
+      } while (millis() - start < ms);
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+    bool saveDataTemporarily() {
+      while (ss.available()){ 
+        gps.encode(ss.read());
+
+       
       }
     }
 
