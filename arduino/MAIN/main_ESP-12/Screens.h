@@ -41,7 +41,7 @@ class Screens {
 
     void Third() {
       myTFT.Settings(1, 10, 10);
-      tft.print(myGPS.realDate);
+      tft.print(myGPS.realDate());
     }
 
     void Fourth() {
