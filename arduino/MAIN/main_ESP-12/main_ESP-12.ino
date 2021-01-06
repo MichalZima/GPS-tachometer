@@ -1,4 +1,4 @@
-//version with error check, loops
+//version with error check and loops
 
 #include "Screens.h"
 
