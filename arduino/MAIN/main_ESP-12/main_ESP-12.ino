@@ -82,8 +82,8 @@ void loop() {
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
 
-      myGPS.saveToArray();
-      myGPS.arrayPosition++;
+//      myGPS.saveToArray();
+//      myGPS.arrayPosition++;
 
       if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
         mySD.savePosition();
@@ -109,32 +109,23 @@ myGPS.smartDelay(200);
 
 
 
-byte passCalculating() {
+bool passCalculating() {
   myTFT.Settings(1, 10, 150);
   tft.print(Loops);
   if (gps.speed.kmph() <= 3) {
     Loops = 0;
-    return 1;
+    return false;
   }
-  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 5) passLoops = 10;
-  else if (5 <= gps.speed.kmph() && gps.speed.kmph() <= 30) passLoops = 5;
-  else if (gps.speed.kmph() > 30) {
-    if (myGPS.position0Saved == true) {
-      if (myGPS.distanceCalculating()) {
-        Loops = 0;
-        return 3;
-      }
-      else return 0;
-    }
-  }
+  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
+  else if (gps.speed.kmph() >= 10) passLoops = 5;
   Loops++;
   if (Loops >= passLoops) {
     if (myGPS.position0Saved == true) {
       if (myGPS.distanceCalculating()) {
         Loops = 0;
-        return 2;
+        return true;
       }
-      else return 0;
+      else return false;
     }
   }
 }
