@@ -14,7 +14,8 @@ class MyGPS {
     char timePlusZone[10];
       
   public:
-   
+
+    String errorMessage = "";
     float distance0;
     bool changedToKM = false; 
     float totalDistance = 0;
@@ -54,23 +55,27 @@ class MyGPS {
 
 //////////////////////////////////////////////////////////////////////////////////////
     
-    void distanceCalculating(){
+    bool distanceCalculating(){
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
-      position0Saved = false;
-      distanceCalculated = true;
-      distance += distance0; 
-      
-      if (changedToKM == false) totalDistance += distance0;
-      
-      else if (totalDistance >= 1000 && changedToKM == false) {
-          totalDistance = totalDistance / 1000;
-          changedToKM = true;
+      if (!errorCheck()) {
+        position0Saved = false;
+        distanceCalculated = true;
+        distance += distance0; 
+        
+        if (changedToKM == false) totalDistance += distance0;
+        
+  //      else if (totalDistance >= 1000 && changedToKM == false) {
+  //          totalDistance = totalDistance / 1000;
+  //          changedToKM = true;
+  //      }
+  //      
+  //      if(changedToKM == true) {
+  //        distance0 = distance0 / 1000;
+  //        totalDistance += distance0;
+  //      } 
+      return true;
       }
-      
-      if(changedToKM == true) {
-        distance0 = distance0 / 1000.0;
-        totalDistance += distance0;
-      } 
+      else return false;
     } 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -119,5 +124,28 @@ class MyGPS {
         hdops[i] = 0.0;
       }
     }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+    bool errorCheck() {
+      errorMessage = "";
+      //check signal strength and age
+      if (gps.hdop.hdop() > 10) errorMessage += "HIGH HDOP, ";
+      if (gps.hdop.age() > 5000) errorMessage += "OLD HDOP, ";
+      if (gps.satellites.value() < 3) errorMessage += "LACK SATS, "; 
+      if (gps.satellites.age() > 10) errorMessage += "OLD SATS, ";
+      //check if speed was updated and is reliable
+      if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
+      //check coordinates difference
+      if (averageSpeed < 10 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
+      if (averageSpeed > 10 && averageSpeed < 30 && distance0 > 300)  errorMessage += "NOT VALID COORDINATES 2, ";
+      if (averageSpeed > 30 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 3, ";
+      //check if any error occured
+      if (errorMessage != "") return true;
+      else return false;
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
     
 };
