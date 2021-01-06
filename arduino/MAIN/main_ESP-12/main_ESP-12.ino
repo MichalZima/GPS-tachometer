@@ -100,7 +100,7 @@ void loop() {
 myGPS.smartDelay(200);
 }
 
-//zmena
+skldjfajsdfjoasdfhasdfoasfdjiosdfjaodfosdo
 
 
 
