@@ -1,3 +1,5 @@
+version with error check
+
 #include "Screens.h"
 
 byte Loops = 0;
@@ -100,7 +102,6 @@ void loop() {
 myGPS.smartDelay(200);
 }
 
-skldjfajsdfjoasdfhasdfoasfdjiosdfjaodfosdo
 
 
 
