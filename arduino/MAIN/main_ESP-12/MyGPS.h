@@ -135,7 +135,7 @@ class MyGPS {
       if (gps.satellites.value() < 3) errorMessage += "LACK SATS, "; 
       if (gps.satellites.age() > 10) errorMessage += "OLD SATS, ";
       //check if speed was updated and is reliable
-      if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
+      //if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
       if (averageSpeed < 10 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
       if (averageSpeed > 10 && averageSpeed < 30 && distance0 > 300)  errorMessage += "NOT VALID COORDINATES 2, ";
