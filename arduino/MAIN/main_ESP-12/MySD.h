@@ -78,7 +78,11 @@ class MySD {
         dataFile.print(gps.failedChecksum());
         dataFile.print(" fails\t");
         dataFile.print(gps.passedChecksum());
-        dataFile.println(" passed \n");
+        dataFile.print(" passed \n");
+        dataFile.print(myGPS.errorMessage);
+        dataFile.println("\n");
+        dataFile.close();
+        myGPS.errorMessage = " ";
       }
     }
 }; 

@@ -15,7 +15,7 @@ class MyGPS {
       
   public:
 
-    String errorMessage = "";
+    String errorMessage = " ";
     float distance0;
     bool changedToKM = false; 
     float totalDistance = 0;
@@ -128,7 +128,7 @@ class MyGPS {
 //////////////////////////////////////////////////////////////////////////////////////
 
     bool errorCheck() {
-      errorMessage = "";
+      
       //check signal strength and age
       if (gps.hdop.hdop() > 40) errorMessage += "HIGH HDOP, ";
       if (gps.hdop.age() > 5000) errorMessage += "OLD HDOP, ";
@@ -141,7 +141,7 @@ class MyGPS {
       if (averageSpeed > 10 && averageSpeed < 30 && distance0 > 300)  errorMessage += "NOT VALID COORDINATES 2, ";
       if (averageSpeed > 30 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
-      if (errorMessage != "") return true;
+      if (errorMessage != " ") return true;
       else return false;
     }
 

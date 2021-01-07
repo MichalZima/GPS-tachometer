@@ -76,9 +76,10 @@ void loop() {
     menu.select();
   }
 
-  
+  mySD.savePosition();
+        mySD.saveData();
 
-  if (passCalculating()) {                     //saving data
+  if (passCalculating() == true) {                     //saving data
     if (myGPS.position0Saved == false) {
       myGPS.savePosition0();
       myGPS.distanceMeasurements++;
@@ -88,8 +89,7 @@ void loop() {
 //      myGPS.arrayPosition++;
 
       if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
-        mySD.savePosition();
-        mySD.saveData();
+        
         myGPS.distanceMeasurements = 0;
         course0 = gps.course.deg();
         screens.savedToSD = " save";
