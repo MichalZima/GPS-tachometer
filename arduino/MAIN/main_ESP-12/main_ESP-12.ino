@@ -76,20 +76,20 @@ void loop() {
     menu.select();
   }
 
-  mySD.savePosition();
-        mySD.saveData();
+  
 
-  if (passCalculating() == true) {                     //saving data
+  if (passCalculating()) {                     //saving data
     if (myGPS.position0Saved == false) {
       myGPS.savePosition0();
       myGPS.distanceMeasurements++;
-      //screens.savedToSD = "count";
+      screens.savedToSD = "count";
 
 //      myGPS.saveToArray();
 //      myGPS.arrayPosition++;
 
       if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
-        
+        mySD.savePosition();
+        mySD.saveData();
         myGPS.distanceMeasurements = 0;
         course0 = gps.course.deg();
         screens.savedToSD = " save";
@@ -123,11 +123,15 @@ bool passCalculating() {
   Loops++;
   if (Loops >= passLoops) {
     if (myGPS.position0Saved == true) {
-      if (myGPS.distanceCalculating()) {
+      if (!myGPS.errorCheck()) {
+        myGPS.distanceCalculating();
         Loops = 0;
         return true;
       }
-      else return false;
+      else {
+        mySD.saveErrorMessage();
+        return false;
+      }
     }
   }
 }

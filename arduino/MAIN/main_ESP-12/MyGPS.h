@@ -57,12 +57,11 @@ class MyGPS {
     
     bool distanceCalculating(){
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
-      if (errorCheck() == false) {
-        position0Saved = false;
-        distanceCalculated = true;
-        distance += distance0; 
-        
-        if (changedToKM == false) totalDistance += distance0;
+      position0Saved = false;
+      distanceCalculated = true;
+      distance += distance0; 
+      
+      if (changedToKM == false) totalDistance += distance0;
         
   //      else if (totalDistance >= 1000 && changedToKM == false) {
   //          totalDistance = totalDistance / 1000;
@@ -73,10 +72,8 @@ class MyGPS {
   //        distance0 = distance0 / 1000;
   //        totalDistance += distance0;
   //      } 
-      return true;
-      }
-      else return false;
-    } 
+
+    }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -128,7 +125,7 @@ class MyGPS {
 //////////////////////////////////////////////////////////////////////////////////////
 
     bool errorCheck() {
-      
+      errorMessage = " ";
       //check signal strength and age
       if (gps.hdop.hdop() > 40) errorMessage += "HIGH HDOP, ";
       else if (gps.hdop.age() > 5000) errorMessage += "OLD HDOP, ";
@@ -137,9 +134,9 @@ class MyGPS {
       //check if speed was updated and is reliable
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
-//      else if (averageSpeed < 10 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
-//      else if (averageSpeed > 10 && averageSpeed < 30 && distance0 > 300)  errorMessage += "NOT VALID COORDINATES 2, ";
-//      else if (averageSpeed > 30 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 3, ";
+      else if (averageSpeed < 10 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
+      else if (averageSpeed > 10 && averageSpeed < 30 && distance0 > 300)  errorMessage += "NOT VALID COORDINATES 2, ";
+      else if (averageSpeed > 30 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
       if (errorMessage == " ") return false;
       else if (errorMessage != " ") return true;
