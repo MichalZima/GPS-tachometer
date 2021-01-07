@@ -57,11 +57,12 @@ class MyGPS {
     
     bool distanceCalculating(){
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
-      position0Saved = false;
-      distanceCalculated = true;
-      distance += distance0; 
-      
-      if (changedToKM == false) totalDistance += distance0;
+      if (!errorCheck()) {
+        position0Saved = false;
+        distanceCalculated = true;
+        distance += distance0; 
+        
+        if (changedToKM == false) totalDistance += distance0;
         
   //      else if (totalDistance >= 1000 && changedToKM == false) {
   //          totalDistance = totalDistance / 1000;
@@ -72,8 +73,10 @@ class MyGPS {
   //        distance0 = distance0 / 1000;
   //        totalDistance += distance0;
   //      } 
-
-    }
+      return true;
+      }
+      else return false;
+    } 
 
 //////////////////////////////////////////////////////////////////////////////////////
 
