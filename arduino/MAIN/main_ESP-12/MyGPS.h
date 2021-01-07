@@ -57,7 +57,7 @@ class MyGPS {
     
     bool distanceCalculating(){
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
-      if (!errorCheck()) {
+      if (errorCheck() == false) {
         position0Saved = false;
         distanceCalculated = true;
         distance += distance0; 
@@ -130,7 +130,7 @@ class MyGPS {
     bool errorCheck() {
       errorMessage = "";
       //check signal strength and age
-      if (gps.hdop.hdop() > 10) errorMessage += "HIGH HDOP, ";
+      if (gps.hdop.hdop() > 40) errorMessage += "HIGH HDOP, ";
       if (gps.hdop.age() > 5000) errorMessage += "OLD HDOP, ";
       if (gps.satellites.value() < 3) errorMessage += "LACK SATS, "; 
       if (gps.satellites.age() > 10) errorMessage += "OLD SATS, ";
