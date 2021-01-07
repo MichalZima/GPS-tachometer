@@ -115,7 +115,7 @@ bool passCalculating() {
   myTFT.Settings(1, 10, 150);
   tft.print(Loops);
   if (!myGPS.errorCheck()) {
-    else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
+    if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
     else if (gps.speed.kmph() >= 10) passLoops = 5;
     Loops++;
     if (Loops >= passLoops) {
@@ -125,6 +125,10 @@ bool passCalculating() {
         return true;
       }
     }
+  }
+  else {
+    Loops = 0;
+    return false;
   }
 }
 
