@@ -133,7 +133,7 @@ class MyGPS {
       if (gps.hdop.hdop() > 40) errorMessage += "HIGH HDOP, ";
       else if (gps.hdop.age() > 5000) errorMessage += "OLD HDOP, ";
       else if (gps.satellites.value() < 3) errorMessage += "LACK SATS, "; 
-      else if (gps.satellites.age() > 10) errorMessage += "OLD SATS, ";
+      else if (gps.satellites.age() > 5000) errorMessage += "OLD SATS, ";
       //check if speed was updated and is reliable
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
@@ -142,7 +142,7 @@ class MyGPS {
 //      else if (averageSpeed > 30 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
       if (errorMessage == " ") return false;
-      else return true;
+      else if (errorMessage != " ") return true;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
