@@ -114,23 +114,15 @@ myGPS.smartDelay(200);
 bool passCalculating() {
   myTFT.Settings(1, 10, 150);
   tft.print(Loops);
-  if (gps.speed.kmph() <= 3) {
-    Loops = 0;
-    return false;
-  }
-  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
-  else if (gps.speed.kmph() >= 10) passLoops = 5;
-  Loops++;
-  if (Loops >= passLoops) {
-    if (myGPS.position0Saved == true) {
-      if (!myGPS.errorCheck()) {
+  if (!myGPS.errorCheck()) {
+    else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
+    else if (gps.speed.kmph() >= 10) passLoops = 5;
+    Loops++;
+    if (Loops >= passLoops) {
+      if (myGPS.position0Saved == true) {
         myGPS.distanceCalculating();
         Loops = 0;
         return true;
-      }
-      else {
-        mySD.saveErrorMessage();
-        return false;
       }
     }
   }
