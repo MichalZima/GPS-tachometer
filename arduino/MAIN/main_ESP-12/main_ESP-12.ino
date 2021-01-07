@@ -83,7 +83,7 @@ void loop() {
     if (myGPS.position0Saved == false) {
       myGPS.savePosition0();
       myGPS.distanceMeasurements++;
-      screens.savedToSD = "count";
+      //screens.savedToSD = "count";
 
 //      myGPS.saveToArray();
 //      myGPS.arrayPosition++;
