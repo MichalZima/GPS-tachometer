@@ -78,9 +78,13 @@ void loop() {
 
   
 
-  if (passCalculating()) {                     //saving data
+  if (passCalculating()) {                                      //saving data
     if (myGPS.position0Saved == false) {
+      Serial.print("before savePosition: ");
+      Serial.println(millis());
       myGPS.savePosition0();
+      Serial.print("after savePosition: ");
+      Serial.println(millis()); 
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
 
@@ -88,8 +92,12 @@ void loop() {
 //      myGPS.arrayPosition++;
 
       if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
+        Serial.print("before save to SD: ");
+        Serial.println(millis());
         mySD.savePosition();
         mySD.saveData();
+        Serial.print("after save to SD: ");
+        Serial.println(millis());
         myGPS.distanceMeasurements = 0;
         course0 = gps.course.deg();
         screens.savedToSD = " save";

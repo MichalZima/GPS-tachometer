@@ -130,7 +130,7 @@ class MyGPS {
     bool errorCheck() {
       errorMessage = " ";
       //check signal strength and age
-      if (gps.hdop.hdop() > 40) errorMessage += "HIGH HDOP, ";
+      if (gps.hdop.hdop() > 10) errorMessage += "HIGH HDOP, ";
       else if (gps.hdop.age() > 10000) errorMessage += "OLD HDOP, ";
       else if (gps.satellites.value() < 3) errorMessage += "LACK SATS, "; 
       else if (gps.satellites.age() > 10000) errorMessage += "OLD SATS, ";
