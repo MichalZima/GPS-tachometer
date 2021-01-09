@@ -92,7 +92,7 @@ class Menu {
             countdown = 0;
             countdownStarted = false;
             trackStart = true;
-            tft.setTextColor(ST7735_BLACK, ST7735_WHITE);
+            tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
             tft.fillScreen(ST7735_BLACK);
             pushed.menuState = 0;
           }
