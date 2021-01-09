@@ -1,5 +1,10 @@
 //version with error check and loops
 //v.3
+<<<<<<< HEAD
+=======
+//graphic stuff on track iteem in menu almost done
+//made blinking cursor in menu
+>>>>>>> v.3
 
 #include "Screens.h"
 
