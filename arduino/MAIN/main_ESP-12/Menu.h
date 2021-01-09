@@ -10,6 +10,8 @@ class Menu {
     byte cursorPosition0 = 1;
     byte cursorPosition = 1;
     bool cursorBlink = true;
+    byte countdown = 0;
+    bool countdownStarted = false;
 
   public:
     bool trackStart = false;
@@ -72,21 +74,37 @@ class Menu {
 
     void track() {
       if (!trackStart) {
-        myTFT.Settings(2, tft.width()/2 - 29, tft.height()/2 - 7);
-        tft.print("START");
-        if (pushed.confirm() == true) {
-          trackStart = true;
-          tft.fillScreen(ST7735_BLACK);
-          pushed.menuState = 1;
+        if (!countdownStarted){
+          myTFT.Settings(2, tft.width()/2 - 35, tft.height()/2 - 7);
+          tft.print("START?");
+        }
+        if (pushed.confirm()) countdownStarted = true;
+        if (countdownStarted) {  
+          countdown++;
+          myTFT.Settings(2, tft.width()/2 - 53, tft.height()/2 - 7);
+          if (countdown == 1 ) tft.print("PRIPRAVIT");
+          if (countdown == 6 ) tft.print("  POZOR  ");
+          if (countdown == 11) {
+            tft.setTextColor(ST77XX_GREEN, ST7735_BLACK);
+            tft.print("  START  ");
+          }
+          if (countdown == 16) {
+            countdown = 0;
+            countdownStarted = false;
+            trackStart = true;
+            tft.setTextColor(ST7735_BLACK, ST7735_WHITE);
+            tft.fillScreen(ST7735_BLACK);
+            pushed.menuState = 0;
+          }
         }
       }
       else {
-        myTFT.Settings(2, tft.width()/2 - 23, tft.height()/2 - 7);
-        tft.print("STOP");
+        myTFT.Settings(2, tft.width()/2 - 29, tft.height()/2 - 7);
+        tft.print("STOP?");
         if (pushed.confirm() == true) {
           trackStart = false;
           tft.fillScreen(ST7735_BLACK);
-          pushed.menuState = 1;
+          pushed.menuState = 0;
         }
       }
     }
