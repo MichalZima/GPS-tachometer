@@ -1,4 +1,4 @@
-//version with error check and loops
+//version with error check and loops and mesuring time for saving data to sd 
 
 #include "Screens.h"
 
