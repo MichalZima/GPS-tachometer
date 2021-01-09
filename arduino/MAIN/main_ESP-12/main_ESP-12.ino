@@ -1,4 +1,4 @@
-//version with error check and loops and mesuring time for saving data to sd 
+//version with error check and loops
 
 #include "Screens.h"
 
@@ -66,7 +66,7 @@ void loop() {
   }
 
   else if (pushed.menuState == 1) {                             //switching to menu
-    pushed.maxState = 8;
+    pushed.maxState = 4;
     menu.Cursor();
     menu.showMenu();
     clearScreen();
@@ -80,11 +80,7 @@ void loop() {
 
   if (passCalculating()) {                                      //saving data
     if (myGPS.position0Saved == false) {
-      Serial.print("before savePosition: ");
-      Serial.println(millis());
       myGPS.savePosition0();
-      Serial.print("after savePosition: ");
-      Serial.println(millis()); 
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
 
@@ -92,12 +88,8 @@ void loop() {
 //      myGPS.arrayPosition++;
 
       if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
-        Serial.print("before save to SD: ");
-        Serial.println(millis());
         mySD.savePosition();
         mySD.saveData();
-        Serial.print("after save to SD: ");
-        Serial.println(millis());
         myGPS.distanceMeasurements = 0;
         course0 = gps.course.deg();
         screens.savedToSD = " save";
@@ -137,6 +129,7 @@ bool passCalculating() {
       }
       else {
         mySD.saveErrorMessage();
+        Loops = 0;
         return false;
       }
     }

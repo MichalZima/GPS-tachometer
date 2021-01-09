@@ -7,72 +7,60 @@ Pushed pushed;
 
 class Menu {
   private:
-    byte x0 = 1;
-    byte x = 1;
+    byte cursorPosition0 = 1;
+    byte cursorPosition = 1;
+    bool cursorBlink = true;
 
   public:
+    bool trackStart = false;
+
+//////////////////////////////////////////////////////////////////////////////////////
+    
     void showMenu() {
-      myTFT.Settings(1, 20, 10);
-      tft.print("session");
+      myTFT.Settings(2, 20, 30);
+      tft.print("TRASA");
 
-      myTFT.Settings(1, 20, 25);
-      tft.print("zobrazenie");
+      myTFT.Settings(2, 20, 50);
+      tft.print("DATA");
 
-      myTFT.Settings(1, 20, 40);
-      tft.print("mody");
+      myTFT.Settings(2, 20, 70);
+      tft.print("UTC");
 
-      myTFT.Settings(1, 20, 55);
-      tft.print("statistiky");
-
-      myTFT.Settings(1, 20, 70);
-      tft.print("wifi");
-
-      myTFT.Settings(1, 20, 85);
-      tft.print("casove pasmo");
-
-      myTFT.Settings(1, 20, 100);
-      tft.print("pamat");
-
-      myTFT.Settings(1, 20, 115);
-      tft.print("exit");
+      myTFT.Settings(2, 20, 90);
+      tft.print("EXIT");
 
     }
+
+//////////////////////////////////////////////////////////////////////////////////////
 
     void Cursor() {
       if (pushed.nextPrevious()) {
-        x0 = x;
+        cursorPosition0 = cursorPosition;
+        cursorBlink = true;
       }
-      myTFT.Settings(1, 10, x0);
+      myTFT.Settings(2, 6, cursorPosition0);
       tft.print(" ");
-      x = pushed.state * 15 - 5;
-      myTFT.Settings(1, 10, x);
-      tft.print(">");
+      cursorPosition = pushed.state * 20 + 10;
+      myTFT.Settings(2, 6, cursorPosition);
+      if (cursorBlink) tft.print(">");
+      if (!cursorBlink) tft.print(" ");
+      cursorBlink = !cursorBlink;
     }
+
+//////////////////////////////////////////////////////////////////////////////////////
 
     void select() {
       switch (pushed.state) {
         case 1:
-          session();
+          track();
           break;
         case 2:
-          screens();
-          break;
-        case 3:
-          modes();
-          break;
-        case 4:
           Stats();
           break;
-        case 5:
-          wifi();
-          break;
-        case 6:
+        case 3:
           setTimeZone();
           break;
-        case 7:
-          memory();
-          break;
-        case 8:
+        case 4:
           Exit();
           break;
         default:
@@ -80,30 +68,41 @@ class Menu {
       }
     }
 
-    void session() {
-      myTFT.Settings(2, 10, 15);
-      tft.print("session");
+//////////////////////////////////////////////////////////////////////////////////////
+
+    void track() {
+      if (!trackStart) {
+        myTFT.Settings(2, tft.width()/2 - 29, tft.height()/2 - 7);
+        tft.print("START");
+        if (pushed.confirm() == true) {
+          trackStart = true;
+          tft.fillScreen(ST7735_BLACK);
+          pushed.menuState = 1;
+        }
+      }
+      else {
+        myTFT.Settings(2, tft.width()/2 - 23, tft.height()/2 - 7);
+        tft.print("STOP");
+        if (pushed.confirm() == true) {
+          trackStart = false;
+          tft.fillScreen(ST7735_BLACK);
+          pushed.menuState = 1;
+        }
+      }
     }
 
-    void screens() {
-      myTFT.Settings(2, 10, 15);
-      tft.print("screens");
-    }
-
-    void modes() {
-      myTFT.Settings(2, 10, 15);
-      tft.print("modes");
-    }
+//////////////////////////////////////////////////////////////////////////////////////
 
     void Stats() {
       myTFT.Settings(2, 10, 15);
       tft.print("stats");
+      if (pushed.confirm() == true) {
+        tft.fillScreen(ST7735_BLACK);
+        pushed.menuState = 1;
+      }
     }
 
-    void wifi() {
-      myTFT.Settings(2, 10, 15);
-      tft.print("wifi");
-    }
+//////////////////////////////////////////////////////////////////////////////////////
 
     void setTimeZone() {
       char Array[3];
@@ -118,10 +117,7 @@ class Menu {
       }    
     }
 
-    void memory() {
-      myTFT.Settings(2, 10, 15);
-      tft.print("memory");
-    }
+//////////////////////////////////////////////////////////////////////////////////////
 
     void Exit() {
       pushed.menuState = 0;

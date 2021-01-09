@@ -31,11 +31,7 @@ class MySD {
     void saveData() {
       File dataFile;
       char fileName[20];
-      Serial.print("before sprintf: ");
-      Serial.println(millis());
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
-      Serial.print("after sprintf and before sd.open: ");
-      Serial.println(millis());
       dataFile = SD.open(fileName, FILE_WRITE);
       if (dataFile) {
         dtostrf(gps.location.lat(), 12, 9, latString);
@@ -84,9 +80,7 @@ class MySD {
         dataFile.print(gps.passedChecksum());
         dataFile.println(" passed \n");
         dataFile.close();
-      }
-      Serial.print("after sd.open: ");
-      Serial.println(millis());      
+      }      
     }
 
     void saveErrorMessage() {
