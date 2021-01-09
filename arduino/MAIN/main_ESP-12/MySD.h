@@ -86,12 +86,18 @@ class MySD {
     void saveErrorMessage() {
       File dataFile;
       char fileName[20];
+      Serial.print("before sprintf: ");
+      Serial.println(millis());
       sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
+      Serial.print("after sprintf and before sd.open: ");
+      Serial.println(millis());
       dataFile = SD.open(fileName, FILE_WRITE);
       if (dataFile) {
         dataFile.print(myGPS.errorMessage);
         dataFile.println("\n");
         dataFile.close();
       }
+      Serial.print("after sd.open: ");
+      Serial.println(millis());
     }
 }; 
