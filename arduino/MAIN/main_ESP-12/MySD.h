@@ -75,13 +75,7 @@ class MySD {
           dataFile.print(gps.course.deg());
           dataFile.print("°_");
           dataFile.print(gps.course.age());
-          dataFile.print("\t");
-          dataFile.print(gps.sentencesWithFix());
-          dataFile.print(" fix\t");
-          dataFile.print(gps.failedChecksum());
-          dataFile.print(" fails\t");
-          dataFile.print(gps.passedChecksum());
-          dataFile.println(" passed \n");
+          dataFile.println("\n");
           dataFile.close();
         } 
       }     
