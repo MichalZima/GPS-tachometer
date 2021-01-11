@@ -40,8 +40,11 @@ class Screens {
     }
 
     void Third() {
-      myTFT.Settings(1, 10, 10);
-      tft.print(myGPS.realDate());
+      if (myGPS.realDate()) {
+        myTFT.Settings(1, 10, 10);
+        tft.print(myGPS.convertedGPSdate); 
+      }
+      printValuesForObservation();
     }
 
     void Fourth() {
