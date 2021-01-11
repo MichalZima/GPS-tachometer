@@ -78,18 +78,18 @@ class Screens {
         tft.print("deg ");
         myTFT.Print(gps.course.age(), 6, 0);
       }
-      myTFT.Settings(1, 10, 100);
-      myTFT.Print(gps.sentencesWithFix(), 5, 0);
-      tft.print(" fixed");
-      myTFT.Settings(1, 10, 110);
-      myTFT.Print(gps.failedChecksum(), 5, 0);
-      tft.print(" failed");
-      myTFT.Settings(1, 10, 120);
-      myTFT.Print(gps.passedChecksum(), 5, 0);
-      tft.print(" passed");
-      myTFT.Settings(1, 10, 130);
-      myTFT.Print(myGPS.distanceMeasurements, 2, 0);
-      myTFT.Settings(1, 10, 130);
-      tft.print(savedToSD);
+//      myTFT.Settings(1, 10, 100);
+//      myTFT.Print(gps.sentencesWithFix(), 5, 0);
+//      tft.print(" fixed");
+//      myTFT.Settings(1, 10, 110);
+//      myTFT.Print(gps.failedChecksum(), 5, 0);
+//      tft.print(" failed");
+//      myTFT.Settings(1, 10, 120);
+//      myTFT.Print(gps.passedChecksum(), 5, 0);
+//      tft.print(" passed");
+//      myTFT.Settings(1, 10, 130);
+//      myTFT.Print(myGPS.distanceMeasurements, 2, 0);
+//      myTFT.Settings(1, 10, 130);
+//      tft.print(savedToSD);
     }
 };

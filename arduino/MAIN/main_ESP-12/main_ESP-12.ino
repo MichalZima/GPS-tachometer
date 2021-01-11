@@ -24,6 +24,7 @@ Screens screens;
 void setup() {
   SD.begin(D8);
   Serial.begin(74880);
+  EEPROM.begin(512);
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
@@ -90,7 +91,7 @@ void loop() {
 //      myGPS.saveToArray();
 //      myGPS.arrayPosition++;
 
-      if (myGPS.distanceMeasurements >= 10 or course0 + 10 < gps.course.deg() or course0 - 10 > gps.course.deg()) {
+      if (myGPS.distanceMeasurements >= 5 or courseDifference > 5) {
         mySD.savePosition();
         mySD.saveData();
         myGPS.distanceMeasurements = 0;
@@ -111,7 +112,6 @@ myGPS.smartDelay(200);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 bool passCalculating() {
@@ -137,6 +137,13 @@ bool passCalculating() {
       }
     }
   }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+int courseDifference() {
+  int difference = course0 - gps.course.deg();
+  return abs(difference); 
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
