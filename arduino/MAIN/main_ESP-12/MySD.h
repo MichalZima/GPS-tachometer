@@ -14,7 +14,7 @@ class MySD {
     void savePosition() {
       File coordinatesFile;
       if (myGPS.realDate()) {
-        String fileName = "coordinates/";
+        String fileName = "trasy/mapy/";
         fileName += myGPS.convertedGPSdate;
         coordinatesFile = SD.open(fileName, FILE_WRITE);
         if (coordinatesFile) {
@@ -33,7 +33,7 @@ class MySD {
     void saveTrackData() {
       File dataFile;
       if (myGPS.realDate()) {
-        String fileName = "data/";
+        String fileName = "trasy/statistiky";
         fileName += myGPS.convertedGPSdate;
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
