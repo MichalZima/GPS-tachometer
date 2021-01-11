@@ -12,6 +12,9 @@ class MyGPS {
     float speeds[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     float hdops[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     char timePlusZone[10];
+    byte confirmDate = 0;
+    int newDate;
+    bool dateChecked = false;
       
   public:
 
@@ -28,6 +31,7 @@ class MyGPS {
     byte arrayPosition = 0;
     float distanceLat0 = gps.location.lat();
     float distanceLong0 = gps.location.lng();
+    char convertedGPSdate[11];
 
 //////////////////////////////////////////////////////////////////////////////////////
     
@@ -87,10 +91,23 @@ class MyGPS {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    char* realDate(){
-      char convertedGPSdate[11];
-      sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
-      return convertedGPSdate;
+    bool realDate(){
+      if (newDate == gps.date.value() and dateChecked) {
+        sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
+        return dateChecked;
+      }
+      else if (newDate == gps.date.value() and !dateChecked) {
+        confirmDate++;
+        if (confirmDate >= 5) dateChecked = true;
+        else dateChecked = false;
+        return dateChecked;
+      }
+      else if (newDate != gps.date.value() and dateChecked) {
+        newDate = gps.date.value();
+        confirmDate = 0; 
+        dateChecked = false;
+        return dateChecked;
+      } 
     }
 
 //////////////////////////////////////////////////////////////////////////////////////

@@ -24,7 +24,6 @@ Screens screens;
 void setup() {
   SD.begin(D8);
   Serial.begin(74880);
-  EEPROM.begin(512);
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
@@ -91,9 +90,9 @@ void loop() {
 //      myGPS.saveToArray();
 //      myGPS.arrayPosition++;
 
-      if (myGPS.distanceMeasurements >= 5 or courseDifference > 5) {
+      if (myGPS.distanceMeasurements >= 5 or courseDifference() > 5) {
         mySD.savePosition();
-        mySD.saveData();
+        mySD.saveTrackData();
         myGPS.distanceMeasurements = 0;
         course0 = gps.course.deg();
         screens.savedToSD = " save";
