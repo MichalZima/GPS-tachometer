@@ -138,9 +138,9 @@ class MyGPS {
       else if (gps.speed.kmph() < 3) errorMessage += "NOT MOVING, ";
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
-      else if (averageSpeed < 10 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
-      else if (averageSpeed > 10 && averageSpeed < 30 && distance0 > 300)  errorMessage += "NOT VALID COORDINATES 2, ";
-      else if (averageSpeed > 30 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 3, ";
+      else if (gps.speed.kmph() < 15 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
+      else if (gps.speed.kmph() > 15 && gps.speed.kmph() < 50 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 2, ";
+      else if (gps.speed.kmph() > 50 && distance0 > 1000)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
       if (errorMessage == " ") return false;
       else if (errorMessage != " ") return true;

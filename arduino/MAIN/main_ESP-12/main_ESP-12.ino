@@ -90,7 +90,7 @@ void loop() {
 //      myGPS.saveToArray();
 //      myGPS.arrayPosition++;
 
-      if (myGPS.distanceMeasurements >= 1 or course0 + 30 < gps.course.deg() or course0 - 30 > gps.course.deg()) {
+      if (myGPS.distanceMeasurements >= 10 or course0 + 10 < gps.course.deg() or course0 - 10 > gps.course.deg()) {
         mySD.savePosition();
         mySD.saveData();
         myGPS.distanceMeasurements = 0;
