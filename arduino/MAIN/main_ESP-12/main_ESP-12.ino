@@ -61,7 +61,7 @@ void loop() {
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData();
-    SD.remove("backup/backup");
+    SD.remove("backup/data.txt");
     EEPROM.write(0, 1);
     EEPROM.commit();
   }
@@ -121,9 +121,10 @@ void loop() {
       if (menu.trackStart) trackSaving();
       
       else if (!menu.trackStart) {
-        if (myGPS.dailyDistance - lastSavedDailyDistance >= 500) {
+        if (myGPS.dailyDistance - lastSavedDailyDistance >= 5) {
           lastSavedDailyDistance = myGPS.dailyDistance;
-          mySD.backup();
+          myTFT.Settings(1, 50, 130);
+          myTFT.Print(mySD.backup(), 8, 0);
         }
       }
     }
@@ -157,11 +158,11 @@ void trackSaving() {
 bool passCalculating() {
   myTFT.Settings(1, 10, 150);
   tft.print(Loops);
-  if (gps.speed.kmph() <= 3) {
+  if (gps.speed.kmph() <= 1) {
     Loops = 0;
     return false;
   }
-  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
+  else if (1 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
   else if (gps.speed.kmph() >= 10) passLoops = 5;
   Loops++;
   if (Loops >= passLoops) {

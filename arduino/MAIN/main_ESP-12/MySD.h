@@ -20,6 +20,7 @@ class MySD {
       if (myGPS.realDate()) {
         fileName = "trasy/mapy/";
         fileName += myGPS.convertedGPSdate;
+        fileName += ".txt";
         coordinatesFile = SD.open(fileName, FILE_WRITE);
         if (coordinatesFile) {
           dtostrf(gps.location.lat(), 9, 6, latString);
@@ -41,6 +42,7 @@ class MySD {
       if (myGPS.realDate()) {
         fileName = "trasy/data/";
         fileName += myGPS.convertedGPSdate;
+        fileName += ".txt";
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
           dtostrf(gps.location.lat(), 12, 9, latString);
@@ -94,6 +96,7 @@ class MySD {
       if (myGPS.realDate()) {
         fileName = "denne_statistiky/";
         fileName += myGPS.convertedGPSdate;
+        fileName += ".txt";
         noTrackFile = SD.open(fileName, FILE_WRITE);
         if (noTrackFile) {
           noTrackFile.print(myGPS.dailyDistance);
@@ -113,6 +116,7 @@ class MySD {
         if (TRACK) fileName = "trasy/data/";
         else if (!TRACK) fileName = "denne_statistiky/";
         fileName += myGPS.convertedGPSdate;
+        fileName += ".txt";
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
           dataFile.print(myGPS.errorMessage);
@@ -124,9 +128,10 @@ class MySD {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    bool backup () {
+    long backup () {
       File backupFile;
-      backupFile = SD.open("backup/backup", FILE_WRITE);
+      long fileSize;
+      backupFile = SD.open("backup/data.txt", FILE_WRITE);
         if (backupFile) {
           backupFile.print(myGPS.convertedGPSdate);
           backupFile.print(" / ");
@@ -134,9 +139,10 @@ class MySD {
           backupFile.print(" / ");
           backupFile.print(myGPS.totalDistance);
           backupFile.print("\n");
+          fileSize = backupFile.size();
           backupFile.close();
-          Serial.println(backupFile.size());
         }
+        return fileSize;
     }
     
 }; 

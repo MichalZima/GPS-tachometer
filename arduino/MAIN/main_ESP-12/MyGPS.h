@@ -146,7 +146,7 @@ class MyGPS {
       else if (gps.satellites.value() < 4) errorMessage += "LACK SATS, "; 
       else if (gps.satellites.age() > 10000) errorMessage += "OLD SATS, ";
       //check if speed was updated and is reliable
-      else if (gps.speed.kmph() < 3) errorMessage += "NOT MOVING, ";
+//      else if (gps.speed.kmph() < 3) errorMessage += "NOT MOVING, ";
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
       else if (gps.speed.kmph() < 15 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
