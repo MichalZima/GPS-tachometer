@@ -19,12 +19,9 @@ class MyGPS {
   public:
 
     String errorMessage = " ";
-    float distance0;
     bool changedToKM = false; 
-    float totalDistance = 0;
     bool position0Saved = false;
     byte distanceMeasurements = 0;
-    float distance = 0;
     int timeZoneValue = 1; 
     float averageSpeed = 0;
     float averageHdop = 0;  
@@ -32,6 +29,11 @@ class MyGPS {
     float distanceLat0 = gps.location.lat();
     float distanceLong0 = gps.location.lng();
     char convertedGPSdate[11];
+    
+    float distance0;
+    float dailyDistance = 0;
+    float trackDistance = 0;
+    float totalDistance = 0; 
 
 //////////////////////////////////////////////////////////////////////////////////////
     
@@ -63,20 +65,10 @@ class MyGPS {
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
       if (!errorCheck()) {
         position0Saved = false;
-        distanceCalculated = true;
-        distance += distance0; 
+        distanceCalculated = true; 
         
-        if (changedToKM == false) totalDistance += distance0;
-        
-  //      else if (totalDistance >= 1000 && changedToKM == false) {
-  //          totalDistance = totalDistance / 1000;
-  //          changedToKM = true;
-  //      }
-  //      
-  //      if(changedToKM == true) {
-  //        distance0 = distance0 / 1000;
-  //        totalDistance += distance0;
-  //      } 
+        totalDistance += distance0;
+       
       return true;
       }
       else return false;
