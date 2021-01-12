@@ -130,9 +130,9 @@ class MySD {
         if (backupFile) {
           backupFile.print(myGPS.realDate());
           backupFile.print(" / ");
-          backupFile.print(myGPS.dailyDistance());
+          backupFile.print(myGPS.dailyDistance);
           backupFile.print(" / ");
-          backupFile.print(myGPS.totalDistance());
+          backupFile.print(myGPS.totalDistance);
           backupFile.print("\n");
           backupFile.close();
         }

@@ -4,6 +4,7 @@
 //made blinking cursor in menu
 
 #include "Screens.h"
+#include "Startup.h"
 
 byte Loops = 0;
 byte passLoops = 5;
@@ -17,6 +18,7 @@ float lastSavedDailyDistance = 0;
 bool previousTrackState = false;
 
 Screens screens;
+Startup startup;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +32,7 @@ void setup() {
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
+  if (!initialCheck()) Serial.println("initial error");
 }
 
 
@@ -108,6 +111,8 @@ void loop() {
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData();
+    EEPROM.update(0, 1);
+    EEPROM.commit();
   }
   
   myGPS.smartDelay(200);
