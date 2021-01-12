@@ -92,8 +92,8 @@ void loop() {
       //      myGPS.saveToArray();
       //      myGPS.arrayPosition++;
       
-      if (trackStart) trackMeasuring();
-      else if (!trackStart) noTrackMeasuring();
+      if (menu.trackStart) trackMeasuring();
+      else if (!menu.trackStart) noTrackMeasuring();
     }
   }
   else {
