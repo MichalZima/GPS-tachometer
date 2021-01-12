@@ -3,11 +3,12 @@
 class Startup {
   public:
     bool initialCheck() {
-      if (EEPROM.read(0) == 1) {
-        EEPROM.update(0, 0);
+      byte eepromValue = EEPROM.read(0); 
+      if (eepromValue == 1) {
+        EEPROM.write(0, 0);
         EEPROM.commit();
         return true;
       }
-      else return false;
+      else if (eepromValue == 0) return false;
     }
 };

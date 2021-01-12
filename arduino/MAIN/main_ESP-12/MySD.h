@@ -128,7 +128,7 @@ class MySD {
       File backupFile;
       backupFile = SD.open("backup/backup", FILE_WRITE);
         if (backupFile) {
-          backupFile.print(myGPS.realDate());
+          backupFile.print(myGPS.convertedGPSdate);
           backupFile.print(" / ");
           backupFile.print(myGPS.dailyDistance);
           backupFile.print(" / ");

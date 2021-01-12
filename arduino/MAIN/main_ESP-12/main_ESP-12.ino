@@ -32,7 +32,8 @@ void setup() {
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
-  if (!initialCheck()) Serial.println("initial error");
+  if (!startup.initialCheck()) Serial.println("initial error");
+  else if (startup.initialCheck()) Serial.println("initialCheck passed");
 }
 
 
@@ -43,6 +44,12 @@ void setup() {
 
 
 void loop() {
+  if (menu.turnOff) {
+    myGPS.dailyDistance += myGPS.trackDistance;
+    mySD.saveNoTrackData();
+    EEPROM.write(0, 1);
+    EEPROM.commit();
+  }
 
   if (pushed.menuState == 0) {                                  //switch to main screen
     if (!SD.begin(D8)) {
@@ -107,12 +114,6 @@ void loop() {
   }
   else {
     screens.savedToSD = " pass";
-  }
-  if (menu.turnOff) {
-    myGPS.dailyDistance += myGPS.trackDistance;
-    mySD.saveNoTrackData();
-    EEPROM.update(0, 1);
-    EEPROM.commit();
   }
   
   myGPS.smartDelay(200);
