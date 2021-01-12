@@ -13,7 +13,7 @@ byte calculatingPassed = 0;
 int locationUpdatedXtimes = 0;
 int course0 = gps.course.deg();
 int timerCount = 0;
-float lastSavedTotalDistance = 0;
+float lastSavedDailyDistance = 0;
 
 Screens screens;
 
@@ -71,7 +71,7 @@ void loop() {
   }
 
   else if (pushed.menuState == 1) {                             //switching to menu
-    pushed.maxState = 4;
+    pushed.maxState = 5;
     menu.Cursor();
     menu.showMenu();
     clearScreen();
@@ -112,8 +112,8 @@ void loop() {
 
 
 void noTrackMeasuring() {
-  if (myGPS.dailyDistance - lastSavedTotalDistance >= 500) {
-    lastSavedTotalDistance = myGPS.dailyDistance;
+  if (myGPS.dailyDistance - lastSavedDailyDistance >= 500) {
+    lastSavedDailyDistance = myGPS.dailyDistance;
     mySD.saveNoTrackData();
   }
 }

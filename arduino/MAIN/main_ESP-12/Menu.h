@@ -15,6 +15,7 @@ class Menu {
 
   public:
     bool trackStart = false;
+    bool turnOff = false;
 
 //////////////////////////////////////////////////////////////////////////////////////
     
@@ -29,6 +30,9 @@ class Menu {
       tft.print("UTC");
 
       myTFT.Settings(2, 20, 90);
+      tft.print("VYPNUT");
+
+      myTFT.Settings(2, 20, 110);
       tft.print("EXIT");
 
     }
@@ -63,6 +67,9 @@ class Menu {
           setTimeZone();
           break;
         case 4:
+          powerOff();
+          break;
+        case 5:
           Exit();
           break;
         default:
@@ -133,6 +140,18 @@ class Menu {
         tft.fillScreen(ST7735_BLACK);
         pushed.menuState = 1;
       }    
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+    void powerOff() {
+      myTFT.Settings(2, tft.width()/2 - 5, tft.height()/2 - 7);
+        tft.println("VYPNUT?");
+        if (pushed.confirm() == true) {
+          tft.fillScreen(ST7735_BLACK);
+          pushed.menuState = 0;
+          turnOff = true;
+        }
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
