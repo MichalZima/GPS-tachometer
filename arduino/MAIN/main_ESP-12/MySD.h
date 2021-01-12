@@ -96,6 +96,8 @@ class MySD {
         fileName += myGPS.convertedGPSdate;
         noTrackFile = SD.open(fileName, FILE_WRITE);
         if (noTrackFile) {
+          noTrackFile.print(myGPS.dailyDistance);
+          noTrackFile.print("/");
           noTrackFile.println(myGPS.totalDistance); 
           noTrackFile.close();
         } 
@@ -124,7 +126,16 @@ class MySD {
 
     bool backup () {
       File backupFile;
-      
+      backupFile = SD.open("backup/backup", FILE_WRITE);
+        if (backupFile) {
+          backupFile.print(myGPS.realDate());
+          backupFile.print(" / ");
+          backupFile.print(myGPS.dailyDistance());
+          backupFile.print(" / ");
+          backupFile.print(myGPS.totalDistance());
+          backupFile.print("\n");
+          backupFile.close();
+        }
     }
     
 }; 

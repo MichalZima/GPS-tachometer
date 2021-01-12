@@ -93,13 +93,23 @@ void loop() {
       //      myGPS.saveToArray();
       //      myGPS.arrayPosition++;
       
-      if (menu.trackStart) trackMeasuring();
-      else if (!menu.trackStart) noTrackMeasuring();
+      if (menu.trackStart) trackSaving();
+      else if (!menu.trackStart) {
+        if (myGPS.dailyDistance - lastSavedDailyDistance >= 500) {
+          lastSavedDailyDistance = myGPS.dailyDistance;
+          mySD.backup();
+        }
+      }
     }
   }
   else {
     screens.savedToSD = " pass";
   }
+  if (menu.turnOff) {
+    myGPS.dailyDistance += myGPS.trackDistance;
+    mySD.saveNoTrackData();
+  }
+  
   myGPS.smartDelay(200);
 }
 
@@ -112,16 +122,9 @@ void loop() {
 
 
 
-void noTrackMeasuring() {
-  if (myGPS.dailyDistance - lastSavedDailyDistance >= 500) {
-    lastSavedDailyDistance = myGPS.dailyDistance;
-    mySD.saveNoTrackData();
-  }
-}
-
 //////////////////////////////////////////////////////////////////////////////////////
 
-void trackMeasuring() {
+void trackSaving() {
   if (myGPS.distanceMeasurements >= 5 or courseDifference() > 5) {
     mySD.savePosition();
     mySD.saveTrackData();
