@@ -61,13 +61,15 @@ class MyGPS {
 
 //////////////////////////////////////////////////////////////////////////////////////
     
-    bool distanceCalculating(){
+    bool distanceCalculating(bool TRACKON){
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
       if (!errorCheck()) {
         position0Saved = false;
-        distanceCalculated = true; 
-        
-        totalDistance += distance0;
+        distanceCalculated = true;
+        float distance0InKM = distance0/1000; 
+        if (TRACKON) trackDistance += distance0InKM;
+        if (!TRACKON) dailyDistance += distance0InKM;
+        totalDistance += distance0InKM;
        
       return true;
       }

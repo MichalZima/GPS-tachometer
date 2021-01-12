@@ -14,6 +14,7 @@ int locationUpdatedXtimes = 0;
 int course0 = gps.course.deg();
 int timerCount = 0;
 float lastSavedDailyDistance = 0;
+bool previousTrackState = false;
 
 Screens screens;
 
@@ -144,7 +145,7 @@ bool passCalculating() {
   Loops++;
   if (Loops >= passLoops) {
     if (myGPS.position0Saved == true) {
-      if (myGPS.distanceCalculating()) {
+      if (myGPS.distanceCalculating(menu.trackStart)) {
         Loops = 0;
         return true;
       }
