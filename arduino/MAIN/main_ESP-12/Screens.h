@@ -18,7 +18,6 @@ class Screens {
       myTFT.Print(gps.speed.kmph(), 4, 1);
       tft.setTextSize(1);
       tft.print(" km/h ");
-      myTFT.Print(gps.speed.age(), 5, 0);
       printValuesForObservation();
     }
 
@@ -59,23 +58,20 @@ class Screens {
       myTFT.Settings(1, 10, 40);
       myTFT.Print(gps.satellites.value(), 2, 0);
       tft.print(" sats ");
-      myTFT.Print(gps.satellites.age(), 6, 0);
       myTFT.Settings(1, 10, 50);
       myTFT.Print(gps.hdop.hdop(), 4, 1);
       tft.print("hdop ");
       myTFT.Print(gps.hdop.age(), 6, 0);
-      if (gps.hdop.hdop() < 90){
+      if (gps.hdop.hdop() < 101){
         myTFT.Settings(1, 10, 60);
         myTFT.Print(myGPS.distance0, 6, 2);
         tft.print("m ");
-        myTFT.Print(gps.location.age(), 6, 0);
         myTFT.Settings(1, 10, 70);
         myTFT.Print(myGPS.totalDistance, 4, 1);
         tft.print("m/km");
         myTFT.Settings(1, 10, 80);
         myTFT.Print(gps.altitude.meters(), 3, 0);
         tft.print("mnm ");
-        myTFT.Print(gps.altitude.age(), 6, 0);
         myTFT.Settings(1, 10, 90);
         myTFT.Print(gps.course.deg(), 3, 0);
         tft.print("deg ");
@@ -92,7 +88,7 @@ class Screens {
 //      tft.print(" passed");
 //      myTFT.Settings(1, 10, 130);
 //      myTFT.Print(myGPS.distanceMeasurements, 2, 0);
-//      myTFT.Settings(1, 10, 130);
-//      tft.print(savedToSD);
+      myTFT.Settings(1, 10, 130);
+      tft.print(savedToSD);
     }
 };
