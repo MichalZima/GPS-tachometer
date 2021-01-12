@@ -121,7 +121,7 @@ void loop() {
       if (menu.trackStart) trackSaving();
       
       else if (!menu.trackStart) {
-        if (myGPS.dailyDistance - lastSavedDailyDistance >= 5) {
+        if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.05) {
           lastSavedDailyDistance = myGPS.dailyDistance;
           myTFT.Settings(1, 50, 130);
           myTFT.Print(mySD.backup(), 8, 0);
