@@ -12,6 +12,8 @@ byte passXTimes;
 byte calculatingPassed = 0;
 int locationUpdatedXtimes = 0;
 int course0 = gps.course.deg();
+int timerCount = 0;
+float lastSavedTotalDistance = 0;
 
 Screens screens;
 
@@ -36,8 +38,8 @@ void setup() {
 
 
 
-void loop() {  
-  
+void loop() {
+
   if (pushed.menuState == 0) {                                  //switch to main screen
     if (!SD.begin(D8)) {
       myTFT.Settings(1, 80, 150);
@@ -45,7 +47,7 @@ void loop() {
     }
     if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
       tft.fillScreen(ST7735_BLACK);
-    } 
+    }
     pushed.maxState = 4;
     switch (pushed.state) {
       case 1:
@@ -79,7 +81,7 @@ void loop() {
     menu.select();
   }
 
-  
+
 
   if (passCalculating()) {                                      //saving data
     if (myGPS.position0Saved == false) {
@@ -87,22 +89,17 @@ void loop() {
       myGPS.distanceMeasurements++;
       screens.savedToSD = "count";
 
-//      myGPS.saveToArray();
-//      myGPS.arrayPosition++;
-
-      if (myGPS.distanceMeasurements >= 5 or courseDifference() > 5) {
-        mySD.savePosition();
-        mySD.saveTrackData();
-        myGPS.distanceMeasurements = 0;
-        course0 = gps.course.deg();
-        screens.savedToSD = " save";
-      }
-    }  
+      //      myGPS.saveToArray();
+      //      myGPS.arrayPosition++;
+      
+      if (trackStart) trackMeasuring();
+      else if (!trackStart) noTrackMeasuring();
+    }
   }
   else {
     screens.savedToSD = " pass";
   }
-myGPS.smartDelay(200);
+  myGPS.smartDelay(200);
 }
 
 
@@ -112,6 +109,28 @@ myGPS.smartDelay(200);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+void noTrackMeasuring() {
+  if (myGPS.totalDistance - lastSavedTotalDistance >= 500) {
+    lastSavedTotalDistance = myGPS.totalDistance;
+    
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+void trackMeasuring() {
+  if (myGPS.distanceMeasurements >= 5 or courseDifference() > 5) {
+    mySD.savePosition();
+    mySD.saveTrackData();
+    myGPS.distanceMeasurements = 0;
+    course0 = gps.course.deg();
+    screens.savedToSD = " save";
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
 
 bool passCalculating() {
   myTFT.Settings(1, 10, 150);
@@ -142,7 +161,7 @@ bool passCalculating() {
 
 int courseDifference() {
   int difference = course0 - gps.course.deg();
-  return abs(difference); 
+  return abs(difference);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
