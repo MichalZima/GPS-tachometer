@@ -61,7 +61,7 @@ class Screens {
       myTFT.Settings(1, 10, 50);
       myTFT.Print(gps.hdop.hdop(), 4, 1);
       tft.print("hdop ");
-      myTFT.Print(gps.hdop.age(), 6, 0);
+      myTFT.Print(gps.hdop.age(), 8, 0);
       if (gps.hdop.hdop() < 101){
         myTFT.Settings(1, 10, 60);
         myTFT.Print(myGPS.distance0, 6, 2);
@@ -75,7 +75,7 @@ class Screens {
         myTFT.Settings(1, 10, 90);
         myTFT.Print(gps.course.deg(), 3, 0);
         tft.print("deg ");
-        myTFT.Print(gps.course.age(), 6, 0);
+        myTFT.Print(gps.course.age(), 8, 0);
       }
 //      myTFT.Settings(1, 10, 100);
 //      myTFT.Print(gps.sentencesWithFix(), 5, 0);

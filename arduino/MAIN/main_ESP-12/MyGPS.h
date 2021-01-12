@@ -14,7 +14,7 @@ class MyGPS {
     char timePlusZone[10];
     byte confirmDate = 0;
     int newDate;
-    bool dateChecked = false;
+    bool dateChecked = true;
       
   public:
 
