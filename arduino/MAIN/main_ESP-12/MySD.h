@@ -33,7 +33,7 @@ class MySD {
     void saveTrackData() {
       File dataFile;
       if (myGPS.realDate()) {
-        String fileName = "trasy/statistiky";
+        String fileName = "trasy/data/";
         fileName += myGPS.convertedGPSdate;
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
@@ -83,13 +83,15 @@ class MySD {
 
     void saveErrorMessage() {
       File dataFile;
-      char fileName[20];
-      sprintf(fileName, "data/%02d.%02d.%02d.txt", gps.date.day(), gps.date.month(), gps.date.year());
-      dataFile = SD.open(fileName, FILE_WRITE);
-      if (dataFile) {
-        dataFile.print(myGPS.errorMessage);
-        dataFile.println("\n");
-        dataFile.close();
+      if (myGPS.realDate()) {
+        String fileName = "trasy/data/";
+        fileName += myGPS.convertedGPSdate;
+        dataFile = SD.open(fileName, FILE_WRITE);
+        if (dataFile) {
+          dataFile.print(myGPS.errorMessage);
+          dataFile.println("\n");
+          dataFile.close();
+        }
       }
     }
 }; 
