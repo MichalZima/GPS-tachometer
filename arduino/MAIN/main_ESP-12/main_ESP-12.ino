@@ -114,7 +114,7 @@ void loop() {
 void noTrackMeasuring() {
   if (myGPS.totalDistance - lastSavedTotalDistance >= 500) {
     lastSavedTotalDistance = myGPS.totalDistance;
-    
+    mySD.saveNoTrackData();
   }
 }
 

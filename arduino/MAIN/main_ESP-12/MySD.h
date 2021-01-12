@@ -5,16 +5,20 @@
 MyGPS myGPS;
 
 class MySD {
+  
   private:
     char latString[13];
     char longString[13];
+    String fileName;
+
+//////////////////////////////////////////////////////////////////////////////////////
 
   public:
 
     void savePosition() {
       File coordinatesFile;
       if (myGPS.realDate()) {
-        String fileName = "trasy/mapy/";
+        fileName = "trasy/mapy/";
         fileName += myGPS.convertedGPSdate;
         coordinatesFile = SD.open(fileName, FILE_WRITE);
         if (coordinatesFile) {
@@ -30,10 +34,12 @@ class MySD {
       }
     }
 
+//////////////////////////////////////////////////////////////////////////////////////
+
     void saveTrackData() {
       File dataFile;
       if (myGPS.realDate()) {
-        String fileName = "trasy/data/";
+        fileName = "trasy/data/";
         fileName += myGPS.convertedGPSdate;
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
@@ -81,10 +87,29 @@ class MySD {
       }     
     }
 
+//////////////////////////////////////////////////////////////////////////////////////
+
+    void saveNoTrackData() {
+      File noTrackFile;
+      if (myGPS.realDate()) {
+        fileName = "denne_statistiky/";
+        fileName += myGPS.convertedGPSdate;
+        noTrackFile = SD.open(fileName, FILE_WRITE);
+        if (noTrackFile) {
+          noTrackFile.println(myGPS.totalDistance); 
+          noTrackFile.close();
+        } 
+      }     
+    }
+    
+
+//////////////////////////////////////////////////////////////////////////////////////
+
     void saveErrorMessage() {
       File dataFile;
       if (myGPS.realDate()) {
-        String fileName = "trasy/data/";
+        if (menu.trackStart) fileName = "trasy/data/";
+        else if (!menu.trackStart) fileName = "denne_statistiky/";
         fileName += myGPS.convertedGPSdate;
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
