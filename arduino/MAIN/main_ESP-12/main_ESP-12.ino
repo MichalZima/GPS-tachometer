@@ -149,7 +149,8 @@ bool passCalculating() {
         return true;
       }
       else {
-        mySD.saveErrorMessage();
+        if (menu.trackStart) mySD.saveErrorMessage(true);
+        if (!menu.trackStart) mySD.saveErrorMessage(false);
         Loops = 0;
         return false;
       }

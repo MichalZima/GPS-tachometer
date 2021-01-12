@@ -105,11 +105,11 @@ class MySD {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    void saveErrorMessage() {
+    void saveErrorMessage(bool TRACK) {
       File dataFile;
       if (myGPS.realDate()) {
-        if (menu.trackStart) fileName = "trasy/data/";
-        else if (!menu.trackStart) fileName = "denne_statistiky/";
+        if (TRACK) fileName = "trasy/data/";
+        else if (!TRACK) fileName = "denne_statistiky/";
         fileName += myGPS.convertedGPSdate;
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
