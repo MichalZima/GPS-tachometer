@@ -18,7 +18,7 @@ class MyTFT {
       tft.initR(INITR_BLACKTAB);
       tft.fillScreen(ST7735_BLACK);
       tft.setFont();
-      printColor(ST7735_WHITE);
+      tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
     }
 
     void Settings(byte TEXTSIZE, byte Y, byte X) {
@@ -31,13 +31,10 @@ class MyTFT {
       tft.print(convertString);
     }
 
-    void printColor (const uint16_t TEXTCOLOR) {
       //    const uint16_t  blackColor        = ST7735_BLACK;
       //    const uint16_t  redColor          = 0xF800;
       //    const uint16_t  greenColor        = 0x07E0;
       //    const uint16_t  yellowColor       = 0xFFE0;
       //    const uint16_t  whiteColor        = ST7735_WHITE;
-      tft.setTextColor(TEXTCOLOR, ST7735_BLACK);
-    }
 
 };
