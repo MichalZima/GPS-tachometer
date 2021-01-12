@@ -1,9 +1,6 @@
 #include "mySD.h"
 #include "Menu.h"
 
-
-
-
 MySD mySD;
 Menu menu;
 

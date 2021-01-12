@@ -4,7 +4,6 @@
 //made blinking cursor in menu
 
 #include "Screens.h"
-#include "Startup.h"
 #include <EEPROM.h>
 
 byte Loops = 0;
@@ -62,6 +61,7 @@ void loop() {
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData();
+    SD.remove("backup/backup");
     EEPROM.write(0, 1);
     EEPROM.commit();
   }
@@ -119,6 +119,7 @@ void loop() {
       //      myGPS.arrayPosition++;
       
       if (menu.trackStart) trackSaving();
+      
       else if (!menu.trackStart) {
         if (myGPS.dailyDistance - lastSavedDailyDistance >= 500) {
           lastSavedDailyDistance = myGPS.dailyDistance;
@@ -127,6 +128,7 @@ void loop() {
       }
     }
   }
+  
   else {
     screens.savedToSD = " pass";
   }
@@ -136,14 +138,9 @@ void loop() {
 
 
 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 void trackSaving() {
   if (myGPS.distanceMeasurements >= 5 or courseDifference() > 5) {

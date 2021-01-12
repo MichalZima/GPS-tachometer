@@ -135,6 +135,7 @@ class MySD {
           backupFile.print(myGPS.totalDistance);
           backupFile.print("\n");
           backupFile.close();
+          Serial.println(backupFile.size());
         }
     }
     
