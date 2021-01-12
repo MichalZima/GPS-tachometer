@@ -142,16 +142,16 @@ class MyGPS {
       errorMessage = " ";
       //check signal strength and age
       if (gps.hdop.hdop() > 10) errorMessage += "HIGH HDOP, ";
-      else if (gps.hdop.age() > 10000) errorMessage += "OLD HDOP, ";
-      else if (gps.satellites.value() < 4) errorMessage += "LACK SATS, "; 
-      else if (gps.satellites.age() > 10000) errorMessage += "OLD SATS, ";
+      if (gps.hdop.age() > 10000) errorMessage += "OLD HDOP, ";
+      if (gps.satellites.value() < 1) errorMessage += "LACK SATS, "; 
+      if (gps.satellites.age() > 10000) errorMessage += "OLD SATS, ";
       //check if speed was updated and is reliable
 //      else if (gps.speed.kmph() < 3) errorMessage += "NOT MOVING, ";
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
-      else if (gps.speed.kmph() < 15 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
-      else if (gps.speed.kmph() > 15 && gps.speed.kmph() < 50 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 2, ";
-      else if (gps.speed.kmph() > 50 && distance0 > 1000)  errorMessage += "NOT VALID COORDINATES 3, ";
+      if (gps.speed.kmph() < 15 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
+      if (gps.speed.kmph() > 15 && gps.speed.kmph() < 50 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 2, ";
+      if (gps.speed.kmph() > 50 && distance0 > 1000)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
       if (errorMessage == " ") return false;
       else if (errorMessage != " ") return true;
