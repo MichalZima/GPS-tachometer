@@ -5,6 +5,7 @@
 
 #include "Screens.h"
 #include "Startup.h"
+#include <EEPROM.h>
 
 byte Loops = 0;
 byte passLoops = 5;
@@ -18,22 +19,36 @@ float lastSavedDailyDistance = 0;
 bool previousTrackState = false;
 
 Screens screens;
-Startup startup;
+
+
+bool startup() {
+  if (EEPROM.read(0) == 1) {
+    EEPROM.write(0, 0);
+    EEPROM.commit();
+    return true;
+  }
+  else {
+    tft.fillScreen(ST7735_BLACK);
+    myTFT.Settings(1, 10, 10);
+    tft.print("backup");
+  }
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 void setup() {
   SD.begin(D8);
   Serial.begin(74880);
+  EEPROM.begin(512);
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
-  if (!startup.initialCheck()) Serial.println("initial error");
-  else if (startup.initialCheck()) Serial.println("initialCheck passed");
+  if (!startup()) Serial.println("initial error");
+  else Serial.println("initialCheck passed");
 }
 
 
