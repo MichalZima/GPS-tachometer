@@ -133,13 +133,13 @@ class MySD {
       long fileSize;
       backupFile = SD.open("backup/data.txt", FILE_WRITE);
         if (backupFile) {
-          backupFile.print("*/");
+          backupFile.print("*");
           backupFile.print(myGPS.convertedGPSdate);
-          backupFile.print("/,");
+          backupFile.print(";");
           backupFile.print(myGPS.dailyDistance);
-          backupFile.print(",-");
+          backupFile.print(",");
           backupFile.print(myGPS.totalDistance);
-          backupFile.print("-\n");
+          backupFile.print(".\n");
           fileSize = backupFile.size();
           backupFile.close();
         }

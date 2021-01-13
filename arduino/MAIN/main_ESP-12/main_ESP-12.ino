@@ -32,6 +32,7 @@ bool startup() {
       delay(10);
     }
     if (!initialCheck()) {
+      return false;
     }
     else return true;
   }
@@ -52,29 +53,39 @@ bool initialCheck() {
     tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
     tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
     File file;
-    file = SD.open("backup/data.txt");
-    unsigned long fileSize = file.size();
-    int i = 0;
-    while (true) {
-      file.seek(fileSize - i);
-      if (file.peek() == "*") {
-        String readString = file.read();
-        Serial.println(readString);
-        String  DATE = readString.substring(readString.indexOf("/") + 1 ,  readString.lastIndexOf("/")) ;
-        String  DAILYDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(",")) ;
-        String  TOTALDISTANCE = readString.substring(readString.indexOf("-") + 1 ,  readString.lastIndexOf("-")) ;
-        Serial.println(DATE);
-        Serial.println(DAILYDISTANCE);
-        Serial.println(TOTALDISTANCE);
-        delay(10000);
+    if (SD.exists("backup/data.txt")) {
+      file = SD.open("backup/data.txt");
+      unsigned long Position = file.size();
+      unsigned long fileSize = Position;
+      String symbol;
+      while (true) {
+        file.seek(Position);
+        symbol = char(file.read());
+        if (symbol == "*") {
+          String readString;
+          readString += symbol;
+          while (symbol != "."){
+            symbol = char(file.read());
+            readString += symbol;
+            Serial.print(symbol);
+          }
+          Serial.println();
+          Serial.println(readString);
+          String  DATE = readString.substring(readString.indexOf("") + 1 ,  readString.lastIndexOf("/")) ;
+          String  DAILYDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(",")) ;
+          String  TOTALDISTANCE = readString.substring(readString.indexOf("-") + 1 ,  readString.lastIndexOf("-")) ;
+          Serial.println(DATE);
+          Serial.println(DAILYDISTANCE);
+          Serial.println(TOTALDISTANCE);
+          return false;
+        }
+        else Position--;
       }
-      else i++;
     }
-    String readString = mySD.;
-    String SUBSTRING = readString.substring(readString.indexOf("") + 1 ,  readString.lastIndexOf("\t")) ;
-    Serial.println(SUBSTRING);
-    delay(3300);
-    tft.fillScreen(ST7735_BLACK);
+    else {
+      tft.fillScreen(ST7735_BLACK);
+      return false;
+    }
   }
 }
 
