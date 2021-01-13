@@ -71,9 +71,9 @@ bool initialCheck() {
           }
           Serial.println();
           Serial.println(readString);
-          String  DATE = readString.substring(readString.indexOf("") + 1 ,  readString.lastIndexOf("/")) ;
-          String  DAILYDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(",")) ;
-          String  TOTALDISTANCE = readString.substring(readString.indexOf("-") + 1 ,  readString.lastIndexOf("-")) ;
+          String  DATE = readString.substring(readString.indexOf("*") + 1 ,  readString.lastIndexOf(";")) ;
+          String  DAILYDISTANCE = readString.substring(readString.indexOf(";") + 1 ,  readString.lastIndexOf(",")) ;
+          String  TOTALDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(".")) ;
           Serial.println(DATE);
           Serial.println(DAILYDISTANCE);
           Serial.println(TOTALDISTANCE);
@@ -83,7 +83,6 @@ bool initialCheck() {
       }
     }
     else {
-      tft.fillScreen(ST7735_BLACK);
       return false;
     }
   }
@@ -102,6 +101,7 @@ void setup() {
   myTFT.tftSetup();
   pushed.buttonsSetup();
   startup();
+  tft.fillScreen(ST7735_BLACK);
 }
 
 
