@@ -23,18 +23,17 @@ Screens screens;
 
 bool startup() {
   while (true) {
-    if (millis() > 300000) return false;
-    if (myGPS.errorCheck()) {
-      myTFT.Settings(1, 10, 10);
-      tft.print("success");
-      delay(500);
-      return true;
-    }
     tft.fillScreen(ST77XX_BLACK);
-    tft.drawRect(10, tft.height()/2, 108, 10, ST7735_WHITE);
-    for (int16_t x=10; x < 118; x++) {
-      tft.fillRect(10, tft.height()/2, x, 10, ST7735_WHITE);
+    delay(100);
+    tft.drawRect(10, 80, 108, 10, ST7735_WHITE);
+    delay(100);
+    for (int16_t x=0; x < 108; x++) {
+      tft.fillRect(10, 80, x, 10, ST7735_WHITE);
+      delay(10);
     }
+    if (!initialCheck()) {
+    }
+    else return true;
   }
 }
 
@@ -49,7 +48,9 @@ bool initialCheck() {
   else {
     tft.fillScreen(ST7735_BLACK);
     myTFT.Settings(1, 10, 10);
-    tft.print("backup");
+    tft.print("zariadenie sa nevyplo spravne");
+    delay(2000);
+    tft.fillScreen(ST7735_BLACK);
   }
 }
 
@@ -66,8 +67,6 @@ void setup() {
   myTFT.tftSetup();
   pushed.buttonsSetup();
   startup();
-  if (!initialCheck()) Serial.println("initial error");
-  else Serial.println("initialCheck passed");
 }
 
 
