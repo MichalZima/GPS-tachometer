@@ -19,8 +19,28 @@ bool previousTrackState = false;
 
 Screens screens;
 
+//////////////////////////////////////////////////////////////////////////////////////
 
 bool startup() {
+  while (true) {
+    if (millis() > 300000) return false;
+    if (myGPS.errorCheck()) {
+      myTFT.Settings(1, 10, 10);
+      tft.print("success");
+      delay(500);
+      return true;
+    }
+    tft.fillScreen(ST77XX_BLACK);
+    tft.drawRect(10, tft.height()/2, 108, 10, ST7735_WHITE);
+    for (int16_t x=10; x < 118; x++) {
+      tft.fillRect(10, tft.height()/2, x, 10, ST7735_WHITE);
+    }
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+bool initialCheck() {
   if (EEPROM.read(0) == 1) {
     EEPROM.write(0, 0);
     EEPROM.commit();
@@ -34,7 +54,6 @@ bool startup() {
 }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,7 +65,8 @@ void setup() {
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
-  if (!startup()) Serial.println("initial error");
+  startup();
+  if (!initialCheck()) Serial.println("initial error");
   else Serial.println("initialCheck passed");
 }
 
