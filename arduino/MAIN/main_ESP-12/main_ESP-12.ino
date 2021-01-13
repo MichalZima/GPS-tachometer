@@ -51,7 +51,29 @@ bool initialCheck() {
     myTFT.Settings(1, 10, 20);
     tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
     tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
-    delay(3000);
+    File file;
+    file = SD.open("backup/data.txt");
+    unsigned long fileSize = file.size();
+    int i = 0;
+    while (true) {
+      file.seek(fileSize - i);
+      if (file.peek() == "*") {
+        String readString = file.read();
+        Serial.println(readString);
+        String  DATE = readString.substring(readString.indexOf("/") + 1 ,  readString.lastIndexOf("/")) ;
+        String  DAILYDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(",")) ;
+        String  TOTALDISTANCE = readString.substring(readString.indexOf("-") + 1 ,  readString.lastIndexOf("-")) ;
+        Serial.println(DATE);
+        Serial.println(DAILYDISTANCE);
+        Serial.println(TOTALDISTANCE);
+        delay(10000);
+      }
+      else i++;
+    }
+    String readString = mySD.;
+    String SUBSTRING = readString.substring(readString.indexOf("") + 1 ,  readString.lastIndexOf("\t")) ;
+    Serial.println(SUBSTRING);
+    delay(3300);
     tft.fillScreen(ST7735_BLACK);
   }
 }
