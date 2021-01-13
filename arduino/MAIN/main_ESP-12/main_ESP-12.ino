@@ -43,13 +43,15 @@ bool initialCheck() {
   if (EEPROM.read(0) == 1) {
     EEPROM.write(0, 0);
     EEPROM.commit();
+    tft.fillScreen(ST77XX_BLACK);
     return true;
   }
   else {
     tft.fillScreen(ST7735_BLACK);
-    myTFT.Settings(1, 10, 10);
-    tft.print("zariadenie sa nevyplo spravne");
-    delay(2000);
+    myTFT.Settings(1, 10, 20);
+    tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
+    tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
+    delay(3000);
     tft.fillScreen(ST7735_BLACK);
   }
 }
