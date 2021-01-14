@@ -31,10 +31,7 @@ bool startup() {
       tft.fillRect(10, 80, x, 10, ST7735_WHITE);
       delay(10);
     }
-    if (!initialCheck()) {
-      return false;
-    }
-    else return true;
+    initialCheck();
   }
 }
 
@@ -42,7 +39,7 @@ bool startup() {
 
 bool initialCheck() {
   File file;
-  String LASTDATE = EEPROM.get(0,LASTDATE);
+  String LASTDATE = readLastDate(10);
   Serial.println(LASTDATE);
   if (SD.exists("backup/data.txt")) {
     myTFT.Settings(1, 10, 20);
@@ -88,7 +85,7 @@ bool initialCheck() {
   }
   
   else {
-    String NAME = "denne_statistiky" + LASTDATE + ".txt";
+    String NAME = "denne_statistiky/" + LASTDATE + ".txt";
     file = SD.open(NAME);
     String DISTANCE;
     String symbol;
@@ -103,6 +100,22 @@ bool initialCheck() {
   }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+
+String readLastDate(char add) {
+  int i;
+  char data[100];
+  int len=0;
+  unsigned char k;
+  k=EEPROM.read(add);
+  while(k != '\0' && len<500) {    
+    k=EEPROM.read(add+len);
+    data[len]=k;
+    len++;
+  }
+  data[len]='\0';
+  return String(data);
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -133,7 +146,7 @@ void loop() {
     mySD.saveNoTrackData();
     SD.remove("backup/data.txt");
     String lastDate = myGPS.convertedGPSdate;
-    EEPROM.put(0, lastDate);
+    EEPROM.put(10, lastDate);
     EEPROM.commit();
   }
 
