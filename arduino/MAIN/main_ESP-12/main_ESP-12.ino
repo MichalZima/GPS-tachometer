@@ -74,13 +74,13 @@ bool initialCheck() {
         Serial.println(DATE);
         Serial.println(DAILYDISTANCE);
         Serial.println(TOTALDISTANCE);
-        myGPS.convertedGPSdate = DATE;
+        DATE.toCharArray(myGPS.convertedGPSdate, 11);
         myGPS.dailyDistance = DAILYDISTANCE.toFloat();
         myGPS.totalDistance = TOTALDISTANCE.toFloat();
-        MySD.saveNoTrackData();
+        mySD.saveNoTrackData();
         myGPS.dailyDistance = 0;
         delay(500);
-        tft.print("   hotovo")
+        tft.print("   hotovo");
         return false;
       }
       else Position--;
@@ -91,7 +91,7 @@ bool initialCheck() {
     String NAME = "denne_statistiky" + LASTDATE + ".txt";
     file = SD.open(NAME);
     String DISTANCE;
-    char symbol;
+    String symbol;
     while (true) {
       symbol = char(file.read());
       if (symbol == "/"){
@@ -132,7 +132,7 @@ void loop() {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData();
     SD.remove("backup/data.txt");
-    String lastDate = myGPS.convertedGPSdate
+    String lastDate = myGPS.convertedGPSdate;
     EEPROM.put(0, lastDate);
     EEPROM.commit();
   }
