@@ -41,52 +41,68 @@ bool startup() {
 //////////////////////////////////////////////////////////////////////////////////////
 
 bool initialCheck() {
-  if (EEPROM.read(0) == 1) {
-    EEPROM.write(0, 0);
-    EEPROM.commit();
-    tft.fillScreen(ST77XX_BLACK);
-    return true;
-  }
-  else {
-    tft.fillScreen(ST7735_BLACK);
+  File file;
+  String LASTDATE = EEPROM.get(0,LASTDATE);
+  Serial.println(LASTDATE);
+  if (SD.exists("backup/data.txt")) {
     myTFT.Settings(1, 10, 20);
     tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
     tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
-    File file;
-    if (SD.exists("backup/data.txt")) {
-      file = SD.open("backup/data.txt");
-      unsigned long Position = file.size();
-      unsigned long fileSize = Position;
-      String symbol;
-      while (true) {
-        file.seek(Position);
-        symbol = char(file.read());
-        if (symbol == "*") {
-          String readString;
+    file = SD.open("backup/data.txt");
+    unsigned long Position = file.size();
+    unsigned long fileSize = Position;
+    String symbol;
+    while (true) {
+      file.seek(Position);
+      symbol = char(file.read());
+      if (symbol == "*") {
+        String readString;
+        readString += symbol;
+        while (symbol != "."){
+          symbol = char(file.read());
           readString += symbol;
-          while (symbol != "."){
-            symbol = char(file.read());
-            readString += symbol;
-            Serial.print(symbol);
-          }
-          Serial.println();
-          Serial.println(readString);
-          String  DATE = readString.substring(readString.indexOf("*") + 1 ,  readString.lastIndexOf(";")) ;
-          String  DAILYDISTANCE = readString.substring(readString.indexOf(";") + 1 ,  readString.lastIndexOf(",")) ;
-          String  TOTALDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(".")) ;
-          Serial.println(DATE);
-          Serial.println(DAILYDISTANCE);
-          Serial.println(TOTALDISTANCE);
-          return false;
+          Serial.print(symbol);
         }
-        else Position--;
+        file.close();
+        delay(300);
+        tft.print("  aktualizujem data\n\n\n");
+        Serial.println();
+        Serial.println(readString);
+        String  DATE = readString.substring(readString.indexOf("*") + 1 ,  readString.lastIndexOf(";")) ;
+        String  DAILYDISTANCE = readString.substring(readString.indexOf(";") + 1 ,  readString.lastIndexOf(",")) ;
+        String  TOTALDISTANCE = readString.substring(readString.indexOf(",") + 1 ,  readString.lastIndexOf(".")) ;
+        Serial.println(DATE);
+        Serial.println(DAILYDISTANCE);
+        Serial.println(TOTALDISTANCE);
+        myGPS.convertedGPSdate = DATE;
+        myGPS.dailyDistance = DAILYDISTANCE.toFloat();
+        myGPS.totalDistance = TOTALDISTANCE.toFloat();
+        MySD.saveNoTrackData();
+        myGPS.dailyDistance = 0;
+        delay(500);
+        tft.print("   hotovo")
+        return false;
       }
+      else Position--;
     }
-    else {
-      return false;
+  }
+  
+  else {
+    String NAME = "denne_statistiky" + LASTDATE + ".txt";
+    file = SD.open(NAME);
+    String DISTANCE;
+    char symbol;
+    while (true) {
+      symbol = char(file.read());
+      if (symbol == "/"){
+        myGPS.totalDistance = DISTANCE.toFloat();
+        return true; 
+      }
+      else DISTANCE += symbol;
     }
   }
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +132,8 @@ void loop() {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData();
     SD.remove("backup/data.txt");
-    EEPROM.write(0, 1);
+    String lastDate = myGPS.convertedGPSdate
+    EEPROM.put(0, lastDate);
     EEPROM.commit();
   }
 

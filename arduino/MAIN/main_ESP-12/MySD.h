@@ -99,9 +99,9 @@ class MySD {
         fileName += ".txt";
         noTrackFile = SD.open(fileName, FILE_WRITE);
         if (noTrackFile) {
-          noTrackFile.print(myGPS.dailyDistance);
+          noTrackFile.print(myGPS.totalDistance);
           noTrackFile.print("/");
-          noTrackFile.println(myGPS.totalDistance); 
+          noTrackFile.println(myGPS.dailyDistance); 
           noTrackFile.close();
         } 
       }     
