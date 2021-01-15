@@ -22,17 +22,17 @@ Screens screens;
 //////////////////////////////////////////////////////////////////////////////////////
 
 bool startup() {
-  while (true) {
-    tft.fillScreen(ST77XX_BLACK);
-    delay(100);
-    tft.drawRect(10, 80, 108, 10, ST7735_WHITE);
-    delay(100);
-    for (int16_t x=0; x < 108; x++) {
-      tft.fillRect(10, 80, x, 10, ST7735_WHITE);
-      delay(10);
-    }
-    //initialCheck();
+  tft.fillScreen(ST77XX_BLACK);
+  delay(100);
+  myTFT.Settings(1, 36, 76);
+  tft.print("Nahravam...");
+  tft.drawRect(10, 75, 108, 10, ST7735_WHITE);
+  delay(100);
+  for (int16_t x=0; x < 108; x++) {
+    tft.fillRect(10, 75, x, 10, ST7735_WHITE);
+    delay(10);
   }
+  initialCheck();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
