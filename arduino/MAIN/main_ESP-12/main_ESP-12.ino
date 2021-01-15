@@ -120,7 +120,7 @@ void setup() {
 void loop() {
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
-    unsigned long LINE = mySD.saveNoTrackData();
+    mySD.saveNoTrackData();
     SD.remove("backup/data.txt");
     EEPROM.put(0, myGPS.totalDistance);
     EEPROM.commit();
