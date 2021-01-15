@@ -94,11 +94,10 @@ class MySD {
     void saveNoTrackData() {
       File noTrackFile;
       if (myGPS.realDate()) {
-        fileName = "denne_statistiky/";
-        fileName += myGPS.convertedGPSdate;
-        fileName += ".txt";
-        noTrackFile = SD.open(fileName, FILE_WRITE);
+        noTrackFile = SD.open("denne_statistiky.txt", FILE_WRITE);
         if (noTrackFile) {
+          noTrackFile.print(myGPS.convertedGPSdate);
+          noTrackFile.print(" ");
           noTrackFile.print(myGPS.totalDistance);
           noTrackFile.print("/");
           noTrackFile.println(myGPS.dailyDistance); 
@@ -106,7 +105,6 @@ class MySD {
         } 
       }     
     }
-    
 
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -134,12 +132,12 @@ class MySD {
       backupFile = SD.open("backup/data.txt", FILE_WRITE);
         if (backupFile) {
           backupFile.print("*");
-          backupFile.print(myGPS.convertedGPSdate);
-          backupFile.print(";");
-          backupFile.print(myGPS.dailyDistance);
-          backupFile.print(",");
-          backupFile.print(myGPS.totalDistance);
-          backupFile.print(".\n");
+          noTrackFile.print(myGPS.convertedGPSdate);
+          noTrackFile.print(" ");
+          noTrackFile.print(myGPS.totalDistance);
+          noTrackFile.print("/");
+          noTrackFile.print(myGPS.dailyDistance);
+          backupFile.print("*\n"); 
           fileSize = backupFile.size();
           backupFile.close();
         }
