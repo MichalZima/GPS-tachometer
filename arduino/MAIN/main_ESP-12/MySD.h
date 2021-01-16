@@ -112,7 +112,6 @@ class MySD {
       File dataFile;
       if (myGPS.realDate()) {
         if (TRACK) fileName = "trasy/data/";
-        else if (!TRACK) fileName = "denne_statistiky/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
         dataFile = SD.open(fileName, FILE_WRITE);
@@ -137,7 +136,7 @@ class MySD {
           backupFile.print(myGPS.totalDistance);
           backupFile.print("/");
           backupFile.print(myGPS.dailyDistance);
-          backupFile.print("*\n"); 
+          backupFile.print(";\n"); 
           fileSize = backupFile.size();
           backupFile.close();
         }

@@ -24,15 +24,15 @@ Screens screens;
 bool startup() {
   tft.fillScreen(ST77XX_BLACK);
   delay(100);
-  myTFT.Settings(1, 36, 76);
-  tft.print("Nahravam...");
+  myTFT.Settings(1, 34, 76);
+  tft.print("Nacitavam...");
   tft.drawRect(10, 75, 108, 10, ST7735_WHITE);
   delay(100);
   for (int16_t x=0; x < 108; x++) {
     tft.fillRect(10, 75, x, 10, ST7735_WHITE);
     delay(10);
   }
-  initialCheck();
+  tft.fillScreen(ST77XX_BLACK);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -44,29 +44,28 @@ bool initialCheck() {
   if (SD.exists("backup/data.txt")) {
     myTFT.Settings(1, 10, 20);
     tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
+    myGPS.smartDelay(1000);
     tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
     
-    unsigned long Position = file.size();
-    unsigned long fileSize = Position;
     String symbol;
     
     file = SD.open("backup/data.txt");
-    
+    unsigned long Position = file.size();
     while (true) {
       file.seek(Position);
       symbol = char(file.read());
       
-      if (symbol == "*") {
-        lastLine += symbol;
-        
-        while (symbol != "."){
+      if (symbol == "*") { 
+        while (true){
           symbol = char(file.read());
-          lastLine += symbol;
-          Serial.print(symbol);
+          if (symbol != ";") {  
+            lastLine += symbol;
+          }
+          else break;
         }
         file.close();
         
-        delay(300);
+        myGPS.smartDelay(1000);
         tft.print("  aktualizujem data\n\n\n");
         Serial.println();
         Serial.println(lastLine);
@@ -79,8 +78,9 @@ bool initialCheck() {
           noTrackFile.close();
         }
         
-        delay(500);
-        tft.print("   hotovo");
+        myGPS.smartDelay(1000);
+        tft.print("  hotovo");
+        myGPS.smartDelay(1000);
         return false;
       }
       else Position--;
@@ -100,13 +100,21 @@ bool initialCheck() {
 
 
 void setup() {
-  SD.begin(D8);
   Serial.begin(74880);
   EEPROM.begin(512);
   myGPS.gpsSetup();
   myTFT.tftSetup();
   pushed.buttonsSetup();
+  SD.begin(D8);
   startup();
+  if (SD.begin(D8)) initialCheck();
+  else {
+    myTFT.Settings(1, 10, 10);
+    tft.setTextColor(ST7735_RED, ST7735_BLACK);
+    tft.print("nepodarilo sa \n nacitat kartu sd \n\n vloz sd kartu");
+    tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
+    myGPS.smartDelay(3000);
+  }
   tft.fillScreen(ST7735_BLACK);
 }
 
@@ -149,8 +157,6 @@ void loop() {
         screens.Fourth();
         break;
       default:
-        myTFT.Settings(3, 10, 10);
-        tft.print("default");
         break;
     }
     clearScreen();
@@ -181,7 +187,7 @@ void loop() {
       if (menu.trackStart) trackSaving();
       
       else if (!menu.trackStart) {
-        if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.05) {
+        if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.5) {
           lastSavedDailyDistance = myGPS.dailyDistance;
           myTFT.Settings(1, 50, 130);
           myTFT.Print(mySD.backup(), 8, 0);
@@ -218,11 +224,11 @@ void trackSaving() {
 bool passCalculating() {
   myTFT.Settings(1, 10, 150);
   tft.print(Loops);
-  if (gps.speed.kmph() <= 1) {
+  if (gps.speed.kmph() <= 3) {
     Loops = 0;
     return false;
   }
-  else if (1 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
+  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
   else if (gps.speed.kmph() >= 10) passLoops = 5;
   Loops++;
   if (Loops >= passLoops) {
