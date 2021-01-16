@@ -24,15 +24,12 @@ class Menu {
       tft.print("TRASA");
 
       myTFT.Settings(2, 20, 50);
-      tft.print("DATA");
-
-      myTFT.Settings(2, 20, 70);
       tft.print("UTC");
 
-      myTFT.Settings(2, 20, 90);
+      myTFT.Settings(2, 20, 70);
       tft.print("VYPNUT");
 
-      myTFT.Settings(2, 20, 110);
+      myTFT.Settings(2, 20, 90);
       tft.print("EXIT");
 
     }

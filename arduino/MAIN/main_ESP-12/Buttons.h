@@ -10,6 +10,8 @@ class Pushed {
     byte menuState = 0;
     byte maxState = 4;
     byte state = 1;
+    unsigned long previousMillis = 0;
+    bool screenOff = false;
 
     void buttonsSetup() {
       pinMode(buttonNextPin, INPUT);
@@ -19,13 +21,29 @@ class Pushed {
 
     bool nextPrevious() {
       if (analogRead(buttonNextPin) >= 500) {
-        state++;
-        if (state > maxState) state = 1;
+        if (!screenOff) {
+          state++;
+          if (state > maxState) state = 1;
+          previousMillis = millis();
+        }
+        else {
+          pinMode (3, INPUT);
+          previousMillis = millis();
+          screenOff = false;
+        }
         return true;
       }
       else if (digitalRead(buttonPreviousPin) == HIGH) {
-        state--;
-        if (state < 1) state = maxState;
+        if (!screenOff) {
+          state--;
+          if (state < 1) state = maxState;
+          previousMillis = millis();
+        }
+        else {
+          pinMode (3, INPUT);
+          previousMillis = millis();
+          screenOff = false;
+        }
         return true;
       }
       else return false;
@@ -33,12 +51,20 @@ class Pushed {
 
     byte confirm() {
       if (digitalRead(buttonConfirmPin) == HIGH) {
-        if (menuState == 0) {
-          menuState = 1;
-          state = 1;
+        if (!screenOff) {
+          if (menuState == 0) {
+            menuState = 1;
+            state = 1;
+          }
+          else if (menuState == 1) {
+            menuState = 2;
+          }
+          previousMillis = millis();
         }
-        else if (menuState == 1) {
-          menuState = 2;
+        else {
+          pinMode (3, INPUT);
+          previousMillis = millis();
+          screenOff = false;
         }
         return true;
       }

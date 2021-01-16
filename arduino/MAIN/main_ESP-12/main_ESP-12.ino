@@ -109,13 +109,14 @@ void setup() {
   startup();
   if (SD.begin(D8)) initialCheck();
   else {
-    myTFT.Settings(1, 10, 10);
+    myTFT.Settings(1, 12, 10);
     tft.setTextColor(ST7735_RED, ST7735_BLACK);
-    tft.print("nepodarilo sa \n nacitat kartu sd \n\n vloz sd kartu");
+    tft.print("nepodarilo sa \n  nacitat kartu sd \n\n  vloz sd kartu");
     tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
-    myGPS.smartDelay(3000);
+    myGPS.smartDelay(2000);
   }
   tft.fillScreen(ST7735_BLACK);
+  pushed.previousMillis = millis();
 }
 
 
@@ -163,7 +164,7 @@ void loop() {
   }
 
   else if (pushed.menuState == 1) {                             //switching to menu
-    pushed.maxState = 5;
+    pushed.maxState = 4;
     menu.Cursor();
     menu.showMenu();
     clearScreen();
@@ -198,6 +199,12 @@ void loop() {
   
   else {
     screens.savedToSD = " pass";
+  }
+  
+  if (millis() - pushed.previousMillis > 5000) {
+    Serial.println("screen off");
+    pinMode (3, OUTPUT);
+    pushed.screenOff = true;
   }
   
   myGPS.smartDelay(200);
