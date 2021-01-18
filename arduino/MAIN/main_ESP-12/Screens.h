@@ -15,6 +15,7 @@ class Screens {
       myTFT.Print(gps.speed.kmph(), 4, 1);
       tft.setTextSize(1);
       tft.print(" km/h ");
+      myGPS.realDate();
       printValuesForObservation();
     }
 

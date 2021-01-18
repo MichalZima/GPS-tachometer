@@ -23,14 +23,14 @@ Screens screens;
 
 bool startup() {
   tft.fillScreen(ST77XX_BLACK);
-  delay(100);
+  delay(50);
   myTFT.Settings(1, 34, 76);
   tft.print("Nacitavam...");
   tft.drawRect(10, 75, 108, 10, ST7735_WHITE);
-  delay(100);
+  delay(50);
   for (int16_t x=0; x < 108; x++) {
     tft.fillRect(10, 75, x, 10, ST7735_WHITE);
-    delay(10);
+    delay(5);
   }
   tft.fillScreen(ST77XX_BLACK);
 }
@@ -77,10 +77,13 @@ bool initialCheck() {
           noTrackFile.println(lastLine);
           noTrackFile.close();
         }
+        SD.remove("backup/data.txt");
         
         myGPS.smartDelay(1000);
         tft.print("  hotovo");
         myGPS.smartDelay(1000);
+        myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
+        Serial.println(myGPS.totalDistance);
         return false;
       }
       else Position--;
@@ -89,6 +92,7 @@ bool initialCheck() {
   
   else {
     myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
+    Serial.println(myGPS.totalDistance);
   }
 }
 
@@ -141,7 +145,12 @@ void loop() {
       tft.print("sd fail");
     }
     if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
-      tft.fillScreen(ST7735_BLACK);
+      if (pushed.screenOff) {
+        pinMode (3, INPUT);
+        pushed.previousMillis = millis();
+        pushed.screenOff = false;
+      }
+      else  tft.fillScreen(ST7735_BLACK);
     }
     pushed.maxState = 4;
     switch (pushed.state) {
@@ -200,9 +209,8 @@ void loop() {
   else {
     screens.savedToSD = " pass";
   }
-  
-  if (millis() - pushed.previousMillis > 5000) {
-    Serial.println("screen off");
+
+  if (millis() - pushed.previousMillis > 10000) {
     pinMode (3, OUTPUT);
     pushed.screenOff = true;
   }
@@ -265,6 +273,11 @@ int courseDifference() {
 
 void clearScreen() {
   if (pushed.confirm() == true) {
-    tft.fillScreen(ST7735_BLACK);
+    if (pushed.screenOff) {
+      pinMode (3, INPUT);
+      pushed.previousMillis = millis();
+      pushed.screenOff = false;
+    }
+    else tft.fillScreen(ST7735_BLACK);
   }
 }

@@ -63,14 +63,13 @@ class MyGPS {
     
     bool distanceCalculating(bool TRACKON){
       distance0 = TinyGPSPlus::distanceBetween(gps.location.lat(), gps.location.lng(), distanceLat0, distanceLong0);
+      position0Saved = false;
+      distanceCalculated = true;
+      float distance0InKM = distance0/1000; 
       if (!errorCheck()) {
-        position0Saved = false;
-        distanceCalculated = true;
-        float distance0InKM = distance0/1000; 
         if (TRACKON) trackDistance += distance0InKM;
-        if (!TRACKON) dailyDistance += distance0InKM;
+        dailyDistance += distance0InKM;
         totalDistance += distance0InKM;
-       
       return true;
       }
       else return false;
@@ -86,21 +85,23 @@ class MyGPS {
 //////////////////////////////////////////////////////////////////////////////////////
 
     bool realDate(){
-      if (newDate == gps.date.value() and dateChecked) {
-        sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
-        return dateChecked;
-      }
-      else if (newDate == gps.date.value() and !dateChecked) {
-        confirmDate++;
-        if (confirmDate >= 5) dateChecked = true;
-        else dateChecked = false;
-        return dateChecked;
-      }
-      else if (newDate != gps.date.value() and dateChecked) {
-        newDate = gps.date.value();
-        confirmDate = 0; 
-        dateChecked = false;
-        return dateChecked;
+      if (gps.hdop.hdop() < 100) {
+        if (newDate == gps.date.value() and dateChecked) {
+          sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
+          return dateChecked;
+        }
+        else if (newDate == gps.date.value() and !dateChecked) {
+          confirmDate++;
+          if (confirmDate >= 5) dateChecked = true;
+          else dateChecked = false;
+          return dateChecked;
+        }
+        else if (newDate != gps.date.value() and dateChecked) {
+          newDate = gps.date.value();
+          confirmDate = 0; 
+          dateChecked = false;
+          return dateChecked;
+        }
       } 
     }
 
@@ -149,7 +150,7 @@ class MyGPS {
 //      else if (gps.speed.kmph() < 3) errorMessage += "NOT MOVING, ";
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
       //check coordinates difference
-      if (gps.speed.kmph() < 15 && distance0 > 100)  errorMessage += "NOT VALID COORDINATES 1, ";
+      if (gps.speed.kmph() < 15 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 1, ";
       if (gps.speed.kmph() > 15 && gps.speed.kmph() < 50 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 2, ";
       if (gps.speed.kmph() > 50 && distance0 > 1000)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
