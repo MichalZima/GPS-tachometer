@@ -111,13 +111,18 @@ class MySD {
     void saveErrorMessage(bool TRACK) {
       File dataFile;
       if (myGPS.realDate()) {
-        if (TRACK) fileName = "trasy/data/";
-        fileName += myGPS.convertedGPSdate;
-        fileName += ".txt";
+        if (TRACK) {
+          fileName = "trasy/data/";
+          fileName += myGPS.convertedGPSdate;
+          fileName += ".txt";
+        }
+        else if (!TRACK) fileName = "backup/data.txt";
+        
         dataFile = SD.open(fileName, FILE_WRITE);
         if (dataFile) {
+          dataFile.print("(");
           dataFile.print(myGPS.errorMessage);
-          dataFile.println("\n");
+          dataFile.println(")");
           dataFile.close();
         }
       }

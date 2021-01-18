@@ -38,8 +38,15 @@ class Menu {
 
     void Cursor() {
       if (pushed.nextPrevious()) {
-        cursorPosition0 = cursorPosition;
-        cursorBlink = true;
+        if (pushed.screenOff) {
+          pinMode (3, INPUT);
+          pushed.previousMillis = millis();
+          pushed.screenOff = false;
+        }
+        else {
+          cursorPosition0 = cursorPosition;
+          cursorBlink = true;
+        }
       }
       myTFT.Settings(2, 6, cursorPosition0);
       tft.print(" ");
@@ -58,15 +65,12 @@ class Menu {
           track();
           break;
         case 2:
-          Stats();
-          break;
-        case 3:
           setTimeZone();
           break;
-        case 4:
+        case 3:
           powerOff();
           break;
-        case 5:
+        case 4:
           Exit();
           break;
         default:
@@ -142,7 +146,7 @@ class Menu {
 //////////////////////////////////////////////////////////////////////////////////////
 
     void powerOff() {
-      myTFT.Settings(2, tft.width()/2 - 5, tft.height()/2 - 7);
+      myTFT.Settings(2, 20, tft.height()/2 - 7);
         tft.println("VYPNUT?");
         if (pushed.confirm() == true) {
           tft.fillScreen(ST7735_BLACK);
