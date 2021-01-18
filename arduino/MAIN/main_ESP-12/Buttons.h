@@ -21,29 +21,17 @@ class Pushed {
 
     bool nextPrevious() {
       if (analogRead(buttonNextPin) >= 500) {
-        if (!screenOff) {
+        if (pushed.screenOff) {
           state++;
           if (state > maxState) state = 1;
-          previousMillis = millis();
         }
-        else {
-          pinMode (3, INPUT);
-          previousMillis = millis();
-          screenOff = false;
-        }
+        previousMillis = millis();
         return true;
       }
       else if (digitalRead(buttonPreviousPin) == HIGH) {
-        if (!screenOff) {
-          state--;
-          if (state < 1) state = maxState;
-          previousMillis = millis();
-        }
-        else {
-          pinMode (3, INPUT);
-          previousMillis = millis();
-          screenOff = false;
-        }
+        state--;
+        if (state < 1) state = maxState;
+        previousMillis = millis();
         return true;
       }
       else return false;
@@ -51,25 +39,19 @@ class Pushed {
 
     byte confirm() {
       if (digitalRead(buttonConfirmPin) == HIGH) {
-        if (!screenOff) {
-          if (menuState == 0) {
-            menuState = 1;
-            state = 1;
-          }
-          else if (menuState == 1) {
-            menuState = 2;
-          }
-          previousMillis = millis();
+        if (menuState == 0) {
+          menuState = 1;
+          state = 1;
         }
-        else {
-          pinMode (3, INPUT);
-          previousMillis = millis();
-          screenOff = false;
+        else if (menuState == 1) {
+          menuState = 2;
         }
+        previousMillis = millis();
         return true;
       }
       else return false;
     }
+
 
     int changeSettingValue(int MIN, int MAX, int NOW){
       int valueOfSetting = NOW;
