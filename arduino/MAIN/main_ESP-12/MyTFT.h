@@ -16,6 +16,7 @@ class MyTFT {
   public:
     void tftSetup() {
       tft.initR(INITR_BLACKTAB);
+      tft.setRotation(2);
       tft.fillScreen(ST7735_BLACK);
       tft.setFont();
       tft.setTextColor(ST7735_WHITE, ST7735_BLACK);

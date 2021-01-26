@@ -21,7 +21,7 @@ class Pushed {
 
     bool nextPrevious() {
       if (analogRead(buttonNextPin) >= 500) {
-        if (pushed.screenOff) {
+        if (!screenOff) {
           state++;
           if (state > maxState) state = 1;
         }
@@ -29,8 +29,10 @@ class Pushed {
         return true;
       }
       else if (digitalRead(buttonPreviousPin) == HIGH) {
-        state--;
-        if (state < 1) state = maxState;
+        if (!screenOff) {
+          state--;
+          if (state < 1) state = maxState;
+        }
         previousMillis = millis();
         return true;
       }
@@ -39,12 +41,14 @@ class Pushed {
 
     byte confirm() {
       if (digitalRead(buttonConfirmPin) == HIGH) {
-        if (menuState == 0) {
-          menuState = 1;
-          state = 1;
-        }
-        else if (menuState == 1) {
-          menuState = 2;
+        if (!screenOff) {
+          if (menuState == 0) {
+            menuState = 1;
+            state = 1;
+          }
+          else if (menuState == 1) {
+            menuState = 2;
+          }
         }
         previousMillis = millis();
         return true;
