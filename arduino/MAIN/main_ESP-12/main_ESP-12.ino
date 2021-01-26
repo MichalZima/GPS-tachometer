@@ -20,7 +20,137 @@ bool previousTrackState = false;
 
 Screens screens;
 
-//////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void setup() {
+  WiFi.disconnect();
+  WiFi.forceSleepBegin();
+  delay(1);
+  Serial.begin(74880);
+  EEPROM.begin(512);
+  myGPS.gpsSetup();
+  myTFT.tftSetup();
+  pushed.buttonsSetup();
+  SD.begin(D8);
+  startup();
+  if (SD.begin(D8)) initialCheck();
+  else {
+    myTFT.Settings(1, 12, 10);
+    tft.setTextColor(ST7735_RED, ST7735_BLACK);
+    tft.print("nepodarilo sa \n  nacitat kartu sd \n\n  vloz sd kartu");
+    tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
+    myGPS.smartDelay(2000);
+  }
+  tft.fillScreen(ST7735_BLACK);
+  pushed.previousMillis = millis();
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+void loop() {
+  if (pushed.menuState == 0) {                                  //switch to main screen
+    if (!SD.begin(D8)) {
+      myTFT.Settings(1, 80, 150);
+      tft.print("sd fail");
+    }
+    if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
+      if (pushed.screenOff) {
+        pinMode (3, INPUT);
+        pushed.previousMillis = millis();
+        pushed.screenOff = false;
+      }
+      else  tft.fillScreen(ST7735_BLACK);
+    }
+    myTFT.Settings(1, 10, 150);
+    tft.print(Loops);
+    pushed.maxState = 4;
+    switch (pushed.state) {
+      case 1:
+        screens.First();
+        break;
+      case 2:
+        screens.Second();
+        break;
+      case 3:
+        screens.Third();
+        break;
+      case 4:
+        screens.Fourth();
+        break;
+      default:
+        break;
+    }
+    clearScreen();
+  }
+
+  else if (pushed.menuState == 1) {                             //switching to menu
+    pushed.maxState = 4;
+    menu.Cursor();
+    menu.showMenu();
+    clearScreen();
+  }
+
+  else if (pushed.menuState == 2) {                             //select between options in menu
+    menu.select();
+  }
+
+  if (menu.turnOff) {
+    myGPS.dailyDistance += myGPS.trackDistance;
+    mySD.saveNoTrackData();
+    SD.remove("backup/data.txt");
+    EEPROM.put(0, myGPS.totalDistance);
+    EEPROM.commit();
+    pinMode (3, OUTPUT);
+    while(1){
+      delay(1000);  
+    }
+  }
+
+
+
+  if (passCalculating()) {                                      //saving data
+    if (myGPS.position0Saved == false) {
+      myGPS.savePosition0();
+      myGPS.distanceMeasurements++;
+      screens.savedToSD = "count";
+
+      //      myGPS.saveToArray();
+      //      myGPS.arrayPosition++;
+      
+      if (menu.trackStart) trackSaving();
+      
+      else if (!menu.trackStart) {
+        if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.5) {
+          lastSavedDailyDistance = myGPS.dailyDistance;
+          myTFT.Settings(1, 50, 130);
+          myTFT.Print(mySD.backup(), 8, 0);
+        }
+      }
+    }
+  }
+  
+  else {
+    screens.savedToSD = " pass";
+  }
+
+  if (millis() - pushed.previousMillis > 10000) {
+    pinMode (3, OUTPUT);
+    pushed.screenOff = true;
+  }
+  
+  myGPS.smartDelay(200);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 bool startup() {
   tft.fillScreen(ST77XX_BLACK);
@@ -98,135 +228,7 @@ bool initialCheck() {
 }
 
 
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-void setup() {
-  WiFi.disconnect();
-  WiFi.forceSleepBegin();
-  delay(1);
-  Serial.begin(74880);
-  EEPROM.begin(512);
-  myGPS.gpsSetup();
-  myTFT.tftSetup();
-  pushed.buttonsSetup();
-  SD.begin(D8);
-  startup();
-  if (SD.begin(D8)) initialCheck();
-  else {
-    myTFT.Settings(1, 12, 10);
-    tft.setTextColor(ST7735_RED, ST7735_BLACK);
-    tft.print("nepodarilo sa \n  nacitat kartu sd \n\n  vloz sd kartu");
-    tft.setTextColor(ST7735_WHITE, ST7735_BLACK);
-    myGPS.smartDelay(2000);
-  }
-  tft.fillScreen(ST7735_BLACK);
-  pushed.previousMillis = millis();
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-void loop() {
-  if (menu.turnOff) {
-    myGPS.dailyDistance += myGPS.trackDistance;
-    mySD.saveNoTrackData();
-    SD.remove("backup/data.txt");
-    EEPROM.put(0, myGPS.totalDistance);
-    EEPROM.commit();
-    ESP.deepSleep(0);
-  }
-
-  if (pushed.menuState == 0) {                                  //switch to main screen
-    if (!SD.begin(D8)) {
-      myTFT.Settings(1, 80, 150);
-      tft.print("sd fail");
-    }
-    if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
-      if (pushed.screenOff) {
-        pinMode (3, INPUT);
-        pushed.previousMillis = millis();
-        pushed.screenOff = false;
-      }
-      else  tft.fillScreen(ST7735_BLACK);
-    }
-    pushed.maxState = 4;
-    switch (pushed.state) {
-      case 1:
-        screens.First();
-        break;
-      case 2:
-        screens.Second();
-        break;
-      case 3:
-        screens.Third();
-        break;
-      case 4:
-        screens.Fourth();
-        break;
-      default:
-        break;
-    }
-    clearScreen();
-  }
-
-  else if (pushed.menuState == 1) {                             //switching to menu
-    pushed.maxState = 4;
-    menu.Cursor();
-    menu.showMenu();
-    clearScreen();
-  }
-
-  else if (pushed.menuState == 2) {                             //select between options in menu
-    menu.select();
-  }
-
-
-
-  if (passCalculating()) {                                      //saving data
-    if (myGPS.position0Saved == false) {
-      myGPS.savePosition0();
-      myGPS.distanceMeasurements++;
-      screens.savedToSD = "count";
-
-      //      myGPS.saveToArray();
-      //      myGPS.arrayPosition++;
-      
-      if (menu.trackStart) trackSaving();
-      
-      else if (!menu.trackStart) {
-        if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.5) {
-          lastSavedDailyDistance = myGPS.dailyDistance;
-          myTFT.Settings(1, 50, 130);
-          myTFT.Print(mySD.backup(), 8, 0);
-        }
-      }
-    }
-  }
-  
-  else {
-    screens.savedToSD = " pass";
-  }
-
-  if (millis() - pushed.previousMillis > 10000) {
-    pinMode (3, OUTPUT);
-    pushed.screenOff = true;
-  }
-  
-  myGPS.smartDelay(200);
-}
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
 
 
 void trackSaving() {
@@ -242,8 +244,6 @@ void trackSaving() {
 //////////////////////////////////////////////////////////////////////////////////////
 
 bool passCalculating() {
-  myTFT.Settings(1, 10, 150);
-  tft.print(Loops);
   if (gps.speed.kmph() <= 3) {
     Loops = 0;
     return false;

@@ -147,11 +147,11 @@ class Menu {
 
     void powerOff() {
       myTFT.Settings(2, 20, tft.height()/2 - 7);
-        tft.println("VYPNUT?");
-        if (pushed.confirm() == true) {
-          tft.fillScreen(ST7735_BLACK);
-          turnOff = true;
-        }
+      tft.println("VYPNUT?");
+      if (pushed.confirm() == true) {
+        tft.fillScreen(ST7735_BLACK);
+        turnOff = true;
+      }
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
