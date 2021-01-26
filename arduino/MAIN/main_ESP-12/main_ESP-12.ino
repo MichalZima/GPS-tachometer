@@ -5,6 +5,7 @@
 
 #include "Screens.h"
 #include <EEPROM.h>
+#include <ESP8266WiFi.h>
 
 byte Loops = 0;
 byte passLoops = 5;
@@ -104,6 +105,9 @@ bool initialCheck() {
 
 
 void setup() {
+  WiFi.disconnect();
+  WiFi.forceSleepBegin();
+  delay(1);
   Serial.begin(74880);
   EEPROM.begin(512);
   myGPS.gpsSetup();
@@ -137,6 +141,7 @@ void loop() {
     SD.remove("backup/data.txt");
     EEPROM.put(0, myGPS.totalDistance);
     EEPROM.commit();
+    ESP.deepSleep(0);
   }
 
   if (pushed.menuState == 0) {                                  //switch to main screen

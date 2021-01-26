@@ -150,7 +150,6 @@ class Menu {
         tft.println("VYPNUT?");
         if (pushed.confirm() == true) {
           tft.fillScreen(ST7735_BLACK);
-          pushed.menuState = 0;
           turnOff = true;
         }
     }
