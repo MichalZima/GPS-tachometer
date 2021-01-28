@@ -34,8 +34,8 @@
 <layer number="24" name="bOrigins" color="15" fill="1" visible="yes" active="yes"/>
 <layer number="25" name="tNames" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="26" name="bNames" color="7" fill="1" visible="yes" active="yes"/>
-<layer number="27" name="tValues" color="7" fill="1" visible="no" active="yes"/>
-<layer number="28" name="bValues" color="7" fill="1" visible="no" active="yes"/>
+<layer number="27" name="tValues" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="28" name="bValues" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="29" name="tStop" color="7" fill="3" visible="no" active="yes"/>
 <layer number="30" name="bStop" color="7" fill="6" visible="no" active="yes"/>
 <layer number="31" name="tCream" color="7" fill="4" visible="no" active="yes"/>
@@ -50,13 +50,13 @@
 <layer number="40" name="bKeepout" color="1" fill="11" visible="yes" active="yes"/>
 <layer number="41" name="tRestrict" color="4" fill="10" visible="yes" active="yes"/>
 <layer number="42" name="bRestrict" color="1" fill="10" visible="yes" active="yes"/>
-<layer number="43" name="vRestrict" color="2" fill="10" visible="no" active="yes"/>
+<layer number="43" name="vRestrict" color="2" fill="10" visible="yes" active="yes"/>
 <layer number="44" name="Drills" color="7" fill="1" visible="no" active="yes"/>
 <layer number="45" name="Holes" color="7" fill="1" visible="no" active="yes"/>
 <layer number="46" name="Milling" color="3" fill="1" visible="no" active="yes"/>
 <layer number="47" name="Measures" color="7" fill="1" visible="no" active="yes"/>
-<layer number="48" name="Document" color="7" fill="1" visible="no" active="yes"/>
-<layer number="49" name="Reference" color="7" fill="1" visible="no" active="yes"/>
+<layer number="48" name="Document" color="7" fill="1" visible="yes" active="yes"/>
+<layer number="49" name="Reference" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="50" name="dxf" color="7" fill="1" visible="no" active="yes"/>
 <layer number="51" name="tDocu" color="7" fill="1" visible="yes" active="yes"/>
 <layer number="52" name="bDocu" color="7" fill="1" visible="yes" active="yes"/>
@@ -675,14 +675,14 @@ design rules under a new name.</description>
 <attribute name="POPULARITY" value="0" x="99.53" y="69.85" size="1.778" layer="27" rot="R90" display="off"/>
 <attribute name="VALUE" x="98.26" y="43.18" size="1.27" layer="27" ratio="10" rot="R90"/>
 </element>
-<element name="GPS" library="con-lstb" library_urn="urn:adsk.eagle:library:162" package="MA04-1" package3d_urn="urn:adsk.eagle:package:8337/1" value="" x="63.47" y="36.27" smashed="yes" rot="R180">
-<attribute name="MF" value="" x="43.15" y="79.45" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="MPN" value="" x="43.15" y="79.45" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="NAME" x="68.55" y="34.619" size="1.27" layer="25" ratio="10" rot="R180"/>
-<attribute name="OC_FARNELL" value="unknown" x="43.15" y="79.45" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="OC_NEWARK" value="unknown" x="43.15" y="79.45" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="POPULARITY" value="41" x="43.15" y="79.45" size="1.778" layer="27" rot="R180" display="off"/>
-<attribute name="VALUE" x="62.835" y="34.619" size="1.27" layer="27" ratio="10" rot="R180"/>
+<element name="GPS" library="con-lstb" library_urn="urn:adsk.eagle:library:162" package="MA04-1" package3d_urn="urn:adsk.eagle:package:8337/1" value="" x="63.53" y="35.85" smashed="yes">
+<attribute name="MF" value="" x="83.85" y="-7.33" size="1.778" layer="27" display="off"/>
+<attribute name="MPN" value="" x="83.85" y="-7.33" size="1.778" layer="27" display="off"/>
+<attribute name="NAME" x="58.45" y="37.501" size="1.27" layer="25" ratio="10"/>
+<attribute name="OC_FARNELL" value="unknown" x="83.85" y="-7.33" size="1.778" layer="27" display="off"/>
+<attribute name="OC_NEWARK" value="unknown" x="83.85" y="-7.33" size="1.778" layer="27" display="off"/>
+<attribute name="POPULARITY" value="41" x="83.85" y="-7.33" size="1.778" layer="27" display="off"/>
+<attribute name="VALUE" x="64.165" y="37.501" size="1.27" layer="27" ratio="10"/>
 </element>
 <element name="BT-" library="switch-tact" package="DTS-6" value="DTS-6" x="36" y="55" smashed="yes">
 <attribute name="NAME" x="33.46" y="58.81" size="1.27" layer="25"/>
@@ -752,26 +752,41 @@ design rules under a new name.</description>
 <contactref element="TFT" pad="1"/>
 <contactref element="BT+" pad="1"/>
 <contactref element="R6" pad="2"/>
+<wire x1="64.8" y1="35.5" x2="64.8" y2="35.85" width="0.6096" layer="16"/>
+<wire x1="50.77" y1="39.5" x2="44" y2="39.5" width="0.6096" layer="16"/>
+<wire x1="44" y1="39.5" x2="44" y2="39" width="0.6096" layer="16"/>
 <contactref element="BTC" pad="2"/>
+<wire x1="44" y1="39" x2="44" y2="35.5" width="0.6096" layer="16"/>
+<wire x1="44" y1="35.5" x2="44" y2="34.42" width="0.6096" layer="16"/>
 <wire x1="39.25" y1="38.75" x2="40" y2="39.5" width="0.6096" layer="16"/>
+<wire x1="44" y1="39.5" x2="40.5" y2="39.5" width="0.6096" layer="16"/>
 <wire x1="40" y1="39.5" x2="40.5" y2="39.5" width="0.6096" layer="16"/>
+<wire x1="94" y1="36.83" x2="95.72" y2="36.83" width="0.6096" layer="16"/>
 <via x="44" y="34.42" extent="1-16" drill="1.4" diameter="1.5" shape="octagon"/>
+<wire x1="64.8" y1="35.85" x2="64.8" y2="52" width="0.8" layer="16"/>
+<wire x1="64.8" y1="52" x2="89.5" y2="52" width="0.8" layer="16"/>
+<wire x1="89.5" y1="52" x2="93" y2="48.5" width="0.8" layer="16"/>
+<wire x1="93" y1="48.5" x2="93" y2="37.5" width="0.8" layer="16"/>
+<wire x1="93" y1="37.5" x2="93.67" y2="36.83" width="0.8" layer="16"/>
+<wire x1="93.67" y1="36.83" x2="94" y2="36.83" width="0.8" layer="16"/>
 <wire x1="50.79" y1="39.52" x2="55.52" y2="39.52" width="0.8" layer="16"/>
+<wire x1="55.52" y1="39.52" x2="57" y2="38.04" width="0.8" layer="16"/>
+<wire x1="57" y1="38.04" x2="57" y2="35" width="0.8" layer="16"/>
+<wire x1="57" y1="35" x2="58.5" y2="33.5" width="0.8" layer="16"/>
+<wire x1="58.5" y1="33.5" x2="64.8" y2="33.5" width="0.8" layer="16"/>
+<wire x1="64.8" y1="33.5" x2="64.8" y2="35.5" width="0.8" layer="16"/>
 <wire x1="50.79" y1="39.52" x2="50.77" y2="39.5" width="0.8" layer="16"/>
 <wire x1="50.77" y1="39.5" x2="44" y2="39.5" width="0.8" layer="16"/>
 <wire x1="44" y1="39.5" x2="40.5" y2="39.5" width="0.8" layer="16"/>
 <wire x1="40.5" y1="39.5" x2="39.75" y2="38.75" width="0.8" layer="16"/>
 <wire x1="39.75" y1="38.75" x2="39.25" y2="38.75" width="0.8" layer="16"/>
 <wire x1="39.25" y1="38.75" x2="39.25" y2="43.75" width="0.8" layer="16"/>
-<wire x1="44" y1="34.42" x2="44" y2="39.5" width="0.8" layer="16"/>
-<wire x1="57.96" y1="39.5" x2="62" y2="39.5" width="0.8128" layer="16"/>
-<wire x1="62" y1="39.5" x2="62" y2="36.47" width="0.8128" layer="16"/>
-<wire x1="62.2" y1="36.27" x2="62" y2="36.47" width="0.8128" layer="16"/>
-<wire x1="95.72" y1="36.83" x2="90.89" y2="32" width="0.8128" layer="16"/>
-<wire x1="90.89" y1="32" x2="62.2" y2="32" width="0.8128" layer="16"/>
-<wire x1="62.2" y1="32" x2="62.2" y2="36.27" width="0.8128" layer="16"/>
-<wire x1="55.52" y1="39.52" x2="57.94" y2="39.52" width="0.8128" layer="16"/>
-<wire x1="57.94" y1="39.52" x2="57.96" y2="39.5" width="0.8128" layer="16"/>
+<wire x1="44" y1="34.42" x2="44" y2="35.5" width="0.8" layer="16"/>
+<wire x1="44" y1="35.5" x2="44" y2="39" width="0.8" layer="16"/>
+<wire x1="44" y1="39" x2="44" y2="39.5" width="0.8" layer="16"/>
+<wire x1="44" y1="34.42" x2="44" y2="35.5" width="0.8" layer="16"/>
+<wire x1="44" y1="35.5" x2="44" y2="39" width="0.8" layer="16"/>
+<wire x1="44" y1="34.42" x2="44" y2="35.5" width="0.8" layer="16"/>
 </signal>
 <signal name="TX">
 <contactref element="WEMOS" pad="8"/>
@@ -779,38 +794,34 @@ design rules under a new name.</description>
 <signal name="RX">
 <contactref element="GPS" pad="1"/>
 <contactref element="WEMOS" pad="3"/>
-<wire x1="67.28" y1="36.27" x2="67.28" y2="39.27" width="0.8" layer="16"/>
-<wire x1="67.28" y1="39.27" x2="64.99" y2="41.56" width="0.8" layer="16"/>
-<wire x1="64.99" y1="41.56" x2="51.29" y2="41.56" width="0.8" layer="16"/>
-<wire x1="50.79" y1="42.06" x2="51.29" y2="41.56" width="0.8" layer="16"/>
+<wire x1="59.72" y1="35.85" x2="59.72" y2="38.78" width="0.8" layer="16"/>
+<wire x1="59.72" y1="38.78" x2="56.44" y2="42.06" width="0.8" layer="16"/>
+<wire x1="56.44" y1="42.06" x2="50.79" y2="42.06" width="0.8" layer="16"/>
 </signal>
 <signal name="RXD">
 <contactref element="GPS" pad="2"/>
 <contactref element="WEMOS" pad="4"/>
-<wire x1="50.79" y1="44.6" x2="62.586009375" y2="44.6" width="0.8" layer="16"/>
-<wire x1="62.586009375" y1="44.6" x2="63.9" y2="44.6" width="0.8128" layer="16"/>
-<wire x1="63.9" y1="44.6" x2="69.5" y2="39" width="0.8128" layer="16"/>
-<wire x1="69.5" y1="39" x2="69.5" y2="33.5" width="0.8128" layer="16"/>
-<wire x1="69.5" y1="33.5" x2="64.5" y2="33.5" width="0.8128" layer="16"/>
-<wire x1="64.5" y1="33.5" x2="64.5" y2="36.03" width="0.8128" layer="16"/>
-<wire x1="64.5" y1="36.03" x2="64.74" y2="36.27" width="0.8128" layer="16"/>
+<wire x1="50.79" y1="44.6" x2="56.69764375" y2="44.6" width="0.8" layer="16"/>
+<wire x1="56.69764375" y1="44.6" x2="62.26" y2="39.03764375" width="0.8" layer="16"/>
+<wire x1="62.26" y1="39.03764375" x2="62.26" y2="35.85" width="0.8" layer="16"/>
 </signal>
 <signal name="VCC">
 <contactref element="WEMOSBT" pad="8"/>
 <contactref element="GPS" pad="4"/>
 <contactref element="TFT" pad="2"/>
+<wire x1="67" y1="31" x2="29.5" y2="31" width="0.6096" layer="16"/>
+<wire x1="67" y1="31" x2="67.34" y2="31.34" width="0.6096" layer="16"/>
 <wire x1="95.72" y1="39.37" x2="95.85" y2="39.5" width="0.6096" layer="16"/>
 <wire x1="95.85" y1="39.5" x2="97" y2="39.5" width="0.6096" layer="16"/>
+<wire x1="93.5" y1="31" x2="67" y2="31" width="0.6096" layer="16"/>
 <wire x1="95.72" y1="39.37" x2="96.63" y2="39.37" width="0.8" layer="16"/>
 <wire x1="96.63" y1="39.37" x2="98" y2="38" width="0.8" layer="16"/>
 <wire x1="98" y1="38" x2="98" y2="35.5" width="0.8" layer="16"/>
-<wire x1="98" y1="35.5" x2="93" y2="30.5" width="0.8" layer="16"/>
-<wire x1="93" y1="30.5" x2="60" y2="30.5" width="0.8" layer="16"/>
-<wire x1="60" y1="30.5" x2="30" y2="30.5" width="0.8" layer="16"/>
-<wire x1="30" y1="30.5" x2="27.83" y2="32.67" width="0.8" layer="16"/>
+<wire x1="98" y1="35.5" x2="93.5" y2="31" width="0.8" layer="16"/>
+<wire x1="93.5" y1="31" x2="29.5" y2="31" width="0.8" layer="16"/>
+<wire x1="29.5" y1="31" x2="27.83" y2="32.67" width="0.8" layer="16"/>
 <wire x1="27.83" y1="32.67" x2="27.83" y2="37.24" width="0.8" layer="16"/>
-<wire x1="59.66" y1="36.27" x2="59.66" y2="30.84" width="0.8128" layer="16"/>
-<wire x1="59.66" y1="30.84" x2="60" y2="30.5" width="0.8128" layer="16"/>
+<wire x1="67.34" y1="31.34" x2="67.34" y2="35.85" width="0.8" layer="16"/>
 </signal>
 <signal name="SCL">
 <contactref element="WEMOSBT" pad="4"/>
@@ -838,9 +849,9 @@ design rules under a new name.</description>
 <wire x1="95.72" y1="44.45" x2="97.55" y2="44.45" width="0.8" layer="16"/>
 <wire x1="98" y1="44" x2="99.5" y2="42.5" width="0.8" layer="16"/>
 <wire x1="99.5" y1="42.5" x2="99.5" y2="34.5" width="0.8" layer="16"/>
-<wire x1="99.5" y1="34.5" x2="94" y2="29" width="0.8" layer="16"/>
-<wire x1="94" y1="29" x2="28.5" y2="29" width="0.8" layer="16"/>
-<wire x1="28.5" y1="29" x2="25" y2="32.5" width="0.8" layer="16"/>
+<wire x1="99.5" y1="34.5" x2="94.5" y2="29.5" width="0.8" layer="16"/>
+<wire x1="94.5" y1="29.5" x2="28" y2="29.5" width="0.8" layer="16"/>
+<wire x1="28" y1="29.5" x2="25" y2="32.5" width="0.8" layer="16"/>
 <wire x1="25" y1="32.5" x2="25" y2="40.49" width="0.8" layer="16"/>
 <wire x1="25" y1="40.49" x2="26.83" y2="42.32" width="0.8" layer="16"/>
 <wire x1="26.83" y1="42.32" x2="27.5" y2="42.32" width="0.8" layer="16"/>
