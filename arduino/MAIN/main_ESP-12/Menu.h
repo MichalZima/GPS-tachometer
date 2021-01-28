@@ -16,6 +16,7 @@ class Menu {
   public:
     bool trackStart = false;
     bool turnOff = false;
+    bool wifiState = false;
 
 //////////////////////////////////////////////////////////////////////////////////////
     
@@ -27,9 +28,12 @@ class Menu {
       tft.print("UTC");
 
       myTFT.Settings(2, 20, 70);
-      tft.print("VYPNUT");
+      tft.print("WIFI");
 
       myTFT.Settings(2, 20, 90);
+      tft.print("VYPNUT");
+
+      myTFT.Settings(2, 20, 110);
       tft.print("EXIT");
 
     }
@@ -68,9 +72,12 @@ class Menu {
           setTimeZone();
           break;
         case 3:
-          powerOff();
+          wifi();
           break;
         case 4:
+          powerOff();
+          break;
+        case 5:
           Exit();
           break;
         default:
@@ -144,6 +151,21 @@ class Menu {
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
+
+  
+    void wifi(){
+      myTFT.Settings(2, 20, tft.height()/2 - 7);
+      tft.println("WIFI");
+      if (pushed.confirm() == true) {
+        tft.fillScreen(ST7735_BLACK);
+        wifiState = true;
+        pushed.menuState = 3;
+      }
+    }
+    
+
+//////////////////////////////////////////////////////////////////////////////////////
+
 
     void powerOff() {
       myTFT.Settings(2, 20, tft.height()/2 - 7);
