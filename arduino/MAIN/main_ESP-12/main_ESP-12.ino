@@ -5,7 +5,7 @@
 
 #include "Screens.h"
 #include <EEPROM.h>
-#include <ESP8266WiFi.h>
+#include "SendDataFromSD.h"
 
 byte Loops = 0;
 byte passLoops = 5;
@@ -19,6 +19,7 @@ float lastSavedDailyDistance = 0;
 bool previousTrackState = false;
 
 Screens screens;
+FTPClass FTP;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +91,7 @@ void loop() {
   }
 
   else if (pushed.menuState == 1) {                             //switching to menu
-    pushed.maxState = 4;
+    pushed.maxState = 5;
     menu.Cursor();
     menu.showMenu();
     clearScreen();
@@ -110,6 +111,14 @@ void loop() {
     while(1){
       delay(1000);  
     }
+  }
+
+  if (menu.wifiState) {
+    if (pushed.menuState == 3) {
+      FTP.FTPsetup();
+      pushed.menuState = 4;
+    }
+    FTP.FTPloop();
   }
 
 
