@@ -2,3 +2,10 @@
 /arduino/TESTY
 dokumentacia.docx
 gps trekovacie zariadenie.pptx
+app/files_from_device/
+arduino/FTP/Wireless_SD-master/Circuit/
+arduino/FTP/Wireless_SD-master/LICENSE
+arduino/FTP/Wireless_SD-master/README.md
+arduino/FTP/Wireless_SD-master/Wireless_SD/ESP8266FtpServer.cpp
+arduino/FTP/Wireless_SD-master/Wireless_SD/ESP8266FtpServer.h
+
