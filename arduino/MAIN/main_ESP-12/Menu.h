@@ -14,7 +14,7 @@ class Menu {
     bool countdownStarted = false;
 
   public:
-    bool trackStart = false;
+    bool trackStart = true;
     bool turnOff = false;
     bool wifiState = false;
 

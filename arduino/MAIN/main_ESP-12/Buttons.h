@@ -15,8 +15,8 @@ class Pushed {
 
     void buttonsSetup() {
       pinMode(buttonNextPin, INPUT);
-      pinMode(buttonPreviousPin, INPUT);
-      pinMode(buttonConfirmPin, INPUT);
+      pinMode(buttonPreviousPin, INPUT_PULLUP);
+      pinMode(buttonConfirmPin, INPUT_PULLUP);
     }
 
     bool nextPrevious() {

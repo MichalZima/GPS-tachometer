@@ -11,7 +11,7 @@ Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 class MyTFT {
 
   private:
-    char convertString[10];
+    char convertString[12];
 
   public:
     void tftSetup() {

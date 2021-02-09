@@ -55,7 +55,7 @@ void FtpServer::iniVariables()
   dataPassiveConn = true;
   
   // Set the root directory
-  //strcpy( cwdName, "/trasy/data" );
+  strcpy( cwdName, "/" );
 
   rnfrCmd = false;
   transferStatus = 0;
@@ -176,7 +176,7 @@ boolean FtpServer::userIdentity()
   else
   {
     client.println( "331 OK. Password required");
-    //strcpy( cwdName, "/" );
+    strcpy( cwdName, "/" );
     return true;
   }
   millisDelay = millis() + 100;  // delay of 100 ms
@@ -373,7 +373,7 @@ boolean FtpServer::processCommand()
   //
   //  LIST - List 
   //
-  else if(  strcmp( command, "LIST " ))
+  else if(! strcmp( command, "LIST " ))
   {
     if( ! dataConnect())
       client.println( "425 No data connection");

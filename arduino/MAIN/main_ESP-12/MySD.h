@@ -23,8 +23,8 @@ class MySD {
         fileName += ".txt";
         coordinatesFile = SD.open(fileName, FILE_WRITE);
         if (coordinatesFile) {
-          dtostrf(gps.location.lat(), 9, 6, latString);
-          dtostrf(gps.location.lng(), 9, 6, longString);
+          dtostrf(gps.location.lat(), 11, 9, latString);
+          dtostrf(gps.location.lng(), 11, 9, longString);
           coordinatesFile.print("[");
           coordinatesFile.print(longString);
           coordinatesFile.print(", ");
