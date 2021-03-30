@@ -1,4 +1,4 @@
-#include "SPI.h"
+#include <SPI.h>
 #include "TFT_eSPI.h"
 
 TFT_eSPI tft = TFT_eSPI();
@@ -9,28 +9,13 @@ class MyTFT {
   private:
     char convertString[12];
 
-    void testText() {
-     tft.fillScreen(TFT_BLACK);
-  delay(50);
-  Settings(1, 34, 76);
-  tft.println("Nacitavam...");
-  tft.drawRect(10, 75, 108, 10, TFT_WHITE);
-  delay(50);
-  for (int16_t x=0; x < 108; x++) {
-    tft.fillRect(10, 75, x, 10, TFT_WHITE);
-    delay(5);
-  }
-  tft.setTextColor(TFT_WHITE);
-    }
-
   public:
     void tftSetup() {
       tft.init();
+      tft.begin();
       tft.setRotation(0);
       tft.fillScreen(TFT_BLACK);
       tft.setTextColor(TFT_WHITE, TFT_BLACK);
-      randomSeed(millis());
-      testText();
     }
 
     void Settings(byte TEXTSIZE, int Y, int X) {

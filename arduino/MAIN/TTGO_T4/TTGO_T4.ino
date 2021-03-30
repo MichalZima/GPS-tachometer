@@ -2,9 +2,6 @@
 #include "Screens.h"
 #include <EEPROM.h>
 
-#include "SPI.h"
-#include "TFT_eSPI.h"
-
 byte Loops = 0;
 byte passLoops = 5;
 unsigned long Millis0 = 0;
@@ -29,21 +26,21 @@ void setup() {
 //  WiFi.forceSleepBegin();
   delay(1);
   Serial.begin(74880);
-  //EEPROM.begin(512);
-  //myGPS.gpsSetup();
+  EEPROM.begin(512);
+  myGPS.gpsSetup();
   mytft.tftSetup();
   
-  //pushed.buttonsSetup();
+  pushed.buttonsSetup();
   //SD.begin(20);
-  //startup();
-  //if (SD.begin(13)) initialCheck();
-  //else {
-    //mytft.Settings(1, 12, 10);
+  startup();
+  if (SD.begin(26)); // initialCheck();
+  else {
+    mytft.Settings(1, 12, 10);
     tft.setTextColor(0xF800);
     tft.print("nepodarilo sa \n  nacitat kartu sd \n\n  vloz sd kartu");
     tft.setTextColor(TFT_WHITE);
     myGPS.smartDelay(2000);
-  //}
+  }
   tft.fillScreen(TFT_BLACK);
   pushed.previousMillis = millis();
 }
@@ -164,7 +161,7 @@ void loop() {
 bool startup() {
   tft.fillScreen(TFT_BLACK);
   delay(50);
-  //mytft.Settings(1, 34, 76);
+  mytft.Settings(1, 34, 76);
   tft.println("Nacitavam...");
   tft.drawRect(10, 75, 108, 10, TFT_WHITE);
   delay(50);
