@@ -2,9 +2,9 @@
 class Pushed {
 
   private:
-    byte buttonNextPin = A0;
-    byte buttonPreviousPin = 9;
-    byte buttonConfirmPin = 10;
+    int buttonNextPin = 38;
+    int buttonPreviousPin = 37;
+    int buttonConfirmPin = 39;
 
   public:
     byte menuState = 0;
@@ -14,13 +14,13 @@ class Pushed {
     bool screenOff = false;
 
     void buttonsSetup() {
-      pinMode(buttonNextPin, INPUT);
-      pinMode(buttonPreviousPin, INPUT);
-      pinMode(buttonConfirmPin, INPUT);
+      pinMode(buttonNextPin, INPUT_PULLUP);
+      pinMode(buttonPreviousPin, INPUT_PULLUP);
+      pinMode(buttonConfirmPin, INPUT_PULLUP);
     }
 
     bool nextPrevious() {
-      if (analogRead(buttonNextPin) >= 200) {
+      if (digitalRead(buttonNextPin) == HIGH) {
         Serial.println("next");
         if (!screenOff) {
           state++;
@@ -41,9 +41,10 @@ class Pushed {
       else return false;
     }
 
-    byte confirm() {
-      Serial.println("confirm");
+    bool confirm() {
+      
       if (digitalRead(buttonConfirmPin) == HIGH) {
+        Serial.println("confirm");
         if (!screenOff) {
           if (menuState == 0) {
             menuState = 1;
