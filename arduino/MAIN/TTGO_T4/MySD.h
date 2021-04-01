@@ -1,5 +1,17 @@
+
+#include <SPI.h>
 #include <SD.h>
 #include "MyGPS.h"
+
+#include "TFT_eSPI.h"
+TFT_eSPI tft = TFT_eSPI();
+
+#define SD_MISO     2
+#define SD_MOSI     15
+#define SD_SCLK     14
+#define SD_CS       13
+
+SPIClass sdSPI(VSPI);
 
 MyGPS myGPS;
 
@@ -13,6 +25,12 @@ class MySD {
 //////////////////////////////////////////////////////////////////////////////////////
 
   public:
+  
+    bool SDsetup() {
+      sdSPI.begin(SD_SCLK, SD_MISO, SD_MOSI, SD_CS);
+        if (!SD.begin(SD_CS, sdSPI)) return false;
+        else return true;
+    }
 
     void savePosition() {
       File coordinatesFile;
