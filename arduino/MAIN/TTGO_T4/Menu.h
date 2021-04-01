@@ -53,12 +53,20 @@ class Menu {
         }
       }
       myTFT.Settings(2, 6, cursorPosition0);
-      tft.print(" ");
+      tft.setTextColor(TFT_BLACK);
+      tft.print(">");
       cursorPosition = pushed.state * 20 + 10;
       myTFT.Settings(2, 6, cursorPosition);
-      if (cursorBlink) tft.print(">");
-      if (!cursorBlink) tft.print(" ");
+      if (cursorBlink) {
+        tft.setTextColor(TFT_WHITE);
+        tft.print(">");
+      }
+      if (!cursorBlink) {
+        tft.setTextColor(TFT_BLACK);
+        tft.print(">");
+      }
       cursorBlink = !cursorBlink;
+      tft.setTextColor(TFT_WHITE);
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
