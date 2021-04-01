@@ -1,4 +1,19 @@
+ 
+ #define T4_V13
 
+
+
+
+
+
+
+
+
+
+
+
+
+#include "WiFi.h"
 #include "Screens.h"
 #include <EEPROM.h>
 
@@ -15,7 +30,6 @@ bool previousTrackState = false;
 
 Screens screens;
 //FTPClass FTP;
-MyTFT mytft;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,14 +42,13 @@ void setup() {
   Serial.begin(74880);
   EEPROM.begin(512);
   myGPS.gpsSetup();
-  mytft.tftSetup();
+  myTFT.tftSetup();
   
   pushed.buttonsSetup();
-  //SD.begin(20);
   startup();
-  if (SD.begin(26)); // initialCheck();
+  if (mySD.SDsetup()); // initialCheck();
   else {
-    mytft.Settings(1, 12, 10);
+    myTFT.Settings(1, 12, 10);
     tft.setTextColor(0xF800);
     tft.print("nepodarilo sa \n  nacitat kartu sd \n\n  vloz sd kartu");
     tft.setTextColor(TFT_WHITE);
@@ -53,8 +66,8 @@ void setup() {
 
 void loop() {
   if (pushed.menuState == 0) {                                  //switch to main screen
-    if (!SD.begin(13)) {
-      mytft.Settings(1, 80, 150);
+    if (!mySD.SDsetup()) {
+      myTFT.Settings(1, 80, 150);
       tft.print("sd fail");
     }
     if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
@@ -65,7 +78,7 @@ void loop() {
       }
       else  tft.fillScreen(TFT_BLACK);
     }
-    mytft.Settings(1, 10, 150);
+    myTFT.Settings(1, 10, 150);
     tft.print(Loops);
     pushed.maxState = 4;
     switch (pushed.state) {
@@ -88,27 +101,27 @@ void loop() {
   }
 
   else if (pushed.menuState == 1) {                             //switching to menu
-    //pushed.maxState = 5;
-    //menu.Cursor();
-    //menu.showMenu();
-    //clearScreen();
+    pushed.maxState = 5;
+    menu.Cursor();
+    menu.showMenu();
+    clearScreen();
   }
 
   else if (pushed.menuState == 2) {                             //select between options in menu
-    //menu.select();
+    menu.select();
   }
 
-//  if (menu.turnOff) {
-//    myGPS.dailyDistance += myGPS.trackDistance;
-//    mySD.saveNoTrackData();
-//    SD.remove("backup/data.txt");
-//    EEPROM.put(0, myGPS.totalDistance);
-//    EEPROM.commit();
-//    //pinMode (3, OUTPUT);
-//    while(1){
-//      delay(1000);  
-//    }
-//  }
+  if (menu.turnOff) {
+    myGPS.dailyDistance += myGPS.trackDistance;
+    mySD.saveNoTrackData();
+    SD.remove("backup/data.txt");
+    EEPROM.put(0, myGPS.totalDistance);
+    EEPROM.commit();
+    //pinMode (3, OUTPUT);
+    while(1){
+      delay(1000);  
+    }
+  }
 
 //  if (menu.wifiState) {
 //    if (pushed.menuState == 3) {
@@ -134,8 +147,8 @@ void loop() {
       else if (!menu.trackStart) {
         if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.5) {
           lastSavedDailyDistance = myGPS.dailyDistance;
-          mytft.Settings(1, 50, 130);
-          mytft.Print(mySD.backup(), 8, 0);
+          myTFT.Settings(1, 50, 130);
+          myTFT.Print(mySD.backup(), 8, 0);
         }
       }
     }
@@ -150,7 +163,7 @@ void loop() {
     pushed.screenOff = true;
   }
   
-  myGPS.smartDelay(200);
+  myGPS.smartDelay(100);
 }
 
 
@@ -161,7 +174,7 @@ void loop() {
 bool startup() {
   tft.fillScreen(TFT_BLACK);
   delay(50);
-  mytft.Settings(1, 34, 76);
+  myTFT.Settings(1, 34, 76);
   tft.println("Nacitavam...");
   tft.drawRect(10, 75, 108, 10, TFT_WHITE);
   delay(50);
@@ -180,7 +193,7 @@ bool initialCheck() {
   String lastLine;
   
   if (SD.exists("backup/data.txt")) {
-    mytft.Settings(1, 10, 20);
+    myTFT.Settings(1, 10, 20);
     tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
     myGPS.smartDelay(1000);
     tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
