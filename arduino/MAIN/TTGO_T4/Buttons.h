@@ -1,10 +1,21 @@
 
+#include <Button2.h>
+
+#define BUTTON_A_PIN 38
+#define BUTTON_B_PIN 37
+#define BUTTON_C_PIN 39
+
+Button2 buttonA = Button2(BUTTON_A_PIN);
+Button2 buttonB = Button2(BUTTON_B_PIN);
+Button2 buttonC = Button2(BUTTON_C_PIN);
+
+
 class Pushed {
 
   private:
-    int buttonNextPin = 38;
-    int buttonPreviousPin = 37;
-    int buttonConfirmPin = 39;
+    byte buttonNextPin = 38;
+    byte buttonPreviousPin = 37;
+    byte buttonConfirmPin = 39;
 
   public:
     byte menuState = 0;
@@ -14,14 +25,13 @@ class Pushed {
     bool screenOff = false;
 
     void buttonsSetup() {
-      pinMode(buttonNextPin, INPUT_PULLUP);
-      pinMode(buttonPreviousPin, INPUT_PULLUP);
-      pinMode(buttonConfirmPin, INPUT_PULLUP);
+      pinMode(buttonNextPin, INPUT);
+      pinMode(buttonPreviousPin, INPUT);
+      pinMode(buttonConfirmPin, INPUT);
     }
 
     bool nextPrevious() {
-      if (digitalRead(buttonNextPin) == HIGH) {
-        Serial.println("next");
+      if (digitalRead(buttonNextPin) == LOW) {
         if (!screenOff) {
           state++;
           if (state > maxState) state = 1;
@@ -29,8 +39,7 @@ class Pushed {
         previousMillis = millis();
         return true;
       }
-      else if (digitalRead(buttonPreviousPin) == HIGH) {
-        Serial.println("previous");
+      else if (digitalRead(buttonPreviousPin) == LOW) {        
         if (!screenOff) {
           state--;
           if (state < 1) state = maxState;
@@ -41,10 +50,8 @@ class Pushed {
       else return false;
     }
 
-    bool confirm() {
-      
-      if (digitalRead(buttonConfirmPin) == HIGH) {
-        Serial.println("confirm");
+    byte confirm() {
+      if (digitalRead(buttonConfirmPin) == LOW) {
         if (!screenOff) {
           if (menuState == 0) {
             menuState = 1;
