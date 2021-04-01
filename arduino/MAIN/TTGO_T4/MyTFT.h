@@ -1,7 +1,5 @@
-#include <SPI.h>
-#include "TFT_eSPI.h"
 
-TFT_eSPI tft = TFT_eSPI();
+
 
 
 class MyTFT {
@@ -12,14 +10,11 @@ class MyTFT {
   public:
     void tftSetup() {
       tft.init();
-      tft.begin();
       tft.setRotation(0);
       tft.fillScreen(TFT_BLACK);
-      tft.setTextColor(TFT_WHITE, TFT_BLACK);
     }
 
     void Settings(byte TEXTSIZE, int Y, int X) {
-      Serial.println("2.2.1");
       tft.setTextSize(TEXTSIZE);
       tft.setCursor(Y, X);
     }
