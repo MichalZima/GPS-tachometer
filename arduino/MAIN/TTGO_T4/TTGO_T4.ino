@@ -46,7 +46,7 @@ void setup() {
   
   pushed.buttonsSetup();
   startup();
-  if (mySD.SDsetup()); // initialCheck();
+  if (mySD.SDsetup()) initialCheck();
   else {
     myTFT.Settings(1, 12, 10);
     tft.setTextColor(0xF800);
@@ -70,14 +70,10 @@ void loop() {
       myTFT.Settings(1, 80, 150);
       tft.print("sd fail");
     }
-    if (pushed.menuState == 0 && pushed.nextPrevious() == true) {
-      if (pushed.screenOff) {
-        //pinMode (3, INPUT);
-        pushed.previousMillis = millis();
-        pushed.screenOff = false;
-      }
-      else  tft.fillScreen(TFT_BLACK);
-    }
+    
+    if (pushed.menuState == 0 && pushed.nextPrevious() == true) tft.fillScreen(TFT_BLACK);
+
+ 
     myTFT.Settings(1, 10, 150);
     tft.print(Loops);
     pushed.maxState = 4;
@@ -117,7 +113,7 @@ void loop() {
     SD.remove("backup/data.txt");
     EEPROM.put(0, myGPS.totalDistance);
     EEPROM.commit();
-    //pinMode (3, OUTPUT);
+    pinMode (4, INPUT);
     while(1){
       delay(1000);  
     }
@@ -158,12 +154,15 @@ void loop() {
     screens.savedToSD = " pass";
   }
 
-  if (millis() - pushed.previousMillis > 10000) {
-    //pinMode (3, OUTPUT);
+  if (millis() - pushed.previousMillis > 5000) {
+    tft.fillScreen(TFT_BLACK);
+    pinMode (4, INPUT);
     pushed.screenOff = true;
+    pushed.menuState = 0;
+    pushed.state = 1;
   }
   
-  myGPS.smartDelay(100);
+  myGPS.smartDelay(200);
 }
 
 
@@ -297,12 +296,5 @@ int courseDifference() {
 //////////////////////////////////////////////////////////////////////////////////////
 
 void clearScreen() {
-  if (pushed.confirm() == true) {
-    if (pushed.screenOff) {
-      //pinMode (3, INPUT);
-      pushed.previousMillis = millis();
-      pushed.screenOff = false;
-    }
-    else tft.fillScreen(TFT_BLACK);
-  }
+  if (pushed.confirm() == true) tft.fillScreen(TFT_BLACK);
 }

@@ -85,7 +85,7 @@ class MyGPS {
 //////////////////////////////////////////////////////////////////////////////////////
 
     bool realDate(){
-      if (gps.hdop.hdop() < 100) {
+      if (gps.hdop.hdop() < 50) {
         if (newDate == gps.date.value() and dateChecked) {
           sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
           return dateChecked;
