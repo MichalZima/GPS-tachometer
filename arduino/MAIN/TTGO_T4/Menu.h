@@ -42,15 +42,8 @@ class Menu {
 
     void Cursor() {
       if (pushed.nextPrevious()) {
-        if (pushed.screenOff) {
-          pinMode (3, INPUT);
-          pushed.previousMillis = millis();
-          pushed.screenOff = false;
-        }
-        else {
-          cursorPosition0 = cursorPosition;
-          cursorBlink = true;
-        }
+        cursorPosition0 = cursorPosition;
+        cursorBlink = true;
       }
       myTFT.Settings(2, 6, cursorPosition0);
       tft.setTextColor(TFT_BLACK);
