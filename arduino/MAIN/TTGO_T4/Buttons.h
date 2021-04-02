@@ -1,14 +1,4 @@
 
-#include <Button2.h>
-
-#define BUTTON_A_PIN 38
-#define BUTTON_B_PIN 37
-#define BUTTON_C_PIN 39
-
-Button2 buttonA = Button2(BUTTON_A_PIN);
-Button2 buttonB = Button2(BUTTON_B_PIN);
-Button2 buttonC = Button2(BUTTON_C_PIN);
-
 
 class Pushed {
 
@@ -36,6 +26,10 @@ class Pushed {
           state++;
           if (state > maxState) state = 1;
         }
+        if (screenOff) {
+          pinMode (4, OUTPUT);
+          screenOff = false;
+        }
         previousMillis = millis();
         return true;
       }
@@ -43,6 +37,10 @@ class Pushed {
         if (!screenOff) {
           state--;
           if (state < 1) state = maxState;
+        }
+        if (screenOff) {
+          pinMode (4, OUTPUT);
+          screenOff = false;
         }
         previousMillis = millis();
         return true;
@@ -61,6 +59,10 @@ class Pushed {
             menuState = 2;
           }
         }
+        if (screenOff) {
+          pinMode (4, OUTPUT);
+          screenOff = false;
+        }
         previousMillis = millis();
         return true;
       }
@@ -70,11 +72,11 @@ class Pushed {
 
     int changeSettingValue(int MIN, int MAX, int NOW){
       int valueOfSetting = NOW;
-      if (analogRead(buttonNextPin) >= 500) {
+      if (digitalRead(buttonNextPin) == LOW) {
         valueOfSetting++;
         if (valueOfSetting > MAX) valueOfSetting = MIN;
       }
-      else if (digitalRead(buttonPreviousPin) == HIGH) {
+      else if (digitalRead(buttonPreviousPin) == LOW) {
         valueOfSetting--;
         if (valueOfSetting < MIN) valueOfSetting = MAX;
       }
