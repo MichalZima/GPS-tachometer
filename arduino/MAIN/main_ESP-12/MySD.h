@@ -18,7 +18,7 @@ class MySD {
     void savePosition() {
       File coordinatesFile;
       if (myGPS.realDate()) {
-        fileName = "trasy/mapy/";
+        fileName = "trasy-bn-180/mapy/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
         coordinatesFile = SD.open(fileName, FILE_WRITE);
@@ -40,7 +40,7 @@ class MySD {
     void saveTrackData() {
       File dataFile;
       if (myGPS.realDate()) {
-        fileName = "trasy/data/";
+        fileName = "trasy-bn-180/data/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
         dataFile = SD.open(fileName, FILE_WRITE);
@@ -112,7 +112,7 @@ class MySD {
       File dataFile;
       if (myGPS.realDate()) {
         if (TRACK) {
-          fileName = "trasy/data/";
+          fileName = "trasy-bn-180/data/";
           fileName += myGPS.convertedGPSdate;
           fileName += ".txt";
         }

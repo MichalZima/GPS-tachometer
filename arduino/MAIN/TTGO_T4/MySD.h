@@ -32,86 +32,84 @@ class MySD {
         else return true;
     }
 
-    void savePosition() {
+
+    void readFile(fs::FS &fs, const char * path){
+      Serial.printf("Reading file: %s\n", path);
+  
+      File file = fs.open(path);
+      if(!file){
+          Serial.println("Failed to open file for reading");
+          return;
+      }
+  
+      Serial.print("Read from file: ");
+      while(file.available()){
+          Serial.write(file.read());
+      }
+      file.close();
+    }
+    
+
+    void savePosition(fs::FS & fs) {
       File coordinatesFile;
-      if (myGPS.realDate()) {
-        fileName = "trasy/mapy/";
+      //if (myGPS.realDate()) {
+        fileName = "/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
-        coordinatesFile = SD.open(fileName, FILE_WRITE);
+        coordinatesFile = fs.open(fileName);
+        
+        if (!coordinatesFile) coordinatesFile = fs.open(fileName, FILE_WRITE);
+        
         if (coordinatesFile) {
+          coordinatesFile = fs.open(fileName, FILE_APPEND);
+          char DATA[40];
           dtostrf(gps.location.lat(), 11, 9, latString);
           dtostrf(gps.location.lng(), 11, 9, longString);
-          coordinatesFile.print("[");
-          coordinatesFile.print(longString);
-          coordinatesFile.print(", ");
-          coordinatesFile.print(latString);
-          coordinatesFile.println("], ");
+          sprintf(DATA, "[%s, %s], ", longString, latString);
+          coordinatesFile.println(DATA);
           coordinatesFile.close();
         }
-      }
+      //}
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    void saveTrackData() {
+    void saveTrackData(fs::FS & fs) {
       File dataFile;
+      
       if (myGPS.realDate()) {
-        fileName = "trasy/data/";
+        fileName = "/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
-        dataFile = SD.open(fileName, FILE_WRITE);
+        dataFile = fs.open(fileName);
+        
+        if (!dataFile) dataFile = fs.open(fileName, FILE_WRITE);
+        
         if (dataFile) {
+          dataFile = fs.open(fileName, FILE_APPEND);
+          char DATA[200];
+          
           dtostrf(gps.location.lat(), 12, 9, latString);
           dtostrf(gps.location.lng(), 12, 9, longString);
-          dataFile.print("[");
-          dataFile.print(longString);
-          dataFile.print(", ");
-          dataFile.print(latString);
-          dataFile.print("]_");
-          dataFile.print(gps.location.age());
-          dataFile.print("\t");
-          dataFile.print(myGPS.realTime());
-          dataFile.print("_");
-          dataFile.print(gps.time.age());
-          dataFile.print("\t");
-          dataFile.print(myGPS.distance0);
-          if(myGPS.changedToKM == false) dataFile.print("m ");
-          else if(myGPS.changedToKM == true) dataFile.print("km ");
-          dataFile.print(myGPS.totalDistance);
-          if(myGPS.changedToKM == false) dataFile.print("m\t");
-          else if(myGPS.changedToKM == true) dataFile.print("km\t");
-          dataFile.print(gps.speed.kmph());
-          dataFile.print("kmph_");
-          dataFile.print(gps.speed.age());
-          dataFile.print("\t");
-          dataFile.print(gps.hdop.hdop());
-          dataFile.print("_");
-          dataFile.print(gps.hdop.age());
-          dataFile.print("\t");
-          dataFile.print(gps.satellites.value());
-          dataFile.print("sats_");
-          dataFile.print(gps.satellites.age());
-          dataFile.print("\t");
-          dataFile.print(gps.altitude.meters());
-          dataFile.print("mnm_");
-          dataFile.print(gps.altitude.age());
-          dataFile.print("\t");
-          dataFile.print(gps.course.deg());
-          dataFile.print("°_");
-          dataFile.print(gps.course.age());
-          dataFile.println("\n");
+          
+          sprintf(DATA, "\n[%s, %s]/%d\t%s/%d\t%.2fm\t%.3fkm\t%.1f/%d\t%.1f/%d\t%d/%d\t%.1f/%d\t%.1f/%d\t ", longString, latString, gps.location.age(), myGPS.realTime(), gps.time.age(), myGPS.distance0, myGPS.totalDistance, gps.speed.kmph(), gps.speed.age(), gps.hdop.hdop(), gps.hdop.age(), gps.satellites.value(), gps.satellites.age(), gps.altitude.meters(), gps.altitude.age(), gps.course.deg(), gps.course.age());
+
+          dataFile.println(DATA);
           dataFile.close();
         } 
-      }     
+      }  
+//      int str_len = fileName.length() + 1;
+//      char path[str_len];
+//      fileName.toCharArray(path, str_len);
+//      readFile(SD, path);   
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    void saveNoTrackData() {
+    void saveNoTrackData(fs::FS & fs) {
       File noTrackFile;
       if (myGPS.realDate()) {
-        noTrackFile = SD.open("denne_statistiky.txt", FILE_WRITE);
+        noTrackFile = fs.open("denne_statistiky.txt", FILE_WRITE);
         if (noTrackFile) {
           noTrackFile.print(myGPS.convertedGPSdate);
           noTrackFile.print(" ");
@@ -125,17 +123,17 @@ class MySD {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    void saveErrorMessage(bool TRACK) {
+    void saveErrorMessage(bool TRACK, fs::FS & fs) {
       File dataFile;
       if (myGPS.realDate()) {
         if (TRACK) {
-          fileName = "trasy/data/";
+          fileName = "trasy-bn-180/data/";
           fileName += myGPS.convertedGPSdate;
           fileName += ".txt";
         }
         else if (!TRACK) fileName = "backup/data.txt";
         
-        dataFile = SD.open(fileName, FILE_WRITE);
+        dataFile = fs.open(fileName, FILE_WRITE);
         if (dataFile) {
           dataFile.print("(");
           dataFile.print(myGPS.errorMessage);
@@ -147,10 +145,10 @@ class MySD {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    long backup () {
+    long backup (fs::FS & fs) {
       File backupFile;
       long fileSize;
-      backupFile = SD.open("backup/data.txt", FILE_WRITE);
+      backupFile = fs.open("backup/data.txt", FILE_WRITE);
         if (backupFile) {
           backupFile.print("*");
           backupFile.print(myGPS.convertedGPSdate);
