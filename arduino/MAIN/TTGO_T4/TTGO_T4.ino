@@ -1,18 +1,4 @@
- 
- #define T4_V13
-
-
-
-
-
-
-
-
-
-
-
-
-
+#include <WiFi.h>
 #include "WiFi.h"
 #include "Screens.h"
 #include <EEPROM.h>
@@ -36,7 +22,7 @@ Screens screens;
 
 
 void setup() {
-//  WiFi.disconnect();
+  WiFi.disconnect();
 //  WiFi.forceSleepBegin();
   delay(1);
   Serial.begin(74880);
@@ -46,12 +32,12 @@ void setup() {
   
   pushed.buttonsSetup();
   startup();
-  if (mySD.SDsetup()) initialCheck();
+  if (mySD.SDsetup()) initialCheck(SD);
   else {
     myTFT.Settings(1, 12, 10);
-    tft.setTextColor(0xF800);
+    tft.setTextColor(0xF800, TFT_BLACK);
     tft.print("nepodarilo sa \n  nacitat kartu sd \n\n  vloz sd kartu");
-    tft.setTextColor(TFT_WHITE);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
     myGPS.smartDelay(2000);
   }
   tft.fillScreen(TFT_BLACK);
@@ -109,7 +95,7 @@ void loop() {
 
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
-    mySD.saveNoTrackData();
+    mySD.saveNoTrackData(SD);
     SD.remove("backup/data.txt");
     EEPROM.put(0, myGPS.totalDistance);
     EEPROM.commit();
@@ -143,8 +129,7 @@ void loop() {
       else if (!menu.trackStart) {
         if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.5) {
           lastSavedDailyDistance = myGPS.dailyDistance;
-          myTFT.Settings(1, 50, 130);
-          myTFT.Print(mySD.backup(), 8, 0);
+          mySD.backup(SD);
         }
       }
     }
@@ -154,13 +139,15 @@ void loop() {
     screens.savedToSD = " pass";
   }
 
-  if (millis() - pushed.previousMillis > 5000) {
+  if (millis() - pushed.previousMillis > 30000) {
     tft.fillScreen(TFT_BLACK);
     pinMode (4, INPUT);
     pushed.screenOff = true;
     pushed.menuState = 0;
     pushed.state = 1;
   }
+
+  mySD.saveTrackData(SD);
   
   myGPS.smartDelay(200);
 }
@@ -182,16 +169,16 @@ bool startup() {
     delay(5);
   }
   tft.fillScreen(TFT_BLACK);
-  tft.setTextColor(TFT_WHITE);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-bool initialCheck() {
+bool initialCheck(fs::FS & fs) {
   File file;
   String lastLine;
   
-  if (SD.exists("backup/data.txt")) {
+  if (fs.exists("backup/data.txt")) {
     myTFT.Settings(1, 10, 20);
     tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
     myGPS.smartDelay(1000);
@@ -199,7 +186,7 @@ bool initialCheck() {
     
     String symbol;
     
-    file = SD.open("backup/data.txt");
+    file = fs.open("backup/data.txt");
     unsigned long Position = file.size();
     while (true) {
       file.seek(Position);
@@ -221,13 +208,13 @@ bool initialCheck() {
         Serial.println(lastLine);
         
         File noTrackFile;
-        noTrackFile = SD.open("denne_statistiky.txt", FILE_WRITE);
+        noTrackFile = fs.open("denne_statistiky.txt", FILE_WRITE);
         
         if (noTrackFile) {
           noTrackFile.println(lastLine);
           noTrackFile.close();
         }
-        SD.remove("backup/data.txt");
+        fs.remove("backup/data.txt");
         
         myGPS.smartDelay(1000);
         tft.print("  hotovo");
@@ -251,9 +238,9 @@ bool initialCheck() {
 
 
 void trackSaving() {
-  if (myGPS.distanceMeasurements >= 5 or courseDifference() > 5) {
-    mySD.savePosition();
-    mySD.saveTrackData();
+  if (myGPS.distanceMeasurements >= 1 or courseDifference() > 5) {
+    mySD.savePosition(SD);
+    mySD.saveTrackData(SD);
     myGPS.distanceMeasurements = 0;
     course0 = gps.course.deg();
     screens.savedToSD = " save";
@@ -277,8 +264,8 @@ bool passCalculating() {
         return true;
       }
       else {
-        if (menu.trackStart) mySD.saveErrorMessage(true);
-        if (!menu.trackStart) mySD.saveErrorMessage(false);
+        if (menu.trackStart) mySD.saveErrorMessage(true, SD);
+        if (!menu.trackStart) mySD.saveErrorMessage(false, SD);
         Loops = 0;
         return false;
       }
