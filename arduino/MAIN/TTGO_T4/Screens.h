@@ -1,4 +1,4 @@
-#include "mySD.h"
+#include "MySD.h"
 #include "Menu.h"
 
 MySD mySD;
