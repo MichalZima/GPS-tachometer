@@ -2,7 +2,7 @@
 #include <SoftwareSerial.h>
 
 TinyGPSPlus gps;
-SoftwareSerial ss (36, 34);
+SoftwareSerial ss (26, 32);
 
 
 class MyGPS {
@@ -22,7 +22,7 @@ class MyGPS {
     bool changedToKM = true; 
     bool position0Saved = false;
     byte distanceMeasurements = 0;
-    int timeZoneValue = 1; 
+    int timeZoneValue = 2; 
     float averageSpeed = 0;
     float averageHdop = 0;  
     byte arrayPosition = 0;
