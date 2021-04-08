@@ -139,15 +139,13 @@ void loop() {
     screens.savedToSD = " pass";
   }
 
-  if (millis() - pushed.previousMillis > 30000) {
-    tft.fillScreen(TFT_BLACK);
-    pinMode (4, INPUT);
-    pushed.screenOff = true;
-    pushed.menuState = 0;
-    pushed.state = 1;
-  }
-
-  mySD.saveTrackData(SD);
+//  if (millis() - pushed.previousMillis > 30000) {
+//    tft.fillScreen(TFT_BLACK);
+//    pinMode (4, INPUT);
+//    pushed.screenOff = true;
+//    pushed.menuState = 0;
+//    pushed.state = 1;
+//  }
   
   myGPS.smartDelay(200);
 }
