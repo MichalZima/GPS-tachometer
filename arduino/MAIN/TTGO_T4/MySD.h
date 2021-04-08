@@ -32,11 +32,15 @@ class MySD {
         else return true;
     }
 
+
+//////////////////////////////////////////////////////////////////////////////////////
+    
+
     void savePosition(fs::FS & fs) {
       File coordinatesFile;
       
       if (myGPS.realDate()) {
-        fileName = "/";
+        fileName = "/tracks/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
         coordinatesFile = fs.open(fileName);
@@ -91,7 +95,7 @@ class MySD {
       if (myGPS.realDate()) {
         noTrackFile = fs.open("/DAILY-STATS.txt");
         
-        if (!noTrackFile) noTrackFile = fs.open("DAILY-STATS.txt", FILE_WRITE);
+        if (!noTrackFile) noTrackFile = fs.open("/DAILY-STATS.txt", FILE_WRITE);
         
         if (noTrackFile) {
           noTrackFile.print(myGPS.convertedGPSdate);
@@ -106,7 +110,7 @@ class MySD {
 
 //////////////////////////////////////////////////////////////////////////////////////
 
-    void saveErrorMessage(bool TRACK, fs::FS & fs) {
+    void saveErrorMessage(fs::FS & fs) {
       File dataFile;
       
       if (myGPS.realDate()) {
@@ -118,32 +122,13 @@ class MySD {
         if (!dataFile) fs.open(fileName, FILE_WRITE);
 
         if (dataFile) {
+          dataFile = fs.open(fileName, FILE_APPEND);
           dataFile.print("(");
           dataFile.print(myGPS.errorMessage);
           dataFile.println(")");
           dataFile.close();
         }
       }
-    }
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-    long backup (fs::FS & fs) {
-      File backupFile;
-      long fileSize;
-      backupFile = fs.open("backup/data.txt", FILE_WRITE);
-        if (backupFile) {
-          backupFile.print("*");
-          backupFile.print(myGPS.convertedGPSdate);
-          backupFile.print(" ");
-          backupFile.print(myGPS.totalDistance);
-          backupFile.print("/");
-          backupFile.print(myGPS.dailyDistance);
-          backupFile.print(";\n"); 
-          fileSize = backupFile.size();
-          backupFile.close();
-        }
-      return fileSize;
     }
     
 }; 
