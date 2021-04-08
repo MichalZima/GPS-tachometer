@@ -2,7 +2,7 @@
 #include <SoftwareSerial.h>
 
 TinyGPSPlus gps;
-SoftwareSerial ss (26, 32);
+SoftwareSerial ss (22, 21);
 
 
 class MyGPS {
