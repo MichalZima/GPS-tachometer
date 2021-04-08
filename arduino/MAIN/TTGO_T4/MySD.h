@@ -32,27 +32,10 @@ class MySD {
         else return true;
     }
 
-
-    void readFile(fs::FS &fs, const char * path){
-      Serial.printf("Reading file: %s\n", path);
-  
-      File file = fs.open(path);
-      if(!file){
-          Serial.println("Failed to open file for reading");
-          return;
-      }
-  
-      Serial.print("Read from file: ");
-      while(file.available()){
-          Serial.write(file.read());
-      }
-      file.close();
-    }
-    
-
     void savePosition(fs::FS & fs) {
       File coordinatesFile;
-      //if (myGPS.realDate()) {
+      
+      if (myGPS.realDate()) {
         fileName = "/";
         fileName += myGPS.convertedGPSdate;
         fileName += ".txt";
@@ -69,7 +52,7 @@ class MySD {
           coordinatesFile.println(DATA);
           coordinatesFile.close();
         }
-      //}
+      }
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -98,18 +81,18 @@ class MySD {
           dataFile.close();
         } 
       }  
-//      int str_len = fileName.length() + 1;
-//      char path[str_len];
-//      fileName.toCharArray(path, str_len);
-//      readFile(SD, path);   
     }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
     void saveNoTrackData(fs::FS & fs) {
       File noTrackFile;
+      
       if (myGPS.realDate()) {
-        noTrackFile = fs.open("denne_statistiky.txt", FILE_WRITE);
+        noTrackFile = fs.open("/DAILY-STATS.txt");
+        
+        if (!noTrackFile) noTrackFile = fs.open("DAILY-STATS.txt", FILE_WRITE);
+        
         if (noTrackFile) {
           noTrackFile.print(myGPS.convertedGPSdate);
           noTrackFile.print(" ");
@@ -125,15 +108,15 @@ class MySD {
 
     void saveErrorMessage(bool TRACK, fs::FS & fs) {
       File dataFile;
+      
       if (myGPS.realDate()) {
-        if (TRACK) {
-          fileName = "trasy-bn-180/data/";
-          fileName += myGPS.convertedGPSdate;
-          fileName += ".txt";
-        }
-        else if (!TRACK) fileName = "backup/data.txt";
+        fileName = "/";
+        fileName += myGPS.convertedGPSdate;
+        fileName += ".txt";
+        dataFile = fs.open(fileName);
         
-        dataFile = fs.open(fileName, FILE_WRITE);
+        if (!dataFile) fs.open(fileName, FILE_WRITE);
+
         if (dataFile) {
           dataFile.print("(");
           dataFile.print(myGPS.errorMessage);
