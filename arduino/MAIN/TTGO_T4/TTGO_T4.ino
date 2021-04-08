@@ -2,6 +2,7 @@
 #include "WiFi.h"
 #include "Screens.h"
 #include <EEPROM.h>
+#include "DeepSleep.h"
 
 byte Loops = 0;
 byte passLoops = 5;
@@ -16,6 +17,7 @@ bool previousTrackState = false;
 
 Screens screens;
 //FTPClass FTP;
+TurnOff off;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,11 +26,11 @@ Screens screens;
 void setup() {
   WiFi.disconnect();
 //  WiFi.forceSleepBegin();
-  delay(1);
   Serial.begin(74880);
   EEPROM.begin(512);
   myGPS.gpsSetup();
   myTFT.tftSetup();
+  off.offSetup();
   
   pushed.buttonsSetup();
   startup();
@@ -96,13 +98,9 @@ void loop() {
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData(SD);
-    SD.remove("backup/data.txt");
     EEPROM.put(0, myGPS.totalDistance);
     EEPROM.commit();
-    pinMode (4, INPUT);
-    while(1){
-      delay(1000);  
-    }
+    esp_deep_sleep_start();
   }
 
 //  if (menu.wifiState) {
@@ -129,7 +127,6 @@ void loop() {
       else if (!menu.trackStart) {
         if (myGPS.dailyDistance - lastSavedDailyDistance >= 0.5) {
           lastSavedDailyDistance = myGPS.dailyDistance;
-          mySD.backup(SD);
         }
       }
     }
@@ -155,88 +152,8 @@ void loop() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-bool startup() {
-  tft.fillScreen(TFT_BLACK);
-  delay(50);
-  myTFT.Settings(1, 34, 76);
-  tft.println("Nacitavam...");
-  tft.drawRect(10, 75, 108, 10, TFT_WHITE);
-  delay(50);
-  for (int16_t x=0; x < 108; x++) {
-    tft.fillRect(10, 75, x, 10, TFT_WHITE);
-    delay(5);
-  }
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-bool initialCheck(fs::FS & fs) {
-  File file;
-  String lastLine;
-  
-  if (fs.exists("backup/data.txt")) {
-    myTFT.Settings(1, 10, 20);
-    tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
-    myGPS.smartDelay(1000);
-    tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
-    
-    String symbol;
-    
-    file = fs.open("backup/data.txt");
-    unsigned long Position = file.size();
-    while (true) {
-      file.seek(Position);
-      symbol = char(file.read());
-      
-      if (symbol == "*") { 
-        while (true){
-          symbol = char(file.read());
-          if (symbol != ";") {  
-            lastLine += symbol;
-          }
-          else break;
-        }
-        file.close();
-        
-        myGPS.smartDelay(1000);
-        tft.print("  aktualizujem data\n\n\n");
-        Serial.println();
-        Serial.println(lastLine);
-        
-        File noTrackFile;
-        noTrackFile = fs.open("denne_statistiky.txt", FILE_WRITE);
-        
-        if (noTrackFile) {
-          noTrackFile.println(lastLine);
-          noTrackFile.close();
-        }
-        fs.remove("backup/data.txt");
-        
-        myGPS.smartDelay(1000);
-        tft.print("  hotovo");
-        myGPS.smartDelay(1000);
-        myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
-        Serial.println(myGPS.totalDistance);
-        return false;
-      }
-      else Position--;
-    }
-  }
-  
-  else {
-    myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
-    Serial.println(myGPS.totalDistance);
-  }
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-
 void trackSaving() {
-  if (myGPS.distanceMeasurements >= 1 or courseDifference() > 5) {
+  if (myGPS.distanceMeasurements >= 2 or courseDifference() > 5) {
     mySD.savePosition(SD);
     mySD.saveTrackData(SD);
     myGPS.distanceMeasurements = 0;
@@ -262,8 +179,7 @@ bool passCalculating() {
         return true;
       }
       else {
-        if (menu.trackStart) mySD.saveErrorMessage(true, SD);
-        if (!menu.trackStart) mySD.saveErrorMessage(false, SD);
+        mySD.saveErrorMessage(SD);
         Loops = 0;
         return false;
       }
@@ -282,4 +198,87 @@ int courseDifference() {
 
 void clearScreen() {
   if (pushed.confirm() == true) tft.fillScreen(TFT_BLACK);
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+
+bool startup() {
+  tft.fillScreen(TFT_BLACK);
+  delay(50);
+  myTFT.Settings(1, 34, 76);
+  tft.println("Nacitavam...");
+  tft.drawRect(10, 75, 108, 10, TFT_WHITE);
+  delay(50);
+  for (int16_t x=0; x < 108; x++) {
+    tft.fillRect(10, 75, x, 10, TFT_WHITE);
+    delay(5);
+  }
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+bool initialCheck(fs::FS & fs) {
+  File file;
+  String lastLine;
+  
+//  if (fs.exists("backup/data.txt")) {
+//    myTFT.Settings(1, 10, 20);
+//    tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
+//    myGPS.smartDelay(1000);
+//    tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
+//    
+//    String symbol;
+//    
+//    file = fs.open("backup/data.txt");
+//    unsigned long Position = file.size();
+//    while (true) {
+//      file.seek(Position);
+//      symbol = char(file.read());
+//      
+//      if (symbol == "*") { 
+//        while (true){
+//          symbol = char(file.read());
+//          if (symbol != ";") {  
+//            lastLine += symbol;
+//          }
+//          else break;
+//        }
+//        file.close();
+//        
+//        myGPS.smartDelay(1000);
+//        tft.print("  aktualizujem data\n\n\n");
+//        Serial.println();
+//        Serial.println(lastLine);
+//        
+//        File noTrackFile;
+//        noTrackFile = fs.open("denne_statistiky.txt", FILE_WRITE);
+//        
+//        if (noTrackFile) {
+//          noTrackFile.println(lastLine);
+//          noTrackFile.close();
+//        }
+//        fs.remove("backup/data.txt");
+//        
+//        myGPS.smartDelay(1000);
+//        tft.print("  hotovo");
+//        myGPS.smartDelay(1000);
+//        myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
+//        Serial.println(myGPS.totalDistance);
+//        return false;
+//      }
+//      else Position--;
+//    }
+//  }
+  
+//  else {
+//    myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
+//    Serial.println(myGPS.totalDistance);
+//  }
 }
