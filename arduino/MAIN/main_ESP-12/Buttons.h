@@ -29,15 +29,15 @@ class Pushed {
         previousMillis = millis();
         return true;
       }
-      else if (digitalRead(buttonPreviousPin) == HIGH) {
-        Serial.println("previous");
-        if (!screenOff) {
-          state--;
-          if (state < 1) state = maxState;
-        }
-        previousMillis = millis();
-        return true;
-      }
+//      else if (digitalRead(buttonPreviousPin) == HIGH) {
+//        Serial.println("previous");
+//        if (!screenOff) {
+//          state--;
+//          if (state < 1) state = maxState;
+//        }
+//        previousMillis = millis();
+//        return true;
+//      }
       else return false;
     }
 
