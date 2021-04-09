@@ -16,7 +16,7 @@ class Menu {
   public:
     bool trackStart = true;
     bool turnOff = false;
-    bool wifiState = false;
+    bool wifiState = true;
 
 //////////////////////////////////////////////////////////////////////////////////////
     

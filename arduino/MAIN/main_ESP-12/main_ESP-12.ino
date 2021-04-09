@@ -46,6 +46,8 @@ void setup() {
   }
   tft.fillScreen(ST7735_BLACK);
   pushed.previousMillis = millis();
+  FTP.FTPsetup();
+  FTP.FTPloop();
 }
 
 
@@ -112,14 +114,14 @@ void loop() {
       delay(1000);  
     }
   }
-
-  if (menu.wifiState) {
-    if (pushed.menuState == 3) {
-      FTP.FTPsetup();
-      pushed.menuState = 4;
-    }
-    FTP.FTPloop();
-  }
+//
+//  if (menu.wifiState) {
+//    if (pushed.menuState == 3) {
+//      FTP.FTPsetup();
+//      pushed.menuState = 4;
+//    }
+//    FTP.FTPloop();
+//  }
 
 
 
