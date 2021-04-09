@@ -29,34 +29,34 @@ class Pushed {
         previousMillis = millis();
         return true;
       }
-//      else if (digitalRead(buttonPreviousPin) == HIGH) {
-//        Serial.println("previous");
-//        if (!screenOff) {
-//          state--;
-//          if (state < 1) state = maxState;
-//        }
-//        previousMillis = millis();
-//        return true;
-//      }
-      else return false;
-    }
-
-    byte confirm() {
-      Serial.println("confirm");
-      if (digitalRead(buttonConfirmPin) == HIGH) {
+      else if (digitalRead(buttonPreviousPin) == HIGH) {
+        Serial.println("previous");
         if (!screenOff) {
-          if (menuState == 0) {
-            menuState = 1;
-            state = 1;
-          }
-          else if (menuState == 1) {
-            menuState = 2;
-          }
+          state--;
+          if (state < 1) state = maxState;
         }
         previousMillis = millis();
         return true;
       }
       else return false;
+    }
+
+    byte confirm() {
+//      Serial.println("confirm");
+//      if (digitalRead(buttonConfirmPin) == HIGH) {
+//        if (!screenOff) {
+//          if (menuState == 0) {
+//            menuState = 1;
+//            state = 1;
+//          }
+//          else if (menuState == 1) {
+//            menuState = 2;
+//          }
+//        }
+//        previousMillis = millis();
+//        return true;
+//      }
+//      else return false;
     }
 
 
