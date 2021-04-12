@@ -1,8 +1,8 @@
 #include <WiFi.h>
 #include "WiFi.h"
-#include "Screens.h"
 #include <EEPROM.h>
 #include "DeepSleep.h"
+#include "Screens.h"
 
 byte Loops = 0;
 byte passLoops = 5;
@@ -15,9 +15,24 @@ int timerCount = 0;
 float lastSavedDailyDistance = 0;
 bool previousTrackState = false;
 
+#define BUTTON_A_PIN  38
+#define BUTTON_B_PIN  37
+#define BUTTON_C_PIN  39
+
 Screens screens;
 //FTPClass FTP;
 TurnOff off;
+
+Button2 buttonA = Button2(BUTTON_A_PIN);
+Button2 buttonB = Button2(BUTTON_B_PIN);
+Button2 buttonC = Button2(BUTTON_C_PIN);
+
+
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,13 +43,14 @@ void setup() {
 //  WiFi.forceSleepBegin();
   Serial.begin(74880);
   EEPROM.begin(512);
-  myGPS.gpsSetup();
-  myTFT.tftSetup();
-  off.offSetup();
   
-  pushed.buttonsSetup();
+  myGPS.Setup();
+  myTFT.Setup();
+  off.Setup();
+  buttonHandlerSetup();
   startup();
-  if (mySD.SDsetup()) initialCheck(SD);
+  if (mySD.Setup()) initialCheck(SD);
+  
   else {
     myTFT.Settings(1, 12, 10);
     tft.setTextColor(0xF800, TFT_BLACK);
@@ -42,8 +58,9 @@ void setup() {
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     myGPS.smartDelay(2000);
   }
+  
   tft.fillScreen(TFT_BLACK);
-  pushed.previousMillis = millis();
+  handler.previousMillis = millis();
 }
 
 
@@ -53,19 +70,26 @@ void setup() {
 
 
 void loop() {
-  if (pushed.menuState == 0) {                                  //switch to main screen
-    if (!mySD.SDsetup()) {
+  handler.eventA = 0;
+  handler.eventB = 0;
+  handler.eventC = 0;
+  
+  buttonA.loop();
+  buttonB.loop();
+  buttonC.loop();
+  
+  if (handler.menuState == 0) {                                  //switch to main screen
+    if (!mySD.Setup()) {
       myTFT.Settings(1, 80, 150);
       tft.print("sd fail");
     }
     
-    if (pushed.menuState == 0 && pushed.nextPrevious() == true) tft.fillScreen(TFT_BLACK);
-
+    if ((handler.eventA > 0 || handler.eventB > 0) && handler.menuState == 0) tft.fillScreen(TFT_BLACK);
  
     myTFT.Settings(1, 10, 150);
     tft.print(Loops);
-    pushed.maxState = 4;
-    switch (pushed.state) {
+    handler.maxState = 4;
+    switch (handler.state) {
       case 1:
         screens.First();
         break;
@@ -84,14 +108,14 @@ void loop() {
     clearScreen();
   }
 
-  else if (pushed.menuState == 1) {                             //switching to menu
-    pushed.maxState = 5;
+  else if (handler.menuState == 1) {                             //switching to menu
+    handler.maxState = 5;
     menu.Cursor();
     menu.showMenu();
     clearScreen();
   }
 
-  else if (pushed.menuState == 2) {                             //select between options in menu
+  else if (handler.menuState == 2) {                             //select between options in menu
     menu.select();
   }
 
@@ -104,9 +128,9 @@ void loop() {
   }
 
 //  if (menu.wifiState) {
-//    if (pushed.menuState == 3) {
+//    if (handler.menuState == 3) {
 //      FTP.FTPsetup();
-//      pushed.menuState = 4;
+//      handler.menuState = 4;
 //    }
 //    FTP.FTPloop();
 //  }
@@ -136,21 +160,38 @@ void loop() {
     screens.savedToSD = " pass";
   }
 
-//  if (millis() - pushed.previousMillis > 30000) {
+//  if (millis() - handler.previousMillis > 30000) {
 //    tft.fillScreen(TFT_BLACK);
 //    pinMode (4, INPUT);
-//    pushed.screenOff = true;
-//    pushed.menuState = 0;
-//    pushed.state = 1;
+//    handler.screenOff = true;
+//    handler.menuState = 0;
+//    handler.state = 1;
 //  }
   
-  myGPS.smartDelay(200);
+  myGPS.smartDelay(20);
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+bool startup() {
+  tft.fillScreen(TFT_BLACK);
+  delay(50);
+  myTFT.Settings(1, 34, 76);
+  tft.println("Nacitavam...");
+  tft.drawRect(10, 75, 108, 10, TFT_WHITE);
+  delay(50);
+  for (int16_t x=0; x < 108; x++) {
+    tft.fillRect(10, 75, x, 10, TFT_WHITE);
+    delay(5);
+  }
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void trackSaving() {
   if (myGPS.distanceMeasurements >= 2 or courseDifference() > 5) {
@@ -162,7 +203,7 @@ void trackSaving() {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 bool passCalculating() {
   if (gps.speed.kmph() <= 3) {
@@ -187,42 +228,21 @@ bool passCalculating() {
   }
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 int courseDifference() {
   int difference = course0 - gps.course.deg();
   return abs(difference);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void clearScreen() {
-  if (pushed.confirm() == true) tft.fillScreen(TFT_BLACK);
+  if (handler.eventC > 0) tft.fillScreen(TFT_BLACK);
 }
 
 
-
-//////////////////////////////////////////////////////////////////////////////////////
-
-
-bool startup() {
-  tft.fillScreen(TFT_BLACK);
-  delay(50);
-  myTFT.Settings(1, 34, 76);
-  tft.println("Nacitavam...");
-  tft.drawRect(10, 75, 108, 10, TFT_WHITE);
-  delay(50);
-  for (int16_t x=0; x < 108; x++) {
-    tft.fillRect(10, 75, x, 10, TFT_WHITE);
-    delay(5);
-  }
-  tft.fillScreen(TFT_BLACK);
-  tft.setTextColor(TFT_WHITE, TFT_BLACK);
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 bool initialCheck(fs::FS & fs) {
   File file;
@@ -281,4 +301,44 @@ bool initialCheck(fs::FS & fs) {
 //    myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
 //    Serial.println(myGPS.totalDistance);
 //  }
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void buttonHandlerSetup() {
+  buttonA.setClickHandler(handlerA);
+  buttonA.setLongClickHandler(handlerA);
+  buttonA.setDoubleClickHandler(handlerA);
+  buttonA.setTripleClickHandler(handlerA);
+  
+  buttonB.setClickHandler(handlerB);
+  buttonB.setLongClickHandler(handlerB);
+  buttonB.setDoubleClickHandler(handlerB);
+  buttonB.setTripleClickHandler(handlerB);
+  
+  buttonC.setClickHandler(handlerC);
+  buttonC.setLongClickHandler(handlerC);
+  buttonC.setDoubleClickHandler(handlerC);
+  buttonC.setTripleClickHandler(handlerC);
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+void handlerA(Button2& btn) {
+  handler.buttonHandlerA(btn);
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void handlerB(Button2& btn) {
+  handler.eventB = 0;
+  handler.buttonHandlerB(btn);
+}
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void handlerC(Button2& btn) {
+  handler.eventC = 0;
+  handler.buttonHandlerC(btn);
 }
