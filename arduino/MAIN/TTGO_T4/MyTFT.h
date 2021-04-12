@@ -8,7 +8,7 @@ class MyTFT {
     char convertString[12];
 
   public:
-    void tftSetup() {
+    void Setup() {
       tft.init();
       tft.setRotation(0);
       tft.fillScreen(TFT_BLACK);
