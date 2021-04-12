@@ -7,7 +7,7 @@ RTC_DATA_ATTR int bootCount = 0;
 class TurnOff {
   public:
   
-  void offSetup(){  
+  void Setup(){  
     //Increment boot number and print it every reboot
     ++bootCount;
     Serial.println("Boot number: " + String(bootCount));
