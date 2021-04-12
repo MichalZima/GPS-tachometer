@@ -1,8 +1,9 @@
 #include "MyTFT.h"
 #include "Buttons.h"
+#include "MultiHandler.h"
 
 MyTFT myTFT;
-Pushed pushed;
+MultiHandler handler;
 
 
 class Menu {
@@ -18,7 +19,7 @@ class Menu {
     bool turnOff = false;
     bool wifiState = false;
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     
     void showMenu() {
       myTFT.Settings(2, 20, 30);
@@ -38,26 +39,23 @@ class Menu {
 
     }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void Cursor() {
-      if (pushed.nextPrevious()) {
+      if (handler.eventA > 0 || handler.eventB > 0) {
         cursorPosition0 = cursorPosition;
-        cursorBlink = true;
       }
       myTFT.Settings(2, 6, cursorPosition0);
       tft.print(" ");
-      cursorPosition = pushed.state * 20 + 10;
+      cursorPosition = handler.state * 20 + 10;
       myTFT.Settings(2, 6, cursorPosition);
-      if (cursorBlink) tft.print(">");
-      if (!cursorBlink) tft.print(" ");
-      cursorBlink = !cursorBlink;
+      tft.print(">");
     }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void select() {
-      switch (pushed.state) {
+      switch (handler.state) {
         case 1:
           track();
           break;
@@ -78,7 +76,7 @@ class Menu {
       }
     }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void track() {
       if (!trackStart) {
@@ -86,7 +84,7 @@ class Menu {
           myTFT.Settings(2, tft.width()/2 - 35, tft.height()/2 - 7);
           tft.print("START?");
         }
-        if (pushed.confirm()) countdownStarted = true;
+        if (handler.eventC > 0) countdownStarted = true;
         if (countdownStarted) {  
           countdown++;
           myTFT.Settings(2, tft.width()/2 - 53, tft.height()/2 - 7);
@@ -102,33 +100,33 @@ class Menu {
             trackStart = true;
             tft.setTextColor(TFT_WHITE, TFT_BLACK);
             tft.fillScreen(TFT_BLACK);
-            pushed.menuState = 0;
+            handler.menuState = 0;
           }
         }
       }
       else {
         myTFT.Settings(2, tft.width()/2 - 29, tft.height()/2 - 7);
         tft.print("STOP?");
-        if (pushed.confirm() == true) {
+        if (handler.eventC > 0) {
           trackStart = false;
           tft.fillScreen(TFT_BLACK);
-          pushed.menuState = 0;
+          handler.menuState = 0;
         }
       }
     }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void Stats() {
       myTFT.Settings(2, 10, 15);
       tft.print("stats");
-      if (pushed.confirm() == true) {
+      if (handler.eventC > 0) {
         tft.fillScreen(TFT_BLACK);
-        pushed.menuState = 1;
+        handler.menuState = 1;
       }
     }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void setTimeZone() {
       char Array[3];
@@ -136,43 +134,44 @@ class Menu {
       tft.print("time zone    ");
       dtostrf(myGPS.timeZoneValue, 3, 0, Array);
       tft.print(Array);  
-      myGPS.timeZoneValue = pushed.changeSettingValue(-12, 12, myGPS.timeZoneValue);
-      if (pushed.confirm() == true) {
+      myGPS.timeZoneValue = handler.changeSettingValue(-12, 12, myGPS.timeZoneValue);
+      if (handler.eventC > 0 ) {
         tft.fillScreen(TFT_BLACK);
-        pushed.menuState = 1;
+        handler.menuState = 1;
       }    
     }
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
   
     void wifi(){
       myTFT.Settings(2, 20, tft.height()/2 - 7);
       tft.println("WIFI");
-      if (pushed.confirm() == true) {
+      if (handler.eventC > 0) {
         tft.fillScreen(TFT_BLACK);
         wifiState = true;
-        pushed.menuState = 3;
+        handler.menuState = 3;
       }
     }
     
 
-//////////////////////////////////////////////////////////////////////////////////////
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 
     void powerOff() {
       myTFT.Settings(2, 20, tft.height()/2 - 7);
       tft.println("VYPNUT?");
-      if (pushed.nextPrevious() == true) {
+      if (handler.eventA > 0 || handler.eventB > 0) {
         tft.fillScreen(TFT_BLACK);
         turnOff = true;
       }
     }
-
-//////////////////////////////////////////////////////////////////////////////////////
+    
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void Exit() {
-      pushed.menuState = 0;
-      pushed.state = 1;
+      handler.menuState = 0;
+      handler.state = 1;
+      tft.fillScreen(TFT_BLACK);
     }
 };
