@@ -40,7 +40,6 @@ Button2 buttonC = Button2(BUTTON_C_PIN);
 
 void setup() {
   WiFi.disconnect();
-//  WiFi.forceSleepBegin();
   Serial.begin(74880);
   EEPROM.begin(512);
   
@@ -77,17 +76,23 @@ void loop() {
   buttonA.loop();
   buttonB.loop();
   buttonC.loop();
+
+  Serial.print(handler.state);
+  Serial.print("   ");
+  Serial.print(handler.menuState);
+  Serial.print("   ");
+  Serial.println(menu.trackStart);
   
-  if (handler.menuState == 0) {                                  //switch to main screen
+  if (handler.menuState == 0) {
+    //switch to main screen
     if (!mySD.Setup()) {
       myTFT.Settings(1, 80, 150);
       tft.print("sd fail");
     }
     
-    if ((handler.eventA > 0 || handler.eventB > 0) && handler.menuState == 0) tft.fillScreen(TFT_BLACK);
+    if (handler.eventA > 0 || handler.eventB > 0) tft.fillScreen(TFT_BLACK);
  
     myTFT.Settings(1, 10, 150);
-    tft.print(Loops);
     handler.maxState = 4;
     switch (handler.state) {
       case 1:
@@ -117,6 +122,7 @@ void loop() {
 
   else if (handler.menuState == 2) {                             //select between options in menu
     menu.select();
+    clearScreen();
   }
 
   if (menu.turnOff) {
@@ -160,13 +166,13 @@ void loop() {
     screens.savedToSD = " pass";
   }
 
-//  if (millis() - handler.previousMillis > 30000) {
-//    tft.fillScreen(TFT_BLACK);
-//    pinMode (4, INPUT);
-//    handler.screenOff = true;
-//    handler.menuState = 0;
-//    handler.state = 1;
-//  }
+  if (millis() - handler.previousMillis > 30000) {
+    tft.fillScreen(TFT_BLACK);
+    pinMode (4, INPUT);
+    handler.screenOff = true;
+    handler.menuState = 0;
+    handler.state = 1;
+  }
   
   myGPS.smartDelay(20);
 }
@@ -238,69 +244,18 @@ int courseDifference() {
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void clearScreen() {
-  if (handler.eventC > 0) tft.fillScreen(TFT_BLACK);
+  if (handler.eventC == 1) {
+    tft.fillScreen(TFT_BLACK);
+    handler.eventA = 0;
+    handler.eventB = 0;
+    handler.eventC = 0; 
+  }
 }
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 bool initialCheck(fs::FS & fs) {
-  File file;
-  String lastLine;
-  
-//  if (fs.exists("backup/data.txt")) {
-//    myTFT.Settings(1, 10, 20);
-//    tft.print("zariadenie sa \n  nevyplo spravne \n\n\n");
-//    myGPS.smartDelay(1000);
-//    tft.print("  nacitavam udaje zo \n  zalohy \n\n\n");
-//    
-//    String symbol;
-//    
-//    file = fs.open("backup/data.txt");
-//    unsigned long Position = file.size();
-//    while (true) {
-//      file.seek(Position);
-//      symbol = char(file.read());
-//      
-//      if (symbol == "*") { 
-//        while (true){
-//          symbol = char(file.read());
-//          if (symbol != ";") {  
-//            lastLine += symbol;
-//          }
-//          else break;
-//        }
-//        file.close();
-//        
-//        myGPS.smartDelay(1000);
-//        tft.print("  aktualizujem data\n\n\n");
-//        Serial.println();
-//        Serial.println(lastLine);
-//        
-//        File noTrackFile;
-//        noTrackFile = fs.open("denne_statistiky.txt", FILE_WRITE);
-//        
-//        if (noTrackFile) {
-//          noTrackFile.println(lastLine);
-//          noTrackFile.close();
-//        }
-//        fs.remove("backup/data.txt");
-//        
-//        myGPS.smartDelay(1000);
-//        tft.print("  hotovo");
-//        myGPS.smartDelay(1000);
-//        myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
-//        Serial.println(myGPS.totalDistance);
-//        return false;
-//      }
-//      else Position--;
-//    }
-//  }
-  
-//  else {
-//    myGPS.totalDistance = EEPROM.get(0, myGPS.totalDistance);
-//    Serial.println(myGPS.totalDistance);
-//  }
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
