@@ -1,5 +1,4 @@
 #include "MyTFT.h"
-#include "Buttons.h"
 #include "MultiHandler.h"
 
 MyTFT myTFT;
@@ -80,35 +79,46 @@ class Menu {
 
     void track() {
       if (!trackStart) {
+        Serial.println("im here");
+        
         if (!countdownStarted){
           myTFT.Settings(2, tft.width()/2 - 35, tft.height()/2 - 7);
           tft.print("START?");
         }
-        if (handler.eventC > 0) countdownStarted = true;
-        if (countdownStarted) {  
-          countdown++;
+        
+        if (handler.eventB > 0) countdownStarted = true;
+             
+        if (countdownStarted) { 
+          tft.fillScreen(TFT_BLACK); 
           myTFT.Settings(2, tft.width()/2 - 53, tft.height()/2 - 7);
-          if (countdown == 1 ) tft.print("PRIPRAVIT");
-          if (countdown == 6 ) tft.print("  POZOR  ");
-          if (countdown == 11) {
-            tft.setTextColor(TFT_GREEN, TFT_BLACK);
-            tft.print("  START  ");
-          }
-          if (countdown == 16) {
-            countdown = 0;
-            countdownStarted = false;
-            trackStart = true;
-            tft.setTextColor(TFT_WHITE, TFT_BLACK);
-            tft.fillScreen(TFT_BLACK);
-            handler.menuState = 0;
-          }
+        
+          tft.print("PRIPRAVIT");
+          smartDelay(1000);
+
+          tft.fillScreen(TFT_BLACK);
+          tft.print("  POZOR  ");
+          smartDelay(1000);
+          
+        
+          tft.setTextColor(TFT_GREEN, TFT_BLACK);
+          tft.fillScreen(TFT_BLACK);
+          tft.print("  START  ");
+          smartDelay(1000);
+          
+          countdownStarted = false;
+          trackStart = true;
+          tft.setTextColor(TFT_WHITE, TFT_BLACK);
+          tft.fillScreen(TFT_BLACK);
+          handler.menuState = 0;
         }
       }
-      else {
+      
+      else if (trackStart) {
         myTFT.Settings(2, tft.width()/2 - 29, tft.height()/2 - 7);
         tft.print("STOP?");
-        if (handler.eventC > 0) {
+        if (handler.eventB == 1) {
           trackStart = false;
+          countdownStarted = false;
           tft.fillScreen(TFT_BLACK);
           handler.menuState = 0;
         }
@@ -161,7 +171,7 @@ class Menu {
     void powerOff() {
       myTFT.Settings(2, 20, tft.height()/2 - 7);
       tft.println("VYPNUT?");
-      if (handler.eventA > 0 || handler.eventB > 0) {
+      if (handler.eventC == 1) {
         tft.fillScreen(TFT_BLACK);
         turnOff = true;
       }
@@ -173,5 +183,13 @@ class Menu {
       handler.menuState = 0;
       handler.state = 1;
       tft.fillScreen(TFT_BLACK);
+    }
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+    void smartDelay(unsigned long ms) {
+      unsigned long start = millis();
+      while (millis() - start < ms) {
+        }
     }
 };
