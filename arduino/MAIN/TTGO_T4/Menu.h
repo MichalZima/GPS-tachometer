@@ -79,7 +79,6 @@ class Menu {
 
     void track() {
       if (!trackStart) {
-        Serial.println("im here");
         
         if (!countdownStarted){
           myTFT.Settings(2, tft.width()/2 - 35, tft.height()/2 - 7);
@@ -91,20 +90,15 @@ class Menu {
         if (countdownStarted) { 
           tft.fillScreen(TFT_BLACK); 
           myTFT.Settings(2, tft.width()/2 - 53, tft.height()/2 - 7);
-        
           tft.print("PRIPRAVIT");
           smartDelay(1000);
-
           tft.fillScreen(TFT_BLACK);
           tft.print("  POZOR  ");
           smartDelay(1000);
-          
-        
           tft.setTextColor(TFT_GREEN, TFT_BLACK);
           tft.fillScreen(TFT_BLACK);
           tft.print("  START  ");
           smartDelay(1000);
-          
           countdownStarted = false;
           trackStart = true;
           tft.setTextColor(TFT_WHITE, TFT_BLACK);
