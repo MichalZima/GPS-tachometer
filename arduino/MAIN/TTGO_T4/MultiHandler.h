@@ -20,9 +20,11 @@ class MultiHandler {
     void buttonHandlerA(Button2& btn) {
       switch (btn.getClickType()) {
         case SINGLE_CLICK:
-            if (!screenOff) {
-              state++;
-              if (state > maxState) state = 1;
+            if (menuState < 2) {
+              if (!screenOff) {
+                state++;
+                if (state > maxState) state = 1;
+              }
             }
             
             if (screenOff) {
@@ -51,9 +53,11 @@ class MultiHandler {
     void buttonHandlerB(Button2& btn) {
       switch (btn.getClickType()) {
         case SINGLE_CLICK:
-            if (!screenOff) {
-              state--;
-              if (state < 1) state = maxState;
+            if (menuState < 2) {
+              if (!screenOff) {
+                state--;
+                if (state < 1) state = maxState;
+              }
             }
             
             if (screenOff) {
@@ -83,16 +87,19 @@ class MultiHandler {
     void buttonHandlerC(Button2& btn) {
       switch (btn.getClickType()) {
         case SINGLE_CLICK:
-          if (!screenOff) {
-            if (menuState == 0) {
-              menuState = 1;
-              state = 1;
-            }
-            
-            else if (menuState == 1) {
-              menuState = 2;
+          if (menuState < 2) {
+            if (!screenOff) {
+              if (menuState == 0) {
+                menuState = 1;
+                state = 1;
+              }
+              
+              else if (menuState == 1) {
+                menuState = 2;
+              }
             }
           }
+          
           
           if (screenOff) {
             pinMode (4, OUTPUT);
