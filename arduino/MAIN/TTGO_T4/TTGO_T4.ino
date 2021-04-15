@@ -4,8 +4,7 @@
 #include "DeepSleep.h"
 #include "Screens.h"
 
-byte Loops = 0;
-byte passLoops = 5;
+unsigned long updateTime = 0;
 unsigned long Millis0 = 0;
 byte passXTimes;
 byte calculatingPassed = 0;
@@ -14,6 +13,8 @@ int course0 = gps.course.deg();
 int timerCount = 0;
 float lastSavedDailyDistance = 0;
 bool previousTrackState = false;
+bool updateScreen;
+byte Loop;
 
 #define BUTTON_A_PIN  38
 #define BUTTON_B_PIN  37
@@ -77,52 +78,52 @@ void loop() {
   buttonB.loop();
   buttonC.loop();
 
-  Serial.print(handler.state);
-  Serial.print("   ");
-  Serial.print(handler.menuState);
-  Serial.print("   ");
-  Serial.println(menu.trackStart);
+  screenUpdate();
   
   if (handler.menuState == 0) {
     //switch to main screen
+    
     if (!mySD.Setup()) {
       myTFT.Settings(1, 80, 150);
       tft.print("sd fail");
     }
-    
-    if (handler.eventA > 0 || handler.eventB > 0) tft.fillScreen(TFT_BLACK);
- 
+
     myTFT.Settings(1, 10, 150);
     handler.maxState = 4;
-    switch (handler.state) {
-      case 1:
-        screens.First();
-        break;
-      case 2:
-        screens.Second();
-        break;
-      case 3:
-        screens.Third();
-        break;
-      case 4:
-        screens.Fourth();
-        break;
-      default:
-        break;
+    
+    if (handler.eventA == 1 || handler.eventB == 1) {
+      updateScreen = true;
+      tft.fillScreen(TFT_BLACK);
     }
-    clearScreen();
+ 
+    if (updateScreen) {
+      switch (handler.state) {
+        case 1:
+          screens.First();
+          break;
+        case 2:
+          screens.Second();
+          break;
+        case 3:
+          screens.Third();
+          break;
+        case 4:
+          screens.Fourth();
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   else if (handler.menuState == 1) {                             //switching to menu
     handler.maxState = 5;
     menu.Cursor();
     menu.showMenu();
-    clearScreen();
   }
 
   else if (handler.menuState == 2) {                             //select between options in menu
     menu.select();
-    clearScreen();
   }
 
   if (menu.turnOff) {
@@ -173,8 +174,9 @@ void loop() {
     handler.menuState = 0;
     handler.state = 1;
   }
-  
-  myGPS.smartDelay(20);
+
+  clearScreen();
+  myGPS.smartDelay(1);
 }
 
 
@@ -200,7 +202,7 @@ bool startup() {
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void trackSaving() {
-  if (myGPS.distanceMeasurements >= 2 or courseDifference() > 5) {
+  if (myGPS.distanceMeasurements >= 1 or courseDifference() > 5) {
     mySD.savePosition(SD);
     mySD.saveTrackData(SD);
     myGPS.distanceMeasurements = 0;
@@ -212,28 +214,41 @@ void trackSaving() {
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 bool passCalculating() {
-  if (gps.speed.kmph() <= 3) {
-    Loops = 0;
+byte passLoop;
+  if (gps.speed.kmph() <= 1) {
+    Loop = 0;
     return false;
   }
-  else if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoops = 10;
-  else if (gps.speed.kmph() >= 10) passLoops = 5;
-  Loops++;
-  if (Loops >= passLoops) {
+  if (1 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoop = 2;
+  else if (10 <= gps.speed.kmph()) passLoop = 1;
+  
+  if (Loop == passLoop) {
     if (myGPS.position0Saved == true) {
       if (myGPS.distanceCalculating(menu.trackStart)) {
-        Loops = 0;
+        Loop = 0;
         return true;
       }
       else {
         mySD.saveErrorMessage(SD);
-        Loops = 0;
+        Loop = 0;
         return false;
       }
     }
   }
 }
 
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+void screenUpdate() {
+        if (millis() < updateTime + 1000) {
+          updateScreen = false;
+        }
+        else {
+          updateTime = millis();
+          updateScreen = true;
+          Loop++;
+        }
+    }
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 int courseDifference() {
