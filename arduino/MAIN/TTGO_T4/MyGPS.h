@@ -23,17 +23,20 @@ class MyGPS {
     bool position0Saved = false;
     byte distanceMeasurements = 0;
     int timeZoneValue = 2; 
-    float averageSpeed = 0;
-    float averageHdop = 0;  
     byte arrayPosition = 0;
     float distanceLat0 = gps.location.lat();
     float distanceLong0 = gps.location.lng();
     char convertedGPSdate[11];
+    char GPSdate[11];
     
     float distance0;
     float dailyDistance = 0;
     float trackDistance = 0;
     float totalDistance = 0; 
+    float pace = 0;
+    float speedsTogether;
+    float avgSpeed;
+    uint16_t trackSaves = 0;;
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     
@@ -88,6 +91,7 @@ class MyGPS {
       if (gps.hdop.hdop() < 50) {
         if (newDate == gps.date.value() and dateChecked) {
           sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
+          sprintf(GPSdate, "%04d.%02d.%02d", gps.date.year(), gps.date.month(), gps.date.day() );
           return dateChecked;
         }
         else if (newDate == gps.date.value() and !dateChecked) {
@@ -108,37 +112,21 @@ class MyGPS {
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void calculateAverage() {
-      float speedsTogether = 0;
-      float hdopsTogether = 0;
-      for (int i = 0; i < 11; i++) {
-        if (speeds[i] != 0 && hdops[i] != 0) {
-          speedsTogether = speedsTogether + speeds[i];
-          hdopsTogether = hdopsTogether + hdops[i];
-        }
-        else i = 15;
-      }
-      averageSpeed = speedsTogether / distanceMeasurements;
-      averageHdop = hdopsTogether / distanceMeasurements;
+//      float speedsTogether = 0;
+//      float hdopsTogether = 0;
+//      for (int i = 0; i < 11; i++) {
+//        if (speeds[i] != 0 && hdops[i] != 0) {
+//          speedsTogether = speedsTogether + speeds[i];
+//          hdopsTogether = hdopsTogether + hdops[i];
+//        }
+//        else i = 15;
+//      }
+//      averageSpeed = speedsTogether / distanceMeasurements;
+//      averageHdop = hdopsTogether / distanceMeasurements;
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     
-    void saveToArray() {
-      speeds[arrayPosition] = gps.speed.kmph();
-      hdops[arrayPosition] = gps.hdop.hdop();
-    }
-
-/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-    
-    void resetArray(){
-      for(int i = 0; i < 11; i++){
-        speeds[i] = 0.0;
-        hdops[i] = 0.0;
-      }
-    }
-
-/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-
     bool errorCheck() {
       errorMessage = " ";
       //check signal strength and age
