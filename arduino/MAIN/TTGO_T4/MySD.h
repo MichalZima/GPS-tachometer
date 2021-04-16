@@ -21,10 +21,13 @@ class MySD {
     char latString[13];
     char longString[13];
     String fileName;
+    byte fileNumber = 0;
+    String values[6] = {"\"lat\":", "\"lon\":", "\"speed\":", "\"pace\":", "\"alt\":"};
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
   public:
+  
   
     bool Setup() {
       sdSPI.begin(SD_SCLK, SD_MISO, SD_MOSI, SD_CS);
@@ -34,7 +37,28 @@ class MySD {
 
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
-    
+
+    void endTrack(fs::FS & fs) {
+      File dataFile;
+      
+      if (myGPS.realDate()) {
+        fileName = "/";
+        fileName += myGPS.GPSdate;
+        fileName += "_";
+        fileName += fileNumber;
+        fileName += ".txt";
+        dataFile = fs.open(fileName);
+         
+        if (dataFile) {
+          dataFile = fs.open(fileName, FILE_APPEND);
+
+          dataFile.println("\n]\n}");
+          dataFile.close();
+        } 
+      }  
+    }
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void savePosition(fs::FS & fs) {
       File coordinatesFile;
@@ -80,6 +104,40 @@ class MySD {
           dtostrf(gps.location.lng(), 12, 9, longString);
           
           sprintf(DATA, "\n[%s, %s]/%d\t%s/%d\t%.2fm\t%.3fkm\t%.1f/%d\t%.1f/%d\t%d/%d\t%.1f/%d\t%.1f/%d", longString, latString, gps.location.age(), myGPS.realTime(), gps.time.age(), myGPS.distance0, myGPS.totalDistance, gps.speed.kmph(), gps.speed.age(), gps.hdop.hdop(), gps.hdop.age(), gps.satellites.value(), gps.satellites.age(), gps.altitude.meters(), gps.altitude.age(), gps.course.deg(), gps.course.age());
+
+          dataFile.println(DATA);
+          dataFile.close();
+        } 
+      }  
+    }
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+    void saveJSONTrackData(fs::FS & fs) {
+      File dataFile;
+      
+      if (myGPS.realDate()) {
+        fileName = "/";
+        fileName += myGPS.GPSdate;
+        fileName += "_";
+        fileName += fileNumber;
+        fileName += ".txt";
+        dataFile = fs.open(fileName);
+        
+        if (!dataFile) {
+          dataFile = fs.open(fileName, FILE_WRITE);
+          dataFile.print("{\n\"points\":[");
+          dataFile.close();
+        }
+        
+        if (dataFile) {
+          dataFile = fs.open(fileName, FILE_APPEND);
+          char DATA[200];
+          
+          dtostrf(gps.location.lat(), 12, 9, latString);
+          dtostrf(gps.location.lng(), 12, 9, longString);
+          
+          sprintf(DATA, "{%s%s, %s%s, %s%.1f, %s%.2f, %s%f},", values[0], latString, values[1], longString, values[2], gps.speed.kmph(), values[3], myGPS.pace, values[4], gps.altitude.meters());
 
           dataFile.println(DATA);
           dataFile.close();
