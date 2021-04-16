@@ -69,7 +69,7 @@ void setup() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void loop() {
+void loop() {  
   handler.eventA = 0;
   handler.eventB = 0;
   handler.eventC = 0;
@@ -205,6 +205,7 @@ void trackSaving() {
   if (myGPS.distanceMeasurements >= 1 or courseDifference() > 5) {
     mySD.savePosition(SD);
     mySD.saveTrackData(SD);
+    mySD.saveJSONTrackData(SD);
     myGPS.distanceMeasurements = 0;
     course0 = gps.course.deg();
     screens.savedToSD = " save";
@@ -215,11 +216,11 @@ void trackSaving() {
 
 bool passCalculating() {
 byte passLoop;
-  if (gps.speed.kmph() <= 1) {
+  if (gps.speed.kmph() <= 0) {
     Loop = 0;
     return false;
   }
-  if (1 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoop = 2;
+  if (0 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoop = 2;
   else if (10 <= gps.speed.kmph()) passLoop = 1;
   
   if (Loop == passLoop) {
