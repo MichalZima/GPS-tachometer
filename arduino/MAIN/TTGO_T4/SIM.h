@@ -1,30 +1,4 @@
-/***************************************************
-  This is an example for our Adafruit FONA Cellular Module
 
-  Designed specifically to work with the Adafruit FONA
-  ----> http://www.adafruit.com/products/1946
-  ----> http://www.adafruit.com/products/1963
-  ----> http://www.adafruit.com/products/2468
-  ----> http://www.adafruit.com/products/2542
-
-  These cellular modules use TTL Serial to communicate, 2 pins are
-  required to interface
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit and open-source hardware by purchasing
-  products from Adafruit!
-
-  Written by Limor Fried/Ladyada for Adafruit Industries.
-  BSD license, all text above must be included in any redistribution
- ****************************************************/
-
-/*
-THIS CODE IS STILL IN PROGRESS!
-
-Open up the serial console on the Arduino at 115200 baud to interact with FONA
-
-Note that if you need to set a GPRS APN, username, and password scroll down to
-the commented section below at the end of the setup() function.
-*/
 #include "Adafruit_FONA.h"
 
 #define FONA_RX 26

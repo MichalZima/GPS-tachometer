@@ -42,7 +42,7 @@ Button2 buttonC = Button2(BUTTON_C_PIN);
 void setup() {
   WiFi.disconnect();
   Serial.begin(74880);
-  EEPROM.begin(512);
+  if (!EEPROM.begin(1000)) Serial.println("EEPROM fail");;
   
   myGPS.Setup();
   myTFT.Setup();
@@ -129,7 +129,7 @@ void loop() {
   if (menu.turnOff) {
     myGPS.dailyDistance += myGPS.trackDistance;
     mySD.saveNoTrackData(SD);
-    EEPROM.put(0, myGPS.totalDistance);
+    EEPROM.writeFloat(0, myGPS.totalDistance);
     EEPROM.commit();
     esp_deep_sleep_start();
   }
@@ -197,6 +197,7 @@ bool startup() {
   }
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  myGPS.totalDistance = EEPROM.readFloat(0, 4);
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
