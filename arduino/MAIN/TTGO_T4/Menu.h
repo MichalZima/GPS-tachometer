@@ -1,8 +1,10 @@
 #include "MyTFT.h"
 #include "MultiHandler.h"
+#include "MySD.h"
 
 MyTFT myTFT;
 MultiHandler handler;
+MySD mySD;
 
 
 class Menu {
@@ -115,6 +117,9 @@ class Menu {
           countdownStarted = false;
           tft.fillScreen(TFT_BLACK);
           handler.menuState = 0;
+
+          mySD.finishTrack(SD);
+          mySD.fileMade = false;
         }
       }
     }

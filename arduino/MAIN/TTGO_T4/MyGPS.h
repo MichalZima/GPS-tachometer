@@ -33,10 +33,24 @@ class MyGPS {
     float dailyDistance = 0;
     float trackDistance = 0;
     float totalDistance = 0; 
-    float pace = 0;
+    float pace = 0.00;
     float speedsTogether;
     float avgSpeed;
     uint16_t trackSaves = 0;;
+
+    String dailyTotalTime = "***";
+    String dailyRideTime = "***";
+    float dailyAvgSpeed = 0;
+    float dailyAvgPace = 0;
+    int dailyAltitudeDifference = 0;
+
+    String trackTotalTime = "***";
+    String trackRideTime = "***";
+    String trackRestTime = "***";
+    float trackAvgSpeed = 0;
+    float trackAvgPace = 0;
+    int trackAltitudeDifference = 0;
+    
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     

@@ -3,8 +3,6 @@
 #include <SD.h>
 #include "MyGPS.h"
 
-#include "TFT_eSPI.h"
-TFT_eSPI tft = TFT_eSPI();
 
 #define SD_MISO     2
 #define SD_MOSI     15
@@ -23,15 +21,17 @@ class MySD {
     char longString[13];
     String JSONfileName;
     String fileName;
-    byte fileNumber = 0;
-    String values[7] = {"\"lat\":", "\"lon\":", "\"time\":", "\"speed\":", "\"pace\":", "\"alt\":"};
-    String values2[7] = {"\"total_time\":", "\"ride_time\":", "\"distance\":", "\"avg_speed\":", "\"avg_pace\":", "\"altitude_difference\":"};
-    String values3[7] = {"\"date\":", "\"daily_distance\":", "\"daily_ride_time\":", "\"daily_avg_speed\":", "\"daily_avg_pace\":", "\"daily_alt_diff\":"};
-    bool fileMade = false;
+    String values[8] = {"\"lat\":", "\"lon\":", "\"time\":", "\"speed\":", "\"pace\":", "\"alt\":", "\"course\":"};
+    String values2[8] = {"\"track_total_time\":", "\"track_ride_time\":", "\"track_rest_time\":", "\"track_distance\":", "\"track_avg_speed\":", "\"track_avg_pace\":", "\"track_altitude_difference\":"};
+    String values3[8] = {"\"date\":", "\"daily_ride_time\":", "\"daily_distance\":", "\"daily_avg_speed\":", "\"daily_avg_pace\":", "\"daily_alt_diff\":"};
     
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public:
+    byte trackNumber = 0;
+    bool fileMade = false;
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
   
     bool Setup() {
       sdSPI.begin(SD_SCLK, SD_MISO, SD_MOSI, SD_CS);
@@ -42,36 +42,38 @@ class MySD {
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-    void makeFile() {
+    void makeFile(fs::FS & fs) {
+      Serial.("1");
       File file;
       bool newFile = false;
       
       if (myGPS.realDate()) {
-        
+        Serial.begin("2");
         while (!newFile) {
           fileName = "/";
           fileName += myGPS.convertedGPSdate;
           fileName += "_";
-          fileName += fileNumber;
+          fileName += trackNumber;
           fileName += ".txt";
           file = fs.open(fileName);
           
           if (file) {
             file.close();
-            fileNumber++;
+            trackNumber++;
           }
           
           if (!file) {
             JSONfileName = "/";
             JSONfileName += myGPS.convertedGPSdate;
             JSONfileName += "_";
-            JSONfileName += fileNumber;
+            JSONfileName += trackNumber;
             JSONfileName += ".txt";
+            
             
             file = fs.open(fileName, FILE_WRITE);
             file.close();
             file = fs.open(JSONfileName, FILE_WRITE);
-            file.print("{\n\"points\":[");
+            file.println("{\n\"points\":[");
             file.close();
             newFile = true;
             fileMade = true;
@@ -93,12 +95,15 @@ class MySD {
           dataFile = fs.open(JSONfileName, FILE_APPEND);
           char DATA[200];
           
-          sprintf(DATA, "{%s%s, %s%s, %s%.1f, %s%.2f, %s%f},", values2[0], latString, values2[1], longString, values2[2], myGPS.realTime(), values2[3], gps.speed.kmph(), values2[4], myGPS.pace, values2[5], gps.altitude.meters());
-          
+          sprintf(DATA, "{%s%s, %s%s, %s%s, %s%.1f, %s%.2f, %s%d}, ", values2[0], myGPS.trackTotalTime, values2[1], myGPS.trackRideTime, values2[2], myGPS.trackRestTime, values2[3], myGPS.trackDistance, values2[4], myGPS.trackAvgSpeed, values2[5], myGPS.trackAvgPace, values2[6], myGPS.trackAltitudeDifference);
+
+          dataFile.println(DATA);
           dataFile.print("\n]\n}");
           dataFile.close();
+          trackNumber++;
         } 
-      }  
+      }
+      else makeFile(SD);  
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -122,6 +127,7 @@ class MySD {
           coordinatesFile.close();
         }
       }
+      else makeFile(SD);
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -143,8 +149,10 @@ class MySD {
 
           dataFile.println(DATA);
           dataFile.close();
+          saveJSONTrackData(SD);
         } 
-      }  
+      }
+      else makeFile(SD);  
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -162,12 +170,13 @@ class MySD {
           dtostrf(gps.location.lat(), 12, 9, latString);
           dtostrf(gps.location.lng(), 12, 9, longString);
           
-          sprintf(DATA, "{%s%s, %s%s, %s%.1f, %s%.2f, %s%f},", values[0], latString, values[1], longString, values[2], myGPS.realTime(), values[3], gps.speed.kmph(), values[4], myGPS.pace, values[5], gps.altitude.meters());
+          sprintf(DATA, "{%s%s, %s%s, %s%.1f, %s%.2f, %s%f, %s%s},", values[0], latString, values[1], longString, values[2], myGPS.realTime(), values[3], gps.speed.kmph(), values[4], myGPS.pace, values[5], gps.altitude.meters(), gps.course.value());
 
           dataFile.println(DATA);
           dataFile.close();
         } 
-      }  
+      }
+      else makeFile(SD);  
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -175,21 +184,26 @@ class MySD {
     void saveJSONDailyStats(fs::FS & fs) {
       File dataFile;
       
-      if (myGPS.realDate()) {
+      if (fileMade) {
         dataFile = fs.open("/DAILY-STATS.txt");
         
-        if (!dataFile) dataFile = fs.open("/DAILY-STATS.txt", FILE_WRITE);
+        if (!dataFile) {
+          dataFile = fs.open("/DAILY-STATS.txt", FILE_WRITE);
+          dataFile.println("[");
+          dataFile.close();
+        }
         
         if (dataFile) {
           dataFile = fs.open("/DAILY-STATS.txt", FILE_APPEND);
           char DATA[200];
           
-          sprintf(DATA, "\n %s, %s, %.1f, %.2f, %f", myGPS.realDate(), myGPS.totalDistance, myGPS.dailyDistance, myGPS.rideTime, myGPS.avgSpeed, myGPS.avgPace, myGPS.elevationGain);
+          sprintf(DATA, "{ %s%s, \n %s%s, \n %s%.2f, \n %s%.1f, \n %s%.1f, \n %s%d},", values3[0], myGPS.realDate(), values3[2], myGPS.dailyRideTime, values3[3], myGPS.dailyDistance, values3[4], myGPS.dailyAvgSpeed, values3[5], myGPS.dailyAvgPace, values3[6], myGPS.dailyAltitudeDifference);
 
           dataFile.println(DATA);
           dataFile.close();
         } 
-      }  
+      }
+      else makeFile(SD);  
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -197,7 +211,7 @@ class MySD {
     void saveNoTrackData(fs::FS & fs) {
       File noTrackFile;
       
-      if (myGPS.realDate()) {
+      if (fileMade) {
         noTrackFile = fs.open("/DAILY-STATS.txt");
         
         if (!noTrackFile) noTrackFile = fs.open("/DAILY-STATS.txt", FILE_WRITE);
@@ -210,7 +224,8 @@ class MySD {
           noTrackFile.println(myGPS.dailyDistance); 
           noTrackFile.close();
         } 
-      }     
+      }
+      else makeFile(SD);     
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -218,13 +233,8 @@ class MySD {
     void saveErrorMessage(fs::FS & fs) {
       File dataFile;
       
-      if (myGPS.realDate()) {
-        fileName = "/";
-        fileName += myGPS.convertedGPSdate;
-        fileName += ".txt";
+      if (fileMade) {
         dataFile = fs.open(fileName);
-        
-        if (!dataFile) fs.open(fileName, FILE_WRITE);
 
         if (dataFile) {
           dataFile = fs.open(fileName, FILE_APPEND);
@@ -234,6 +244,7 @@ class MySD {
           dataFile.close();
         }
       }
+      else makeFile(SD);
     }
     
 }; 
