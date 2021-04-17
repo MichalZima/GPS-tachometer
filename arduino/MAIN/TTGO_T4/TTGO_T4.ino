@@ -217,11 +217,11 @@ void trackSaving() {
 
 bool passCalculating() {
 byte passLoop;
-  if (gps.speed.kmph() < 0) {
+  if (gps.speed.kmph() <= 3) {
     Loop = 0;
     return false;
   }
-  if (0 <= gps.speed.kmph() && gps.speed.kmph() < 10) passLoop = 2;
+  if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoop = 2;
   else if (10 <= gps.speed.kmph()) passLoop = 1;
   
   if (Loop == passLoop) {

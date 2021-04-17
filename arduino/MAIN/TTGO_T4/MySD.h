@@ -21,7 +21,7 @@ class MySD {
     char longString[13];
     String JSONfileName;
     String fileName;
-    String values[8] = {"\"lat\":", "\"lon\":", "\"time\":", "\"speed\":", "\"pace\":", "\"alt\":", "\"course\":"};
+    String values[8] = {"\"lat\":", "\"lon\":", "\"time\":", "\"speed\":", "\"pace\":", "\"alt\":"};
     String values2[8] = {"\"track_total_time\":", "\"track_ride_time\":", "\"track_rest_time\":", "\"track_distance\":", "\"track_avg_speed\":", "\"track_avg_pace\":", "\"track_altitude_difference\":"};
     String values3[8] = {"\"date\":", "\"daily_ride_time\":", "\"daily_distance\":", "\"daily_avg_speed\":", "\"daily_avg_pace\":", "\"daily_alt_diff\":"};
     
@@ -43,12 +43,10 @@ class MySD {
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
     void makeFile(fs::FS & fs) {
-      Serial.("1");
       File file;
       bool newFile = false;
       
       if (myGPS.realDate()) {
-        Serial.begin("2");
         while (!newFile) {
           fileName = "/";
           fileName += myGPS.convertedGPSdate;
@@ -170,7 +168,7 @@ class MySD {
           dtostrf(gps.location.lat(), 12, 9, latString);
           dtostrf(gps.location.lng(), 12, 9, longString);
           
-          sprintf(DATA, "{%s%s, %s%s, %s%.1f, %s%.2f, %s%f, %s%s},", values[0], latString, values[1], longString, values[2], myGPS.realTime(), values[3], gps.speed.kmph(), values[4], myGPS.pace, values[5], gps.altitude.meters(), gps.course.value());
+          sprintf(DATA, "{%s%s, %s%s, %s%s, %s%.1f, %s%.2f, %s%d, },", values[0], latString, values[1], longString, values[2], myGPS.realTime(), values[3], gps.speed.kmph(), values[4], myGPS.pace, values[5], gps.altitude.meters());
 
           dataFile.println(DATA);
           dataFile.close();
