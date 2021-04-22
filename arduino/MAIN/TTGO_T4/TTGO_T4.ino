@@ -41,8 +41,8 @@ Button2 buttonC = Button2(BUTTON_C_PIN);
 
 void setup() {
   WiFi.disconnect();
-  Serial.begin(74880);
-  if (!EEPROM.begin(1000)) Serial.println("EEPROM fail");;
+//  Serial.begin(74880);
+  if (!EEPROM.begin(1000)); //Serial.println("EEPROM fail");
   
   myGPS.Setup();
   myTFT.Setup();
