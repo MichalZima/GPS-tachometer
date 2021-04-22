@@ -62,7 +62,7 @@ class MySD {
           
           if (!file) {
             JSONfileName = "/";
-            JSONfileName += myGPS.convertedGPSdate;
+            JSONfileName += myGPS.GPSdate;
             JSONfileName += "_";
             JSONfileName += trackNumber;
             JSONfileName += ".txt";
