@@ -21,6 +21,7 @@ class MySD {
     char longString[13];
     String JSONfileName;
     String fileName;
+    String trackPath;
     String values[8] = {"\"lat\":", "\"lon\":", "\"time\":", "\"speed\":", "\"pace\":", "\"alt\":"};
     String values2[8] = {"\"track_total_time\":", "\"track_ride_time\":", "\"track_rest_time\":", "\"track_distance\":", "\"track_avg_speed\":", "\"track_avg_pace\":", "\"track_altitude_difference\":"};
     String values3[8] = {"\"date\":", "\"daily_ride_time\":", "\"daily_distance\":", "\"daily_avg_speed\":", "\"daily_avg_pace\":", "\"daily_alt_diff\":"};
@@ -67,6 +68,7 @@ class MySD {
             JSONfileName += trackNumber;
             JSONfileName += ".txt";
             
+            trackPath += "/track" + fileName;
             
             file = fs.open(fileName, FILE_WRITE);
             file.close();
@@ -108,12 +110,12 @@ class MySD {
 
     void savePosition(fs::FS & fs) {
       File coordinatesFile;
-      
+
       if (fileMade) {
-        coordinatesFile = fs.open(fileName);
+        coordinatesFile = fs.open(trackPath);
         
         if (coordinatesFile) {
-          coordinatesFile = fs.open(fileName, FILE_APPEND);
+          coordinatesFile = fs.open(trackPath, FILE_APPEND);
           char DATA[40];
           
           dtostrf(gps.location.lat(), 11, 9, latString);

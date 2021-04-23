@@ -131,6 +131,7 @@ void loop() {
     mySD.saveNoTrackData(SD);
     EEPROM.writeFloat(0, myGPS.totalDistance);
     EEPROM.commit();
+    pinMode(3, INPUT);
     esp_deep_sleep_start();
   }
 
@@ -176,7 +177,7 @@ void loop() {
   }
 
   clearScreen();
-  myGPS.smartDelay(1);
+  myGPS.smartDelay(10);
 }
 
 

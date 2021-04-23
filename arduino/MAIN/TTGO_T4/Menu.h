@@ -170,7 +170,7 @@ class Menu {
     void powerOff() {
       myTFT.Settings(2, 20, tft.height()/2 - 7);
       tft.println("VYPNUT?");
-      if (handler.eventC == 1) {
+      if (handler.eventB == 1) {
         tft.fillScreen(TFT_BLACK);
         turnOff = true;
       }

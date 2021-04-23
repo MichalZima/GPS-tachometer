@@ -106,18 +106,18 @@ class MyGPS {
 
     bool realDate(){
       if (gps.hdop.hdop() < 50) {
-        if (newDate == gps.date.value() and dateChecked) {
+        if (newDate == gps.date.value() and dateChecked and gps.date.isValid()) {
           sprintf(convertedGPSdate, "%02d.%02d.%04d", gps.date.day(), gps.date.month(), gps.date.year());
           sprintf(GPSdate, "%04d.%02d.%02d", gps.date.year(), gps.date.month(), gps.date.day() );
           return dateChecked;
         }
-        else if (newDate == gps.date.value() and !dateChecked) {
+        else if (newDate == gps.date.value() and !dateChecked and gps.date.isValid()) {
           confirmDate++;
           if (confirmDate >= 5) dateChecked = true;
           else dateChecked = false;
           return dateChecked;
         }
-        else if (newDate != gps.date.value() and dateChecked) {
+        else if (newDate != gps.date.value() and dateChecked and gps.date.isValid()) {
           newDate = gps.date.value();
           confirmDate = 0; 
           dateChecked = false;
@@ -151,6 +151,8 @@ class MyGPS {
       if (gps.hdop.age() > 10000) errorMessage += "OLD HDOP, ";
       if (gps.satellites.value() < 1) errorMessage += "LACK SATS, "; 
       if (gps.satellites.age() > 10000) errorMessage += "OLD SATS, ";
+      if (gps.location.lat() == distanceLat0 and gps.location.lng() == distanceLong0) errorMessage += "LOCATION NOT UPDATED, ";
+      if (!gps.location.isValid()) errorMessage += "NOT VALID COORDINATES, ";
       //check if speed was updated and is reliable
 //      else if (gps.speed.kmph() < 3) errorMessage += "NOT MOVING, ";
       //else if (gps.speed.kmph() > 2*averageSpeed) errorMessage += "BIG ACCELERATION, ";
