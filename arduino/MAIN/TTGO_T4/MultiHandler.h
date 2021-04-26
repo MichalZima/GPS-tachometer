@@ -45,6 +45,9 @@ class MultiHandler {
         case LONG_CLICK:
             eventA = 4;
             break;
+        default:
+            eventA = 0;
+            break;
       }
     }
     
@@ -76,7 +79,10 @@ class MultiHandler {
             eventB = 3;
             break;
         case LONG_CLICK:
-            eventA = 4;
+            eventB = 4;
+            break;
+        default:
+            eventB = 0;
             break;
             
       }
@@ -119,6 +125,9 @@ class MultiHandler {
             break;
         case LONG_CLICK:
             eventC = 4;
+            break;
+        default:
+            eventC = 0;
             break;
       }
     }

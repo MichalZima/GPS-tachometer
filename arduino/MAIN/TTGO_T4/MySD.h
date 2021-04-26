@@ -29,7 +29,7 @@ class MySD {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public:
-    byte trackNumber = 0;
+    int trackNumber = 0;
     bool fileMade = false;
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
@@ -45,41 +45,44 @@ class MySD {
 
     void makeFile(fs::FS & fs) {
       File file;
-      bool newFile = false;
+      trackNumber = 0;
       
       if (myGPS.realDate()) {
-        while (!newFile) {
+        while (!fileMade) {
           fileName = "/";
           fileName += myGPS.convertedGPSdate;
           fileName += "_";
-          fileName += trackNumber;
+          fileName += String(trackNumber);
           fileName += ".txt";
           file = fs.open(fileName);
-          
-          if (file) {
-            file.close();
-            trackNumber++;
-          }
           
           if (!file) {
             JSONfileName = "/";
             JSONfileName += myGPS.GPSdate;
             JSONfileName += "_";
-            JSONfileName += trackNumber;
+            JSONfileName += String(trackNumber);
             JSONfileName += ".txt";
             
-            trackPath += "/track" + fileName;
+            trackPath = "/tracks";
+            trackPath += fileName;
             
             file = fs.open(fileName, FILE_WRITE);
+            file.close();
+            file = fs.open(trackPath, FILE_WRITE);
             file.close();
             file = fs.open(JSONfileName, FILE_WRITE);
             file.println("{\n\"points\":[");
             file.close();
-            newFile = true;
             fileMade = true;
+          }
+
+          if (file) {
+            file.close();
+            trackNumber++;
           }
         }
       }
+      else fileMade = false;
     }
 
 
@@ -93,11 +96,25 @@ class MySD {
          
         if (dataFile) {
           dataFile = fs.open(JSONfileName, FILE_APPEND);
-          char DATA[200];
+//          char DATA[200];
           
-          sprintf(DATA, "{%s%s, %s%s, %s%s, %s%.1f, %s%.2f, %s%d}, ", values2[0], myGPS.trackTotalTime, values2[1], myGPS.trackRideTime, values2[2], myGPS.trackRestTime, values2[3], myGPS.trackDistance, values2[4], myGPS.trackAvgSpeed, values2[5], myGPS.trackAvgPace, values2[6], myGPS.trackAltitudeDifference);
+//          sprintf(DATA, "{%s%s, %s%s, %s%s, %s%.1f, %s%.2f, %s%d}, ", values2[0], myGPS.trackTotalTime, values2[1], myGPS.trackRideTime, values2[2], myGPS.trackRestTime, values2[3], myGPS.trackDistance, values2[4], myGPS.trackAvgSpeed, values2[5], myGPS.trackAvgPace, values2[6], myGPS.trackAltitudeDifference);
 
-          dataFile.println(DATA);
+          dataFile.print(values2[0]);
+          dataFile.print(myGPS.trackTotalTime);
+          dataFile.print(values2[1]);
+          dataFile.print(myGPS.trackRideTime);
+          dataFile.print(values2[2]);
+          dataFile.print(myGPS.trackRestTime);
+          dataFile.print(values2[3]);
+          dataFile.print(myGPS.trackDistance);
+          dataFile.print(values2[4]);
+          dataFile.print(myGPS.trackAvgSpeed);
+          dataFile.print(values2[5]);
+          dataFile.print(myGPS.trackAvgPace);
+          dataFile.print(values2[6]);
+          dataFile.println(myGPS.trackAltitudeDifference);
+//          dataFile.println(DATA);
           dataFile.print("\n]\n}");
           dataFile.close();
           trackNumber++;
@@ -116,14 +133,18 @@ class MySD {
         
         if (coordinatesFile) {
           coordinatesFile = fs.open(trackPath, FILE_APPEND);
-          char DATA[40];
+//          char DATA[40];
           
           dtostrf(gps.location.lat(), 11, 9, latString);
           dtostrf(gps.location.lng(), 11, 9, longString);
           
-          sprintf(DATA, "[%s, %s], ", longString, latString);
-          
-          coordinatesFile.println(DATA);
+//          sprintf(DATA, "[%s, %s], ", longString, latString);
+
+          coordinatesFile.print("[");
+          coordinatesFile.print(longString);
+          coordinatesFile.print(", ");
+          coordinatesFile.print(latString);
+          coordinatesFile.print("]\n");
           coordinatesFile.close();
         }
       }
@@ -142,14 +163,62 @@ class MySD {
           dataFile = fs.open(fileName, FILE_APPEND);
           char DATA[200];
           
-          dtostrf(gps.location.lat(), 12, 9, latString);
-          dtostrf(gps.location.lng(), 12, 9, longString);
+          dtostrf(gps.location.lat(), 11, 8, latString);
+          dtostrf(gps.location.lng(), 11, 8, longString);
           
-          sprintf(DATA, "\n[%s, %s]/%d\t%s/%d\t%.2fm\t%.3fkm\t%.1f/%d\t%.1f/%d\t%d/%d\t%.1f/%d\t%.1f/%d", longString, latString, gps.location.age(), myGPS.realTime(), gps.time.age(), myGPS.distance0, myGPS.totalDistance, gps.speed.kmph(), gps.speed.age(), gps.hdop.hdop(), gps.hdop.age(), gps.satellites.value(), gps.satellites.age(), gps.altitude.meters(), gps.altitude.age(), gps.course.deg(), gps.course.age());
+//          sprintf(DATA, "\n[%s, %s]/%d\t%s/%d\t%.2fm\t%.3fkm\t%.1f/%d\t%.1f/%d\t%d/%d\t%.1f/%d\t%.1f/%d", longString, latString, gps.location.age(), myGPS.realTime(), gps.time.age(), myGPS.distance0, myGPS.totalDistance, gps.speed.kmph(), gps.speed.age(), gps.hdop.hdop(), gps.hdop.age(), gps.satellites.value(), gps.satellites.age(), gps.altitude.meters(), gps.altitude.age(), gps.course.deg(), gps.course.age());
 
-          dataFile.println(DATA);
+          dataFile.print("[");
+          dataFile.print(longString);
+          dataFile.print(", ");
+          dataFile.print(latString);
+          dataFile.print("]_");
+          dataFile.print(gps.location.age());
+          dataFile.print("/");
+          dataFile.print(gps.location.isUpdated ());
+          dataFile.print("   ");
+          dataFile.print(myGPS.realTime());
+          dataFile.print("_");
+          dataFile.print(gps.time.age());
+          dataFile.print("/");
+          dataFile.print(gps.time.isUpdated ());
+          dataFile.print("   ");
+          dataFile.print(myGPS.distance0);
+          dataFile.print("m ");
+          dataFile.print(myGPS.totalDistance);
+          dataFile.print("km   ");
+          dataFile.print(gps.speed.kmph());
+          dataFile.print("kmph_");
+          dataFile.print(gps.speed.age());
+          dataFile.print("/");
+          dataFile.print(gps.speed.isUpdated ());
+          dataFile.print("   ");
+          dataFile.print(gps.hdop.hdop());
+          dataFile.print("_");
+          dataFile.print(gps.hdop.age());
+          dataFile.print("/");
+          dataFile.print(gps.hdop.isUpdated ());
+          dataFile.print("   ");
+          dataFile.print(gps.satellites.value());
+          dataFile.print("sats_");
+          dataFile.print(gps.satellites.age());
+          dataFile.print("/");
+          dataFile.print(gps.satellites.isUpdated ());
+          dataFile.print("   ");
+          dataFile.print(gps.altitude.meters());
+          dataFile.print("mnm_");
+          dataFile.print(gps.altitude.age());
+          dataFile.print("/");
+          dataFile.print(gps.altitude.isUpdated ());
+          dataFile.print("   ");
+          dataFile.print(gps.course.deg());
+          dataFile.print("°_");
+          dataFile.print(gps.course.age());
+          dataFile.print("/");
+          dataFile.print(gps.course.isUpdated ());
+          dataFile.print("\n");
+//          dataFile.println(DATA);
           dataFile.close();
-          saveJSONTrackData(SD);
         } 
       }
       else makeFile(SD);  
@@ -165,14 +234,34 @@ class MySD {
         
         if (dataFile) {
           dataFile = fs.open(JSONfileName, FILE_APPEND);
-          char DATA[200];
+//          char DATA[200];
           
           dtostrf(gps.location.lat(), 12, 9, latString);
           dtostrf(gps.location.lng(), 12, 9, longString);
           
-          sprintf(DATA, "{%s%s, %s%s, %s%s, %s%.1f, %s%.2f, %s%d, },", values[0], latString, values[1], longString, values[2], myGPS.realTime(), values[3], gps.speed.kmph(), values[4], myGPS.pace, values[5], gps.altitude.meters());
+//          sprintf(DATA, "{%s%s, %s%s, %s%s, %s%.1f, %s%.2f, %s%d, },", values[0], latString, values[1], longString, values[2], myGPS.realTime(), values[3], gps.speed.kmph(), values[4], myGPS.pace, values[5], gps.altitude.meters());
 
-          dataFile.println(DATA);
+          dataFile.print("\n { ");
+          dataFile.print(values[0]);
+          dataFile.print(latString);
+          dataFile.print(", ");
+          dataFile.print(values[1]);
+          dataFile.print(longString);
+          dataFile.print(", ");
+          dataFile.print(values[2]);
+          dataFile.print(myGPS.realTime());
+          dataFile.print(", ");
+          dataFile.print(values[3]);
+          dataFile.print(gps.speed.kmph());
+          dataFile.print(", ");
+          dataFile.print(values[4]);
+          dataFile.print(myGPS.pace);
+          dataFile.print(", ");
+          dataFile.print(values[5]);
+          dataFile.print(gps.altitude.meters());
+          dataFile.print(" },");
+          
+//          dataFile.println(DATA);
           dataFile.close();
         } 
       }
@@ -197,7 +286,7 @@ class MySD {
           dataFile = fs.open("/DAILY-STATS.txt", FILE_APPEND);
           char DATA[200];
           
-          sprintf(DATA, "{ %s%s, \n %s%s, \n %s%.2f, \n %s%.1f, \n %s%.1f, \n %s%d},", values3[0], myGPS.realDate(), values3[2], myGPS.dailyRideTime, values3[3], myGPS.dailyDistance, values3[4], myGPS.dailyAvgSpeed, values3[5], myGPS.dailyAvgPace, values3[6], myGPS.dailyAltitudeDifference);
+          sprintf(DATA, "{ %s%s, \n %s%s, \n %s%.2f, \n %s%.1f, \n %s%.1f, \n %s%d},", values3[0], myGPS.GPSdate, values3[1], myGPS.dailyRideTime, values3[2], myGPS.dailyDistance, values3[3], myGPS.dailyAvgSpeed, values3[4], myGPS.dailyAvgPace, values3[5], myGPS.dailyAltitudeDifference);
 
           dataFile.println(DATA);
           dataFile.close();

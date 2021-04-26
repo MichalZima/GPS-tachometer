@@ -40,9 +40,10 @@ Button2 buttonC = Button2(BUTTON_C_PIN);
 
 
 void setup() {
-  WiFi.disconnect();
-//  Serial.begin(74880);
-  if (!EEPROM.begin(1000)); //Serial.println("EEPROM fail");
+ // Serial.begin(74880);
+  if (!EEPROM.begin(100)) //Serial.println("EEPROM fail");
+  pinMode(22, OUTPUT);
+  digitalWrite(22, LOW);
   
   myGPS.Setup();
   myTFT.Setup();
@@ -126,14 +127,6 @@ void loop() {
     menu.select();
   }
 
-  if (menu.turnOff) {
-    myGPS.dailyDistance += myGPS.trackDistance;
-    mySD.saveNoTrackData(SD);
-    EEPROM.writeFloat(0, myGPS.totalDistance);
-    EEPROM.commit();
-    pinMode(3, INPUT);
-    esp_deep_sleep_start();
-  }
 
 //  if (menu.wifiState) {
 //    if (handler.menuState == 3) {
@@ -177,7 +170,7 @@ void loop() {
   }
 
   clearScreen();
-  myGPS.smartDelay(10);
+  myGPS.smartDelay(20);
 }
 
 
@@ -198,19 +191,25 @@ bool startup() {
   }
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
-  myGPS.totalDistance = EEPROM.readFloat(0);
+
+  EEPROM.get(1, myGPS.totalDistance);
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 void trackSaving() {
-  if (myGPS.distanceMeasurements >= 1 or courseDifference() > 5) {
+  long TIME;
+  if (myGPS.distanceMeasurements >= 1) {
+    TIME = millis();
     mySD.savePosition(SD);
     mySD.saveTrackData(SD);
     mySD.saveJSONTrackData(SD);
     myGPS.distanceMeasurements = 0;
     course0 = gps.course.deg();
     screens.savedToSD = " save";
+    TIME = millis() - TIME;
+    myTFT.Settings(1, 20, 250);
+    myTFT.Print(TIME, 5, 0);
   }
 }
 
@@ -222,10 +221,11 @@ byte passLoop;
     Loop = 0;
     return false;
   }
-  if (3 < gps.speed.kmph() && gps.speed.kmph() < 10) passLoop = 2;
-  else if (10 <= gps.speed.kmph()) passLoop = 1;
+  if (3 < gps.speed.kmph() && gps.speed.kmph() < 7) passLoop = 3;
+  else if (7 <= gps.speed.kmph() && gps.speed.kmph() < 15) passLoop = 2;
+  else if (15 <= gps.speed.kmph()) passLoop = 1;
   
-  if (Loop == passLoop) {
+  if (Loop == passLoop or courseDifference() > 5) {
     if (myGPS.position0Saved == true) {
       if (myGPS.distanceCalculating(menu.trackStart)) {
         Loop = 0;

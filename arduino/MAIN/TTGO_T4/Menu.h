@@ -168,11 +168,16 @@ class Menu {
 
 
     void powerOff() {
-      myTFT.Settings(2, 20, tft.height()/2 - 7);
-      tft.println("VYPNUT?");
-      if (handler.eventB == 1) {
-        tft.fillScreen(TFT_BLACK);
-        turnOff = true;
+        myTFT.Settings(2, 20, tft.height()/2 - 7);
+        tft.println("VYPNUT?");
+        if (handler.eventB > 0) {
+          tft.fillScreen(TFT_BLACK);
+          myGPS.dailyDistance += myGPS.trackDistance;
+          mySD.saveJSONDailyStats(SD);
+          EEPROM.put(1, myGPS.totalDistance);
+          EEPROM.commit();
+          delay(200);
+          esp_deep_sleep_start();
       }
     }
     

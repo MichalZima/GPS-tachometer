@@ -2,7 +2,7 @@
 #include <SoftwareSerial.h>
 
 TinyGPSPlus gps;
-SoftwareSerial ss (22, 21);
+SoftwareSerial ss (21, 1);
 
 
 class MyGPS {
@@ -56,8 +56,6 @@ class MyGPS {
     
     void Setup(){
       ss.begin(9600);
-      pinMode(3, OUTPUT);
-      digitalWrite(3, HIGH);
 
     }
 
@@ -70,6 +68,11 @@ class MyGPS {
           gps.encode(ss.read());
       } while (millis() - start < ms);
     }
+
+/*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
            
@@ -145,7 +148,7 @@ class MyGPS {
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
     
     bool errorCheck() {
-      errorMessage = " ";
+      errorMessage = "*";
       //check signal strength and age
       if (gps.hdop.hdop() > 10) errorMessage += "HIGH HDOP, ";
       if (gps.hdop.age() > 10000) errorMessage += "OLD HDOP, ";
@@ -161,8 +164,8 @@ class MyGPS {
       if (gps.speed.kmph() > 15 && gps.speed.kmph() < 50 && distance0 > 500)  errorMessage += "NOT VALID COORDINATES 2, ";
       if (gps.speed.kmph() > 50 && distance0 > 1000)  errorMessage += "NOT VALID COORDINATES 3, ";
       //check if any error occured
-      if (errorMessage == " ") return false;
-      else if (errorMessage != " ") return true;
+      if (errorMessage == "*") return false;
+      else if (errorMessage != "*") return true;
     }
 
 /*------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
